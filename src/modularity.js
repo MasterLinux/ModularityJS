@@ -24,17 +24,21 @@ var ModularityCore = (function () {
      */
     core.extend = function (options) {
         var name = options.name,
-            imports = options.imports,
+            imports = core.type.isArray(options.imports) ? options.imports : [],
             extension = options.extension,
             instance;
 
         // name, imports = [], extension = null
-        if (ModularityCore.type.isFunction(extensions[name])) {
+        if (core.type.isFunction(extensions[name])) {
             throw new Error("Extension with name <" + name + "> already exists. Please use another name or check whether this extension is already added.");
         } else {
             instance = {};
             extension(instance);
-            extensions[name] = instance;
+
+            extensions[name] = {
+                extension: extension,
+                imports: imports
+            };
         }
     };
 
@@ -94,6 +98,17 @@ ModularityCore.type = (function () {
     utils.isObject = function (value) {
         var type = typeof value;
         return !!value && (type == 'object' || type == 'function');
+    };
+
+    /**
+     * Checks whether the given value is an array
+     * @memberOf ModularityCore.type
+     * @function isArray
+     * @param {*} value - The value to check
+     * @returns {boolean} Returns true if the given value is an array, otherwise false
+     */
+    utils.isArray = function (value) {
+        return Array.isArray(value);
     };
 
     /**
