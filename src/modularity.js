@@ -1,12 +1,13 @@
-// Vererbung wird benötigt
+// Vererbung wird benï¿½tigt
 // Funktionen wie underscore implementieren? -> Modularity.isFunction(func(){})?
 
 
 /**
  * @author Christoph Grundmann
- * @class Modularity
+ * @class ModularityCore
  */
 var ModularityCore = (function () {
+    var extensions = {};
     var core = {};
 
     /**
@@ -19,12 +20,18 @@ var ModularityCore = (function () {
     /**
      * Registers a new framework extension
      * @param {string} name - The name of the new extension
-     * @param {string} [inherits] - The name of the extension to inherit from
-     * @param {string[]} [imports] - All names of extensions which should be imported
+     * @param {string} [inherits = Extension] - The name of the extension to inherit from
+     * @param {string[]} [imports = []] - All names of extensions which should be imported
      * @param {extensionDefinition} extension - The definition of the extension
      */
-    core.extend = function (name, inherits, imports, extension) {
-
+    core.extend = function (name, inherits = "Extension", imports = [], extension = null) {
+        if (!ModularityCore.utils.isFunction(extension)) {
+            throw new Error("Extension with name <" + name + "> must be a function, but is of type <" + typeof extension + ">");
+        } else if (ModularityCore.utils.isFunction(extensions[name])) {
+            throw new Error("Extension with name <" + name + "> already exists. Please use another name or check whether this extension is already added.");
+        } else {
+            extensions[name] = extension;
+        }
     };
 
     /**
@@ -38,15 +45,53 @@ var ModularityCore = (function () {
 
     };
 
-    function inherits(module, baseModule) {}
-
-    function isFunction(func) {}
+    function inherits(module, baseModule) {
+    }
 
     return core;
 })();
 
-// 1. Module registrieren, unabhängig von Abhängigkeiten
-// 2. Alle Module initialisieren, Abhängigkeiten vermeiden!
+/**
+ * Collection of utilities used for type checking
+ * @namespace
+ */
+ModularityCore.utils = (function () {
+    var utils = {};
+
+    /**
+     * Checks whether the given value is a function
+     * @param {*} value - The value to test
+     * @returns {boolean} Returns true if the given value is a function, otherwise it returns false
+     */
+    utils.isFunction = function (value) {
+        return utils.isObject(value) && Object.prototype.toString.call(value) == '[object Function]';
+    };
+
+    utils.isString = function (value) {
+        return typeof value == 'string' || (isObjectLike(value) && String.prototype.toString.call(value) == '[object String]');
+    };
+
+    utils.isObject = function (value) {
+        var type = typeof value;
+        return !!value && (type == 'object' || type == 'function');
+    };
+
+    /**
+     * Checks if `value` is object-like.
+     *
+     * @private
+     * @param {*} value The value to check.
+     * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+     */
+    function isObjectLike(value) {
+        return !!value && typeof value == 'object';
+    }
+
+    return utils;
+})();
+
+// 1. Module registrieren, unabhï¿½ngig von Abhï¿½ngigkeiten
+// 2. Alle Module initialisieren, Abhï¿½ngigkeiten vermeiden!
 // 3. Nutzerdefinierte init() aufrufen
 
 /**
@@ -58,7 +103,7 @@ ModularityCore.extend("Extension", function (extention) {
      * Gets the name of the extension
      * @returns {string} The name of the extension
      */
-    extention.getExtensionName = function() {
+    extention.getExtensionName = function () {
         return extention.name;
     };
 });
