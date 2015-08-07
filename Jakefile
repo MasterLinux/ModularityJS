@@ -18,7 +18,7 @@ task('build', {async: true}, function () {
             ast: false
         }).code;
 
-        // obfuscate code if not in development mode
+        // obfuscate code for min.js version
         var obfuscated = uglify.minify(compiled, {
             fromString: true,
             warnings: true
@@ -37,6 +37,7 @@ task('build', {async: true}, function () {
 
         } catch (e) {
             console.log(e);
+
         } finally {
             // complete async task
             complete();
