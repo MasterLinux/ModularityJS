@@ -1,4 +1,5 @@
-var babel = require('babel-core'),
+var childProcess = require('child_process'),
+    babel = require('babel-core'),
     uglify = require("uglify-js"),
     fs = require('fs');
 
@@ -42,6 +43,17 @@ task('build', {async: true}, function () {
             // complete async task
             complete();
         }
+    });
+});
+
+desc('This task generates the documentation of the framework');
+task('docs', {async: true}, function () {
+    childProcess.exec('jsdoc ../../src/modularity.js -d ../../build/docs/', {cwd: "./node_modules/.bin/"}, function (err, stdout, stderr) {
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+
+        // complete async task
+        complete();
     });
 });
 

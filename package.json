@@ -2,6 +2,7 @@
   "devDependencies": {
     "jake": "latest",
     "babel-core": "~5.8.21",
-    "uglify-js": "~2.4.24"
+    "uglify-js": "~2.4.24",
+    "jsdoc": "~3.3.2"
   }
 }

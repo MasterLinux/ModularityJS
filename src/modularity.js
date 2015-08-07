@@ -19,11 +19,14 @@ var ModularityCore = (function () {
 
     /**
      * Registers a new framework extension
+     * @memberOf ModularityCore
      * @function extend
      * @param {string} name - The name of the new extension
      * @param {string} [inherits = Extension] - The name of the extension to inherit from
      * @param {string[]} [imports = []] - All names of extensions which should be imported
      * @param {extensionDefinition} extension - The definition of the extension
+     * @throws Will throw an error if an exception with the same name is already registered
+     * @throws Will throw an error if the given extension is not defined. Argument extension must be a function
      */
     core.extend = function (name, inherits = "Extension", imports = [], extension = null) {
         if (!ModularityCore.type.isFunction(extension)) {
@@ -37,6 +40,7 @@ var ModularityCore = (function () {
 
     /**
      * Registers a new application module
+     * @memberOf ModularityCore
      * @function module
      * @param name
      * @param inherits
@@ -54,15 +58,16 @@ var ModularityCore = (function () {
 })();
 
 /**
- * Collection of utilities used for type checking
+ * Collection of utilities used for type checking.
  * These utilities are inspired by lodash {@link https://lodash.com/}
- * @namespace
+ * @namespace ModularityCore.type
  */
 ModularityCore.type = (function () {
     var utils = {};
 
     /**
      * Checks whether the given value is a function
+     * @memberOf ModularityCore.type
      * @function isFunction
      * @param {*} value - The value to check
      * @returns {boolean} Returns true if the given value is a function, otherwise false
@@ -73,6 +78,7 @@ ModularityCore.type = (function () {
 
     /**
      * Checks whether the given value is a string
+     * @memberOf ModularityCore.type
      * @function isString
      * @param {*} value - The value to check
      * @returns {boolean} Returns true if the given value is a string, otherwise false
@@ -83,6 +89,7 @@ ModularityCore.type = (function () {
 
     /**
      * Checks whether the given value is an object
+     * @memberOf ModularityCore.type
      * @function isObject
      * @param {*} value - The value to check
      * @returns {boolean} Returns true if the given value is an object, otherwise false
@@ -94,6 +101,7 @@ ModularityCore.type = (function () {
 
     /**
      * Checks whether the given value is object-like
+     * @memberOf ModularityCore.type
      * @function isObjectLike
      * @private
      * @param {*} value - The value to check
