@@ -1,8 +1,5 @@
-// Vererbung wird ben�tigt
-// Funktionen wie underscore implementieren? -> Modularity.isFunction(func(){})?
-
-
 /**
+ * The main framework facade used to register new modules and extensions
  * @author Christoph Grundmann
  * @namespace ModularityCore
  */
@@ -12,29 +9,32 @@ var ModularityCore = (function () {
 
     /**
      * @callback extensionDefinition
-     * @param {Extension} extension - The newly created instance of the extension
-     * @param {string} extension.name - The name of the extension
-     * @param {...Extension} imports - Each imported extension
+     * @param {object} extension - The newly created instance of the extension which should be defined
      */
 
     /**
      * Registers a new framework extension
      * @memberOf ModularityCore
      * @function extend
-     * @param {string} name - The name of the new extension
-     * @param {string} [inherits = Extension] - The name of the extension to inherit from
-     * @param {string[]} [imports = []] - All names of extensions which should be imported
-     * @param {extensionDefinition} extension - The definition of the extension
-     * @throws Will throw an error if an exception with the same name is already registered
-     * @throws Will throw an error if the given extension is not defined. Argument extension must be a function
+     * @param {object} options
+     * @param {string} options.name - The name of the new extension
+     * @param {string[]} [options.imports = []] - All names of extensions which should be imported
+     * @param {extensionDefinition} options.extension - The definition of the extension
+     * @throws Will throw an error if an extension with the same name is already registered
      */
-    core.extend = function (name, inherits = "Extension", imports = [], extension = null) {
-        if (!ModularityCore.type.isFunction(extension)) {
-            throw new Error("Extension with name <" + name + "> must be a function, but is of type <" + typeof extension + ">");
-        } else if (ModularityCore.type.isFunction(extensions[name])) {
+    core.extend = function (options) {
+        var name = options.name,
+            imports = options.imports,
+            extension = options.extension,
+            instance;
+
+        // name, imports = [], extension = null
+        if (ModularityCore.type.isFunction(extensions[name])) {
             throw new Error("Extension with name <" + name + "> already exists. Please use another name or check whether this extension is already added.");
         } else {
-            extensions[name] = extension;
+            instance = {};
+            extension(instance);
+            extensions[name] = instance;
         }
     };
 
@@ -50,9 +50,6 @@ var ModularityCore = (function () {
     core.module = function (name, inherits, requires, module) {
 
     };
-
-    function inherits(module, baseModule) {
-    }
 
     return core;
 })();
@@ -113,25 +110,3 @@ ModularityCore.type = (function () {
 
     return utils;
 })();
-
-// 1. Module registrieren, unabh�ngig von Abh�ngigkeiten
-// 2. Alle Module initialisieren, Abh�ngigkeiten vermeiden!
-// 3. Nutzerdefinierte init() aufrufen
-
-/**
- * @class Extension
- */
-ModularityCore.extend("Extension", function (extention) {
-
-    /**
-     * Gets the name of the extension
-     * @returns {string} The name of the extension
-     */
-    extention.getExtensionName = function () {
-        return extention.name;
-    };
-});
-
-ModularityCore.extend("Gallery", ["Navigator", ""], function (gallery, navigator) {
-
-});
