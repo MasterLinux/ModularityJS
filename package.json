@@ -1,8 +1,21 @@
 {
+  "name": "modulartiy_core",
+  "version": "0.0.1",
+  "description": "A framework for creating single page web-applications with the help of modules",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MasterLinux/ModularityJS"
+  },
+  "author": "Christoph Grundmann <christoph.grundmann@googlemail.com>",
+  "contributors": [
+    "Sven Lang"
+  ],
+  "license": "proprietary",
   "devDependencies": {
     "jake": "latest",
     "babel-core": "~5.8.21",
     "uglify-js": "~2.4.24",
-    "jsdoc": "~3.3.2"
+    "jsdoc": "~3.3.2",
+    "karma": "~0.13.9"
   }
 }
