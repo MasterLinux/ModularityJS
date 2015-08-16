@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="application/javascript" src="build/modularity.js"></script>
+    <script type="application/javascript">
+
+        ModularityCore.extend({
+            name: "Gallery",
+            imports: ["Navigator"],
+            extension: function (gallery) {
+
+                gallery.init = function (imports) {
+                    this.navigator = imports.navigator;
+                };
+
+                gallery.test = function () {
+                    return "test";
+                }
+            }
+        });
+
+        ModularityCore.extend({
+            name: "Navigator",
+            extension: function (navigator) {
+
+
+            }
+        });
+
+        var test = "";
+    </script>
+</head>
+<body>
+
+</body>
+</html>

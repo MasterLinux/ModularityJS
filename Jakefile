@@ -6,43 +6,66 @@ var childProcess = require('child_process'),
 desc('This task builds the framework');
 task('build', {async: true}, function () {
     var outputDir = './build/';
+    var errorUutputDir = './build/error/';
+    var frameworkPath = './src/modularity.js';
+    var frameworkFileName = 'modularity';
+    var frameworkErrorPath = './src/error/extension_exists_error.js';
+    var frameworkErrorFileName = 'extension_exists_error';
 
-    fs.readFile('./src/modularity.js', 'utf8', function (err, data) {
-        if (err) {
-            return console.log(err);
-        }
+    var frameworkNSErrorPath = './src/error/namespace_collision_error.js';
+    var frameworkNSErrorFileName = 'namespace_collision_error';
 
-        // transform to ES5
-        var compiled = babel.transform(data, {
-            sourceMaps: false,
-            comments: false,
-            ast: false
-        }).code;
+    var testPath = './tests/modularity_core_test.js';
+    var testFileName = 'modularity.test';
 
-        // obfuscate code for min.js version
-        var obfuscated = uglify.minify(compiled, {
-            fromString: true,
-            warnings: true
-        }).code;
-
-        try {
-            // create new build folder if not exists
-            if (!fs.existsSync(outputDir)) {
-                fs.mkdirSync(outputDir);
+    var build = function (outputDir, filePath, fileName, complete) {
+        fs.readFile(filePath, 'utf8', function (err, data) {
+            if (err) {
+                return console.log(err);
             }
 
-            // write all necessary files
-            fs.writeFileSync(outputDir + 'modularity.js', compiled);
-            fs.writeFileSync(outputDir + 'modularity.min.js', obfuscated);
-            console.log("build successful");
+            // transform to ES5
+            var compiled = babel.transform(data, {
+                sourceMaps: false,
+                comments: false,
+                ast: false
+            }).code;
 
-        } catch (e) {
-            console.log(e);
+            // obfuscate code for min.js version
+            var obfuscated = uglify.minify(compiled, {
+                fromString: true,
+                warnings: true
+            }).code;
 
-        } finally {
-            // complete async task
-            complete();
-        }
+            try {
+                // create new build folder if not exists
+                if (!fs.existsSync(outputDir)) {
+                    fs.mkdirSync(outputDir);
+                }
+
+                // write all necessary files
+                fs.writeFileSync(outputDir + fileName + '.js', compiled);
+                fs.writeFileSync(outputDir + fileName + '.min.js', obfuscated);
+                console.log("build successful");
+
+            } catch (e) {
+                console.log(e);
+
+            } finally {
+                // complete async task
+                complete();
+            }
+        });
+    };
+
+    build(outputDir, frameworkPath, frameworkFileName, function () {
+        build(errorUutputDir, frameworkErrorPath, frameworkErrorFileName, function () {
+            build(errorUutputDir, frameworkNSErrorPath, frameworkNSErrorFileName, function () {
+                build(outputDir, testPath, testFileName, function () {
+                    complete();
+                });
+            });
+        });
     });
 });
 
