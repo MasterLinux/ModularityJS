@@ -1,6 +1,11 @@
 import {ExtensionExistsError} from "./error/extension_exists_error.js";
 import {NamespaceCollisionError} from "./error/namespace_collision_error.js";
 
+/**
+ * The main framework facade used to register new modules and extensions
+ * @author Christoph Grundmann
+ * @namespace ModularityCore
+ */
 export var Modularity = {
 
     /**
