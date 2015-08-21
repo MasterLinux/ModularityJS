@@ -7,4 +7,4 @@ if [ ! -f $SCRIPT_PATH/node_modules/.bin/jake ]
 then
     npm rebuild
 fi
-./node_modules/.bin/jake docs
+./node_modules/.bin/jsdoc ./build/modularity.js -d ./build/docs/

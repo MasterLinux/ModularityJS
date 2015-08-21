@@ -5,7 +5,7 @@
  * @constructor
  */
 export function ExtensionExistsError(name) {
-    let message = "Extension with name <" + name + "> already exists. Please use another name or check whether this extension is already added.";
+    let message = "Extension with name <" + name + "> already exists. Please use another name or check whether this extension is already added";
     let base = Error.apply(this, [message]);
     base.name = this.name = "ExtensionExistsError";
     this.message = base.message;
