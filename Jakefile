@@ -66,6 +66,7 @@ namespace('build', function () {
             try {
                 cjs = bundle.toCjs({strict: true});
                 code = cjs.code;
+
                 complete(code);
 
             } catch (e) {
@@ -84,7 +85,7 @@ namespace('build', function () {
         // transform to ES5
         compiled = babel.transform(source, {
             sourceMaps: false,
-            comments: false,
+            comments: true,
             ast: false
         }).code;
 
@@ -168,7 +169,7 @@ namespace('build', function () {
             writeFilesTask = jake.Task['io:writeFiles'],
             buildDocsTask = jake.Task['build:docs'],
             testDir = params.testDir || "./tests",
-            testFileName = params.testFileName || "modularity_core_test.js",
+            testFileName = params.testFileName || "all_tests.js",
             srcDir = params.srcDir || "./src",
             fileName = params.fileName || "modularity.js",
             testSrc, frameworkSrc, isFrameworkCompiled = false;
@@ -230,7 +231,7 @@ namespace('build', function () {
 
     desc('Task used to generate the documentation');
     task('docs', {async: true}, function () {
-        childProcess.exec('jsdoc ../../src/modularity.js -d ../../build/docs/', {
+        childProcess.exec('jsdoc ../../build/modularity.js -d ../../build/docs/', {
             cwd: "./node_modules/.bin/"
         }, function (error, stdout, stderr) {
             if (error) {

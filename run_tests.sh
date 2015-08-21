@@ -7,4 +7,4 @@ if [ ! -f $SCRIPT_PATH/node_modules/.bin/jake ]
 then
     npm rebuild
 fi
-./node_modules/.bin/mocha build/modularity.test.js
+./node_modules/.bin/mocha build/modularity_tests.js

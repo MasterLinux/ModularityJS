@@ -1,5 +1,6 @@
 import {ExtensionExistsError} from "./error/extension_exists_error.js";
 import {NamespaceCollisionError} from "./error/namespace_collision_error.js";
+import {TypeUtility} from "./utility/type_utility.js";
 
 /**
  * The main framework facade used to register new modules and extensions
@@ -17,30 +18,34 @@ export var Modularity = {
      * @throws Will throw an error if an extension with the same namespace is already registered
      */
     extend: function (namespace, extension) {
-        let parts = namespace.split(".");
-        let lastIndex = parts.length - 1;
-        let ns = this;
-
-        console.log(parts);
+        let parts = namespace.split("."),
+            lastIndex = parts.length - 1,
+            current = this,
+            part, ns, isObject;
 
         for (let index = 0; index < parts.length; index++) {
-            let part = parts[index];
+            part = parts[index];
+            ns = current[part];
+            isObject = TypeUtility.isObject(ns);
 
             if (index === lastIndex) {
-                if (ns[part]) {
-                    throw new ExtensionExistsError(namespace);
+                if (ns) {
+                    if (isObject) {
+                        throw new ExtensionExistsError(namespace);
+                    } else {
+                        throw new NamespaceCollisionError(namespace);
+                    }
                 } else {
-                    ns[part] = extension;
+                    current[part] = extension;
                 }
 
-
-            } else if (!ns[part]) {
-                ns[part] = {};
-            } else if (!Object.isObject(ns[part])) {
+            } else if (!ns) {
+                current[part] = ns = {};
+            } else if (!isObject) {
                 throw new NamespaceCollisionError(namespace);
             }
 
-            ns = ns[part];
+            current = ns;
         }
     }
 

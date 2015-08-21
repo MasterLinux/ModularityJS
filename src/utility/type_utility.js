@@ -1,12 +1,9 @@
-import {Modularity} from "./modularity.js";
-
 /**
  * Collection of utilities used for type checking.
  * These utilities are inspired by lodash {@link https://lodash.com/}
- * @namespace ModularityCore.type
+ * @namespace TypeUtility
  */
-ModularityCore.type = (function () {
-    var utils = {};
+export var TypeUtility = {
 
     /**
      * Checks whether the given value is a function
@@ -15,9 +12,9 @@ ModularityCore.type = (function () {
      * @param {*} value - The value to check
      * @returns {boolean} Returns true if the given value is a function, otherwise false
      */
-    utils.isFunction = function (value) {
-        return utils.isObject(value) && Object.prototype.toString.call(value) == '[object Function]';
-    };
+    isFunction: function (value) {
+        return this.isObject(value) && Object.prototype.toString.call(value) == '[object Function]';
+    },
 
     /**
      * Checks whether the given value is a string
@@ -26,9 +23,9 @@ ModularityCore.type = (function () {
      * @param {*} value - The value to check
      * @returns {boolean} Returns true if the given value is a string, otherwise false
      */
-    utils.isString = function (value) {
-        return typeof value == 'string' || (isObjectLike(value) && String.prototype.toString.call(value) == '[object String]');
-    };
+    isString: function (value) {
+        return typeof value == 'string' || (this.isObjectLike(value) && Object.prototype.toString.call(value) == '[object String]');
+    },
 
     /**
      * Checks whether the given value is an object
@@ -37,10 +34,10 @@ ModularityCore.type = (function () {
      * @param {*} value - The value to check
      * @returns {boolean} Returns true if the given value is an object, otherwise false
      */
-    utils.isObject = function (value) {
+    isObject: function (value) {
         var type = typeof value;
         return !!value && (type == 'object' || type == 'function');
-    };
+    },
 
     /**
      * Checks whether the given value is an array
@@ -49,9 +46,9 @@ ModularityCore.type = (function () {
      * @param {*} value - The value to check
      * @returns {boolean} Returns true if the given value is an array, otherwise false
      */
-    utils.isArray = function (value) {
+    isArray: function (value) {
         return Array.isArray(value);
-    };
+    },
 
     /**
      * Checks whether the given value is object-like
@@ -61,9 +58,7 @@ ModularityCore.type = (function () {
      * @param {*} value - The value to check
      * @returns {boolean} Returns true if the given value is object-like, otherwise false
      */
-    function isObjectLike(value) {
+    isObjectLike: function (value) {
         return !!value && typeof value == 'object';
     }
-
-    return utils;
-})();
+};
