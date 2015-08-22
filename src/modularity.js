@@ -4,12 +4,12 @@ import * as NamespaceUtility from "./utility/namespace_utility.js";
 import * as TypeUtility from "./utility/type_utility.js";
 
 
+/**
+ * The main framework facade used to register new modules and extensions
+ * @author Christoph Grundmann
+ * @namespace Modularity
+ */
 export var Modularity = {
-    /**
-     * The main framework facade used to register new modules and extensions
-     * @author Christoph Grundmann
-     * @namespace Modularity
-     */
 
     /**
      * Registers a new framework extension
@@ -27,35 +27,8 @@ export var Modularity = {
      * let isIOS = Modularity.utility.Mobile.isIOS();
      */
     extend: function (namespace, extension) {
-        let parts = namespace.split("."),
-            lastIndex = parts.length - 1,
-            current = this,
-            part, ns, isObject;
-
-        for (let index = 0; index < parts.length; index++) {
-            part = parts[index];
-            ns = current[part];
-            isObject = TypeUtility.isObject(ns);
-
-            if (index === lastIndex) {
-                if (ns) {
-                    if (isObject) {
-                        throw new ExtensionExistsError(namespace);
-                    } else {
-                        throw new NamespaceCollisionError(namespace, part);
-                    }
-                } else {
-                    current[part] = extension;
-                }
-
-            } else if (!ns) {
-                current[part] = ns = {};
-            } else if (!isObject) {
-                throw new NamespaceCollisionError(namespace, part);
-            }
-
-            current = ns;
-        }
+        let ns = NamespaceUtility.split(namespace);
+        NamespaceUtility.extend(this, ns.parts, ns.name, extension);
     }
 
 };

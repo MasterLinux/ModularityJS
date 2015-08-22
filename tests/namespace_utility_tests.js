@@ -1,4 +1,6 @@
 import * as NamespaceUtility from "../src/utility/namespace_utility.js";
+import {NamespaceCollisionError} from "../src/error/namespace_collision_error.js";
+import {ExtensionExistsError} from "../src/error/extension_exists_error.js";
 import {expect, assert} from "chai";
 
 export var NamespaceUtilityTests = (function () {
@@ -25,11 +27,11 @@ export var NamespaceUtilityTests = (function () {
             done();
         });
 
-        it("should create namespace", (done) => {
+        it("should resolve namespace", (done) => {
             let parts = NamespaceUtility.split("test.namespace.test_namespace.Extension").parts,
                 objectUnderTest = {};
 
-            NamespaceUtility.create(objectUnderTest, parts);
+            NamespaceUtility.resolve(objectUnderTest, parts);
 
             assert.isObject(objectUnderTest.test);
             assert.isObject(objectUnderTest.test.namespace);
@@ -37,7 +39,7 @@ export var NamespaceUtilityTests = (function () {
             done();
         });
 
-        it("should return namespace after creating", (done) => {
+        it("should return namespace after resolving", (done) => {
             let parts = NamespaceUtility.split("test.namespace.test_namespace.Extension").parts,
                 objectUnderTest = {},
                 expectedFieldValue = 42,
@@ -45,7 +47,7 @@ export var NamespaceUtilityTests = (function () {
                 namespaceUnderTest;
 
             // create namespace and add field
-            actualNamespace = NamespaceUtility.create(objectUnderTest, parts);
+            actualNamespace = NamespaceUtility.resolve(objectUnderTest, parts);
             actualNamespace.fieldUnderTest = expectedFieldValue;
 
             // get created namespace
@@ -54,6 +56,33 @@ export var NamespaceUtilityTests = (function () {
             assert.isObject(actualNamespace);
             assert.isObject(namespaceUnderTest);
             expect(namespaceUnderTest.fieldUnderTest).to.equal(expectedFieldValue);
+            done();
+        });
+
+        it("should throw NamespaceCollisionError if current namespace is not an object to extend", (done) => {
+            let expectedNamespace = NamespaceUtility.split("test.namespace.test.Extension"),
+                anotherExpectedNamespace = NamespaceUtility.split("test.namespace.test.another.Extension"),
+                objectUnderTest = {
+                    test: {
+                        namespace: {
+                            test: 42
+                        }
+                    }
+                },
+                anotherObjectUnderTest = {
+                    test: {
+                        namespace: "test"
+                    }
+                };
+
+            expect(() => {
+                NamespaceUtility.resolve(objectUnderTest, expectedNamespace.parts);
+            }).to.throw(NamespaceCollisionError);
+
+            expect(() => {
+                NamespaceUtility.resolve(anotherObjectUnderTest, anotherExpectedNamespace.parts);
+            }).to.throw(NamespaceCollisionError);
+
             done();
         });
 
@@ -72,6 +101,18 @@ export var NamespaceUtilityTests = (function () {
 
             assert.isObject(extensionUnderTest);
             expect(extensionUnderTest.fieldUnderTest).to.equal(expectedFieldValue);
+            done();
+        });
+
+        it("should throw ExtensionExistsError if an extension in the given namespace with the same name already exists", (done) => {
+            let expectedNamespace = NamespaceUtility.split("test.namespace.test.Extension"),
+                objectUnderTest = {};
+
+            expect(() => {
+                NamespaceUtility.extend(objectUnderTest, expectedNamespace.parts, expectedNamespace.name, {});
+                NamespaceUtility.extend(objectUnderTest, expectedNamespace.parts, expectedNamespace.name, {});
+            }).to.throw(ExtensionExistsError);
+
             done();
         });
     });

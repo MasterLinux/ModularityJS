@@ -60,3 +60,15 @@ export function isArray(value) {
 export function isObjectLike(value) {
     return !!value && typeof value == 'object';
 }
+
+/**
+ * Checks whether the given value is a number
+ * @memberOf TypeUtility
+ * @function isNumber
+ * @private
+ * @param {*} value - The value to check
+ * @returns {boolean} Returns true if the given value is a number, otherwise false
+ */
+export function isNumber(value) {
+    return typeof value == 'number' || (isObjectLike(value) && Object.prototype.toString.call(value) == '[object Number]');
+}

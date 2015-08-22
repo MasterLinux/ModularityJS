@@ -1,11 +1,11 @@
-import {NamespaceCollisionError} from "../error/namespace_collision_error.js";
-import {ExtensionExistsError} from "../error/extension_exists_error.js";
-import * as TypeUtility from "./type_utility.js";
-
 /**
  * Collection of utilities used to work with namespaces
  * @namespace NamespaceUtility
  */
+import {NamespaceCollisionError} from "../error/namespace_collision_error.js";
+import {ExtensionExistsError} from "../error/extension_exists_error.js";
+import * as TypeUtility from "./type_utility.js";
+
 
 /**
  * @typedef NamespaceSplitResult
@@ -35,17 +35,17 @@ export function split(namespace) {
  * @param {object} parent - The object to extend
  * @param {string[]} namespaceParts - All parts of the namespace to create
  * @returns {object} The created namespace
- * @throws Will throw an error if the namespace can not be created because the namespace part to extend is not an object
+ * @throws Will throw an error if the namespace can not be resolved because the namespace part to extend is not an object
  */
-export function create(parent, namespaceParts) {
+export function resolve(parent, namespaceParts) {
     for (let i = 0; i < namespaceParts.length; i++) {
         let part = namespaceParts[i],
             current = parent[part];
 
-        if (!current) {
+        if (current && !TypeUtility.isObject(current)) {
+            throw new NamespaceCollisionError(namespaceParts, i);
+        } else if (!current) {
             parent[part] = {};
-        } else if (!TypeUtility.isObject(current)) {
-            throw new NamespaceCollisionError("", part);
         }
 
         parent = parent[part];
@@ -60,13 +60,13 @@ export function create(parent, namespaceParts) {
  * @param {string[]} namespaceParts - All parts of the namespace to extend
  * @param {string} extensionName - The name of the extension
  * @param {object} extension - The extension to add
- * @throws Will throw an error if an extension in the same namespace is already registered
+ * @throws Will throw an error if an extension in the given namespace is already registered
  */
 export function extend(parent, namespaceParts, extensionName, extension) {
-    let namespace = create(parent, namespaceParts);
+    let namespace = resolve(parent, namespaceParts);
 
     if (namespace[extensionName]) {
-        throw new ExtensionExistsError(namespace);
+        throw new ExtensionExistsError(namespaceParts.join("."), extensionName);
     } else {
         namespace[extensionName] = extension;
     }

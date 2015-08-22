@@ -1,13 +1,16 @@
+import * as TypeUtility from "../utility/type_utility.js";
+
 /**
  * Error which is thrown whenever an extension can not be added because the namespace to extend is not an object
  * @class NamespaceCollisionError
- * @param {string} namespace - The namespace of the extension which already exists
- * @param {string} part - The namespace part which is not an object to extend
+ * @param {string[]} [namespace] - The namespace of the extension which already exists
+ * @param {number} [index] - The index of the namespace part which is not an object to extend
  * @constructor
  */
-export function NamespaceCollisionError(namespace, part) {
-    let message = "Unable to extend namespace <" + namespace + "> because <" + part + "> is not an object";
-    let base = Error.apply(this, [message]);
+export function NamespaceCollisionError(namespace, index) {
+    let message = this.buildMessage(namespace, index),
+        base = Error.apply(this, [message]);
+
     base.name = this.name = "NamespaceCollisionError";
     this.message = base.message;
 }
@@ -20,3 +23,26 @@ NamespaceCollisionError.prototype = Object.create(Error.prototype, {
         configurable: true
     }
 });
+
+NamespaceCollisionError.prototype.buildMessage = function (namespace, index) {
+    if (namespace && TypeUtility.isNumber(index)) {
+        let markedNamespace = "", lastIndex = namespace.length - 1;
+
+        // mark critical namespace part
+        for (let i = 0; i < namespace.length; i++) {
+            if (i == index) {
+                markedNamespace += "{" + namespace[i] + "}";
+            } else {
+                markedNamespace += namespace[i];
+            }
+
+            if (i != lastIndex) {
+                markedNamespace += ".";
+            }
+        }
+
+        return "Unable to resolve namespace because <" + namespace[index] + "> in namespace <" + markedNamespace + "> is not an object";
+    } else {
+        return "Unable to resolve namespace";
+    }
+};
