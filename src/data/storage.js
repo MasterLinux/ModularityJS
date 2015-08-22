@@ -1,5 +1,4 @@
 import {ValueOverrideError} from "../error/value_override_error.js";
-import * as TypeUtility from "../utility/type_utility.js";
 
 /**
  * Writes a value to the given memory object
@@ -17,4 +16,23 @@ export function writeTo(memory, key, value, isMutable) {
     } else {
         memory[key] = value;
     }
+}
+
+/**
+ * Gets the value with the given key or undefined if no value with this key exists
+ * @param {object} memory - The object which contains the value
+ * @param {string} key - The key of the value to read
+ * @return {*|undefined}
+ */
+export function readFrom(memory, key) {
+    return memory[key] || undefined;
+}
+
+/**
+ * Deletes the value with the given key from memory
+ * @param {object} memory - The object which contains the value
+ * @param {string} key - The key of the value to delete
+ */
+export function deleteFrom(memory, key) {
+    memory[key] = undefined;
 }

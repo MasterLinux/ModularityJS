@@ -16,6 +16,22 @@ export var StorageTests = (function () {
             done();
         });
 
+        it("should overwrite value", (done) => {
+            let expectedMemory = {},
+                expectedKey = "test_key",
+                initialValue = 42,
+                expectedValue = 1337,
+                isMutable = true;
+
+            Storage.writeTo(expectedMemory, expectedKey, initialValue, isMutable);
+            expect(expectedMemory[expectedKey]).to.equal(initialValue);
+
+            Storage.writeTo(expectedMemory, expectedKey, expectedValue, isMutable);
+            expect(expectedMemory[expectedKey]).to.equal(expectedValue);
+
+            done();
+        });
+
         it("should throw error if a value with the given key already exists", (done) => {
             let expectedMemory = {},
                 expectedKey = "test_key",
@@ -29,7 +45,7 @@ export var StorageTests = (function () {
             done();
         });
 
-        it("should not throw error if a value with the given key already exists if memory is mutable", (done) => {
+        it("should not throw error if a value with the given key already exists and memory is mutable", (done) => {
             let expectedMemory = {},
                 expectedKey = "test_key",
                 expectedValue = 42,
@@ -38,6 +54,55 @@ export var StorageTests = (function () {
             expect(() => {
                 Storage.writeTo(expectedMemory, expectedKey, expectedValue, isMutable);
                 Storage.writeTo(expectedMemory, expectedKey, expectedValue, isMutable);
+            }).to.not.throw(ValueOverrideError);
+
+            done();
+        });
+
+        it("should read value from memory", (done) => {
+            let expectedMemory = {},
+                expectedKey = "test_key",
+                expectedValue = 42;
+
+            Storage.writeTo(expectedMemory, expectedKey, expectedValue);
+            let actualValue = Storage.readFrom(expectedMemory, expectedKey);
+
+            expect(actualValue).to.equal(expectedValue);
+            done();
+        });
+
+        it("should return undefined if memory does not contain a value with the given key", (done) => {
+            let expectedMemory = {},
+                expectedKey = "test_key";
+
+            let actualValue = Storage.readFrom(expectedMemory, expectedKey);
+
+            expect(actualValue).to.be.undefined;
+            done();
+        });
+
+        it("should delete value from memory", (done) => {
+            let expectedMemory = {},
+                expectedKey = "test_key",
+                expectedValue = 42;
+
+            Storage.writeTo(expectedMemory, expectedKey, expectedValue);
+            Storage.deleteFrom(expectedMemory, expectedKey);
+
+            expect(expectedMemory[expectedKey]).to.be.undefined;
+            done();
+        });
+
+        it("should not throw if adding value again after deleting value", (done) => {
+            let expectedMemory = {},
+                expectedKey = "test_key",
+                expectedValue = 42;
+
+            Storage.writeTo(expectedMemory, expectedKey, expectedValue);
+            Storage.deleteFrom(expectedMemory, expectedKey);
+
+            expect(() => {
+                Storage.writeTo(expectedMemory, expectedKey, expectedValue);
             }).to.not.throw(ValueOverrideError);
 
             done();
