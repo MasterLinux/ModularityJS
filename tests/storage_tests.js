@@ -107,5 +107,25 @@ export var StorageTests = (function () {
 
             done();
         });
+
+        it("should check whether memory contains value with specific key", (done) => {
+            let expectedMemory = {},
+                expectedKey = "test_key",
+                anotherExpectedKey = "another_test_key",
+                deletedKey = "deleted_key",
+                expectedValue = 42;
+
+            Storage.writeTo(expectedMemory, expectedKey, expectedValue);
+            expect(Storage.isAvailableIn(expectedMemory, expectedKey)).to.be.true;
+            expect(Storage.isAvailableIn(expectedMemory, anotherExpectedKey)).to.be.false;
+
+            Storage.writeTo(expectedMemory, deletedKey, expectedValue);
+            Storage.deleteFrom(expectedMemory, deletedKey);
+            expect(Storage.isAvailableIn(expectedMemory, deletedKey)).to.be.false;
+
+            done();
+        });
+
+        // TODO add function to test whether local storage is available due private mode
     });
 })();

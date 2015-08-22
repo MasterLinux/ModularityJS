@@ -36,3 +36,13 @@ export function readFrom(memory, key) {
 export function deleteFrom(memory, key) {
     memory[key] = undefined;
 }
+
+/**
+ * Checks whether the given memory object contains a value with the given key
+ * @param {object} memory - The object to check whether it contains the value
+ * @param {string} key - The key of the value to check
+ * @return {boolean} Returns true if the memory object contains a value with the given key, otherwise false
+ */
+export function isAvailableIn(memory, key) {
+    return !!memory[key];
+}
