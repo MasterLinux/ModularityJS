@@ -7,7 +7,7 @@ import * as TypeUtility from "../utility/type_utility.js";
  * @param {number} [index] - The index of the namespace part which is not an object to extend
  * @constructor
  */
-export function NamespaceCollisionError(namespace, index) {
+export default function NamespaceCollisionError(namespace, index) {
     let message = this.buildMessage(namespace, index),
         base = Error.apply(this, [message]);
 

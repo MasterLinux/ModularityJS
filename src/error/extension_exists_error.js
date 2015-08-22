@@ -5,7 +5,7 @@
  * @param {string} name - The name of the extension which already exists
  * @constructor
  */
-export function ExtensionExistsError(namespace, name) {
+export default function ExtensionExistsError(namespace, name) {
     let message = "Extension in namespace <" + namespace + "> with name <" + name + "> already exists. Please use another name or check whether this extension is already added";
     let base = Error.apply(this, [message]);
     base.name = this.name = "ExtensionExistsError";
