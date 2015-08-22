@@ -1,7 +1,7 @@
 import {ExtensionExistsError} from "./error/extension_exists_error.js";
 import {NamespaceCollisionError} from "./error/namespace_collision_error.js";
-import {NamespaceUtility} from "./utility/namespace_utility.js";
-import {TypeUtility} from "./utility/type_utility.js";
+import * as NamespaceUtility from "./utility/namespace_utility.js";
+import * as TypeUtility from "./utility/type_utility.js";
 
 
 export var Modularity = {

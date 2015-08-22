@@ -1,4 +1,4 @@
-import {NamespaceUtility} from "../src/utility/namespace_utility.js";
+import * as NamespaceUtility from "../src/utility/namespace_utility.js";
 import {expect, assert} from "chai";
 
 export var NamespaceUtilityTests = (function () {
