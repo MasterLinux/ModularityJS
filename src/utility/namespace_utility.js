@@ -8,42 +8,29 @@ import * as TypeUtility from "./type_utility.js";
 
 
 /**
- * @typedef NamespaceSplitResult
- * @memberOf NamespaceUtility
- * @type {object}
- * @property {string[]} parts - An array of all namespace parts
- * @property {string} name - The extension name
- */
-
-/**
- * Splits the given name into its parts
- * @param {string} namespace - The namespace to split
- * @returns {NamespaceSplitResult} The parts of the namespace and the extension name
- */
-export function split(namespace) {
-    let parts = namespace.split("."),
-        name = parts.pop();
-
-    return {
-        parts: parts,
-        name: name
-    };
-}
-
-/**
  * Adds a namespace to the given parent object
  * @param {object} parent - The object to extend
- * @param {string[]} namespaceParts - All parts of the namespace to create
+ * @param {string} namespace - The namespace to resolve
  * @returns {object} The created namespace
  * @throws Will throw an error if the namespace can not be resolved because the namespace part to extend is not an object
+ * @example
+ * let framework = {};
+ *
+ * let namespace = resolve(framework, "my.namespace");
+ * namespace.isIOS = true;
+ *
+ * // prints true
+ * console.log(framework.my.namespace.isIOS == namespace.isIOS);
  */
-export function resolve(parent, namespaceParts) {
-    for (let i = 0; i < namespaceParts.length; i++) {
-        let part = namespaceParts[i],
+export function resolve(parent, namespace) {
+    let parts = namespace.split(".");
+
+    for (let i = 0; i < parts.length; i++) {
+        let part = parts[i],
             current = parent[part];
 
         if (current && !TypeUtility.isObject(current)) {
-            throw new NamespaceCollisionError(namespaceParts, i);
+            throw new NamespaceCollisionError(parts, i);
         } else if (!current) {
             parent[part] = {};
         }
@@ -57,17 +44,28 @@ export function resolve(parent, namespaceParts) {
 /**
  * Adds an extension to the namespace of the given parent object
  * @param {object} parent - The root object to extend
- * @param {string[]} namespaceParts - All parts of the namespace to extend
- * @param {string} extensionName - The name of the extension
+ * @param {string} namespace - The namespace in which the extension should be registered
+ * @param {string} name - The name of the extension
  * @param {object} extension - The extension to add
  * @throws Will throw an error if an extension in the given namespace is already registered
+ * @throws Will throw an error if the namespace can not be resolved because the namespace part to extend is not an object
+ * @example
+ * let framework = {};
+ *
+ * extend(framework, "my.namespace", "Mobile", {
+ *      isIOS: function() {
+ *          return true;
+ *      }
+ * });
+ *
+ * let isIOS = framework.my.namespace.Mobile.isIOS();
  */
-export function extend(parent, namespaceParts, extensionName, extension) {
-    let namespace = resolve(parent, namespaceParts);
+export function extend(parent, namespace, name, extension) {
+    let ns = resolve(parent, namespace);
 
-    if (namespace[extensionName]) {
-        throw new ExtensionExistsError(namespaceParts.join("."), extensionName);
+    if (ns[name]) {
+        throw new ExtensionExistsError(namespace, name);
     } else {
-        namespace[extensionName] = extension;
+        ns[name] = extension;
     }
 }

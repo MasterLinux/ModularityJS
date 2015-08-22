@@ -13,64 +13,40 @@ export var ModularityTests = (function () {
 
         it("should add namespaces", (done) => {
             let expectedNamespace = "test";
+            let expectedName = "Extension";
             let anotherExpectedNamespace = "test.namespace";
 
-            Modularity.extend(expectedNamespace, {});
-            Modularity.extend(anotherExpectedNamespace, {});
+            Modularity.extend(expectedNamespace, expectedName, {});
+            Modularity.extend(anotherExpectedNamespace, expectedName, {});
 
-            assert.isObject(Modularity.test, "extends Modularity");
-            assert.isObject(Modularity.test.namespace, "extends namespace");
+            assert.isObject(Modularity.test[expectedName], "extends Modularity");
+            assert.isObject(Modularity.test.namespace[expectedName], "extends namespace");
             done();
         });
 
         it("should add a framework extension", (done) => {
             let expectedNamespace = "test.test_extension_namespace";
+            let expectedName = "Extension";
             let expectedFieldValue = 42;
 
-            Modularity.extend(expectedNamespace, {
+            Modularity.extend(expectedNamespace, expectedName, {
                 fieldUnderTest: expectedFieldValue
             });
 
-            let actualExtension = Modularity.test.test_extension_namespace;
+            let actualExtension = Modularity.test.test_extension_namespace[expectedName];
 
             expect(actualExtension).to.not.be.undefined;
             expect(actualExtension.fieldUnderTest).to.equal(expectedFieldValue);
             done();
         });
 
-        it("should throw error on namespaces collisions", (done) => {
-            let expectedNamespace = "test.namespace";
-            let anotherExpectedNamespace = "test.namespace.another";
-            let yetExpectedNamespace = "test.ns";
-            let yetAnotherExpectedNamespace = "test.ns.another.test";
-
-            let fn = () => {
-                Modularity.extend(expectedNamespace, {
-                    another: 42
-                });
-
-                Modularity.extend(anotherExpectedNamespace, {});
-            };
-
-            let fn2 = () => {
-                Modularity.extend(yetExpectedNamespace, {
-                    another: 42
-                });
-
-                Modularity.extend(yetAnotherExpectedNamespace, {});
-            };
-
-            expect(fn).to.throw(NamespaceCollisionError);
-            expect(fn2).to.throw(NamespaceCollisionError);
-            done();
-        });
-
         it("should throw error if extension with same name already exists", (done) => {
             let expectedNamespace = "test.test_extension_namespace";
+            let expectedName = "Extension";
 
             let fn = () => {
-                Modularity.extend(expectedNamespace, {});
-                Modularity.extend(expectedNamespace, {});
+                Modularity.extend(expectedNamespace, expectedName, {});
+                Modularity.extend(expectedNamespace, expectedName, {});
             };
 
             expect(fn).to.throw(ExtensionExistsError);
