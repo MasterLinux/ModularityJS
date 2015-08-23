@@ -8,7 +8,7 @@
   },
   "author": "Christoph Grundmann <christoph.grundmann@googlemail.com>",
   "contributors": [
-    "Sven Lang"
+    "Sven Lang <sven.lang@apuerto.com>"
   ],
   "license": "proprietary",
   "devDependencies": {

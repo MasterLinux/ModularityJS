@@ -7,7 +7,7 @@ var childProcess = require('child_process'),
 namespace('io', function () {
     desc('Task used to write a file to storage');
     task('writeFile', function (params) {
-        var outputDir = params.outputDir || "./build/",
+        var outputDir = params.outputDir || "./../build/",
             extension = params.isMinified ? ".min.js" : ".js",
             fileName = params.fileName,
             source = params.source,
@@ -54,7 +54,7 @@ namespace('build', function () {
     task('mergeModules', {async: true}, function (params) {
         console.log("Start merging ES6 modules");
 
-        var inputDir = params.inputDir || "./src",
+        var inputDir = params.inputDir || "./../src",
             fileName = params.fileName;
 
         esperanto.bundle({
@@ -119,7 +119,7 @@ namespace('build', function () {
         var mergeTask = jake.Task['build:mergeModules'],
             toES5Task = jake.Task['build:transformToES5'],
             minifyTask = jake.Task['build:minify'],
-            inputDir = params.inputDir || "./src",
+            inputDir = params.inputDir || "./../src",
             fileName = params.fileName,
             transformedCode;
 
@@ -168,9 +168,9 @@ namespace('build', function () {
         var compileTask = jake.Task['build:compile'],
             writeFilesTask = jake.Task['io:writeFiles'],
             buildDocsTask = jake.Task['build:docs'],
-            testDir = params.testDir || "./tests",
+            testDir = params.testDir || "./../tests",
             testFileName = params.testFileName || "all_tests.js",
-            srcDir = params.srcDir || "./src",
+            srcDir = params.srcDir || "./../src",
             fileName = params.fileName || "modularity.js",
             testSrc, frameworkSrc, isFrameworkCompiled = false;
 
@@ -195,7 +195,7 @@ namespace('build', function () {
                 console.log("\n---------------------");
                 console.log("Start writing files");
                 writeFilesTask.execute.apply(writeFilesTask, [{
-                    outputDir: "./build/",
+                    outputDir: "./../build/",
                     files: [{
                         isMinified: true,
                         fileName: "modularity",
