@@ -3,20 +3,19 @@ import {expect, assert} from "chai";
 
 export var TypeUtilityTests = (function () {
     describe("Type utility", () => {
+        let objectUnderTest = {},
+            functionUnderTest = function () {},
+            booleanTrueUnderTest = true,
+            booleanFalseUnderTest = false,
+            intUnderTest = 1,
+            floatUnderTest = 1.1,
+            undefinedUnderTest = undefined,
+            nullUnderTest = null,
+            arrayUnderTest = [],
+            stringUnderTest = "test",
+            nanUnderTest = NaN;
 
         it("should be able to check if value is an object or not", (done) => {
-            let objectUnderTest = {},
-                functionUnderTest = function () {},
-                booleanTrueUnderTest = true,
-                booleanFalseUnderTest = false,
-                intUnderTest = 1,
-                floatUnderTest = 1.1,
-                undefinedUnderTest = undefined,
-                nullUnderTest = null,
-                arrayUnderTest = [],
-                stringUnderTest = "test",
-                nanUnderTest = NaN;
-
             expect(TypeUtility.isObject(objectUnderTest)).to.be.true;
             expect(TypeUtility.isObject(functionUnderTest)).to.be.true;
             expect(TypeUtility.isObject(arrayUnderTest)).to.be.true;
@@ -34,18 +33,6 @@ export var TypeUtilityTests = (function () {
         });
 
         it("should be able to check if value is a function or not", (done) => {
-            let objectUnderTest = {},
-                functionUnderTest = function () {},
-                booleanTrueUnderTest = true,
-                booleanFalseUnderTest = false,
-                intUnderTest = 1,
-                floatUnderTest = 1.1,
-                undefinedUnderTest = undefined,
-                nullUnderTest = null,
-                arrayUnderTest = [],
-                stringUnderTest = "test",
-                nanUnderTest = NaN;
-
             expect(TypeUtility.isFunction(functionUnderTest)).to.be.true;
 
             expect(TypeUtility.isFunction(nanUnderTest)).to.be.false;
@@ -63,18 +50,6 @@ export var TypeUtilityTests = (function () {
         });
 
         it("should be able to check if value is a string or not", (done) => {
-            let objectUnderTest = {},
-                functionUnderTest = function () {},
-                booleanTrueUnderTest = true,
-                booleanFalseUnderTest = false,
-                intUnderTest = 1,
-                floatUnderTest = 1.1,
-                undefinedUnderTest = undefined,
-                nullUnderTest = null,
-                arrayUnderTest = [],
-                stringUnderTest = "test",
-                nanUnderTest = NaN;
-
             expect(TypeUtility.isString(stringUnderTest)).to.be.true;
 
             expect(TypeUtility.isString(nanUnderTest)).to.be.false;
@@ -92,18 +67,6 @@ export var TypeUtilityTests = (function () {
         });
 
         it("should be able to check if value is an array or not", (done) => {
-            let objectUnderTest = {},
-                functionUnderTest = function () {},
-                booleanTrueUnderTest = true,
-                booleanFalseUnderTest = false,
-                intUnderTest = 1,
-                floatUnderTest = 1.1,
-                undefinedUnderTest = undefined,
-                nullUnderTest = null,
-                arrayUnderTest = [],
-                stringUnderTest = "test",
-                nanUnderTest = NaN;
-
             expect(TypeUtility.isArray(arrayUnderTest)).to.be.true;
 
             expect(TypeUtility.isArray(nanUnderTest)).to.be.false;
@@ -121,18 +84,6 @@ export var TypeUtilityTests = (function () {
         });
 
         it("should be able to check if value is a number or not", (done) => {
-            let objectUnderTest = {},
-                functionUnderTest = function () {},
-                booleanTrueUnderTest = true,
-                booleanFalseUnderTest = false,
-                intUnderTest = 1,
-                floatUnderTest = 1.1,
-                undefinedUnderTest = undefined,
-                nullUnderTest = null,
-                arrayUnderTest = [],
-                stringUnderTest = "test",
-                nanUnderTest = NaN;
-
             expect(TypeUtility.isNumber(floatUnderTest)).to.be.true;
             expect(TypeUtility.isNumber(intUnderTest)).to.be.true;
             expect(TypeUtility.isNumber(nanUnderTest)).to.be.true;
@@ -145,6 +96,74 @@ export var TypeUtilityTests = (function () {
             expect(TypeUtility.isNumber(booleanFalseUnderTest)).to.be.false;
             expect(TypeUtility.isNumber(undefinedUnderTest)).to.be.false;
             expect(TypeUtility.isNumber(nullUnderTest)).to.be.false;
+
+            done();
+        });
+
+        it("should be able to check if value is undefined or not", (done) => {
+            expect(TypeUtility.isUndefined(undefinedUnderTest)).to.be.true;
+
+            expect(TypeUtility.isUndefined(floatUnderTest)).to.be.false;
+            expect(TypeUtility.isUndefined(intUnderTest)).to.be.false;
+            expect(TypeUtility.isUndefined(nanUnderTest)).to.be.false;
+            expect(TypeUtility.isUndefined(arrayUnderTest)).to.be.false;
+            expect(TypeUtility.isUndefined(stringUnderTest)).to.be.false;
+            expect(TypeUtility.isUndefined(functionUnderTest)).to.be.false;
+            expect(TypeUtility.isUndefined(objectUnderTest)).to.be.false;
+            expect(TypeUtility.isUndefined(booleanTrueUnderTest)).to.be.false;
+            expect(TypeUtility.isUndefined(booleanFalseUnderTest)).to.be.false;
+            expect(TypeUtility.isUndefined(nullUnderTest)).to.be.false;
+
+            done();
+        });
+
+        it("should be able to check if value is null or not", (done) => {
+            expect(TypeUtility.isNull(nullUnderTest)).to.be.true;
+
+            expect(TypeUtility.isNull(floatUnderTest)).to.be.false;
+            expect(TypeUtility.isNull(intUnderTest)).to.be.false;
+            expect(TypeUtility.isNull(nanUnderTest)).to.be.false;
+            expect(TypeUtility.isNull(arrayUnderTest)).to.be.false;
+            expect(TypeUtility.isNull(stringUnderTest)).to.be.false;
+            expect(TypeUtility.isNull(functionUnderTest)).to.be.false;
+            expect(TypeUtility.isNull(objectUnderTest)).to.be.false;
+            expect(TypeUtility.isNull(booleanTrueUnderTest)).to.be.false;
+            expect(TypeUtility.isNull(booleanFalseUnderTest)).to.be.false;
+            expect(TypeUtility.isNull(undefinedUnderTest)).to.be.false;
+
+            done();
+        });
+
+        it("should be able to check if value is NaN or not", (done) => {
+            expect(TypeUtility.isNaN(nanUnderTest)).to.be.true;
+
+            expect(TypeUtility.isNaN(floatUnderTest)).to.be.false;
+            expect(TypeUtility.isNaN(intUnderTest)).to.be.false;
+            expect(TypeUtility.isNaN(nullUnderTest)).to.be.false;
+            expect(TypeUtility.isNaN(arrayUnderTest)).to.be.false;
+            expect(TypeUtility.isNaN(stringUnderTest)).to.be.false;
+            expect(TypeUtility.isNaN(functionUnderTest)).to.be.false;
+            expect(TypeUtility.isNaN(objectUnderTest)).to.be.false;
+            expect(TypeUtility.isNaN(booleanTrueUnderTest)).to.be.false;
+            expect(TypeUtility.isNaN(booleanFalseUnderTest)).to.be.false;
+            expect(TypeUtility.isNaN(undefinedUnderTest)).to.be.false;
+
+            done();
+        });
+
+        it("should be able to check if value is a boolean or not", (done) => {
+            expect(TypeUtility.isBoolean(booleanTrueUnderTest)).to.be.true;
+            expect(TypeUtility.isBoolean(booleanFalseUnderTest)).to.be.true;
+
+            expect(TypeUtility.isBoolean(nanUnderTest)).to.be.false;
+            expect(TypeUtility.isBoolean(floatUnderTest)).to.be.false;
+            expect(TypeUtility.isBoolean(intUnderTest)).to.be.false;
+            expect(TypeUtility.isBoolean(nullUnderTest)).to.be.false;
+            expect(TypeUtility.isBoolean(arrayUnderTest)).to.be.false;
+            expect(TypeUtility.isBoolean(stringUnderTest)).to.be.false;
+            expect(TypeUtility.isBoolean(functionUnderTest)).to.be.false;
+            expect(TypeUtility.isBoolean(objectUnderTest)).to.be.false;
+            expect(TypeUtility.isBoolean(undefinedUnderTest)).to.be.false;
 
             done();
         });
