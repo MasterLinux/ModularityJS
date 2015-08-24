@@ -8,7 +8,8 @@ export var StorageTests = (function () {
             objectUnderTest = {},
 
             expectedFunctionKey = "test_function_key",
-            functionUnderTest = function () {},
+            functionUnderTest = function () {
+            },
 
             expectedBooleanTrueKey = "test_boolean_true_key",
             booleanTrueUnderTest = true,
@@ -228,6 +229,45 @@ export var StorageTests = (function () {
             Storage.writeTo(expectedMemory, deletedKey, expectedIntKey);
             Storage.deleteFrom(expectedMemory, deletedKey);
             expect(Storage.isAvailableIn(expectedMemory, deletedKey)).to.be.false;
+
+            done();
+        });
+
+        it("should persist memory", (done) => {
+            let expectedInMemory = {},
+                expectedOutMemory,
+                expectedMemoryKey = "memory_key";
+
+            if (Storage.isLocalStorageAvailable()) {
+                Storage.writeTo(expectedInMemory, expectedObjectKey, objectUnderTest);
+                Storage.writeTo(expectedInMemory, expectedFunctionKey, functionUnderTest);
+                Storage.writeTo(expectedInMemory, expectedBooleanTrueKey, booleanTrueUnderTest);
+                Storage.writeTo(expectedInMemory, expectedBooleanFalseKey, booleanFalseUnderTest);
+                Storage.writeTo(expectedInMemory, expectedIntKey, intUnderTest);
+                Storage.writeTo(expectedInMemory, expectedFloatKey, floatUnderTest);
+                Storage.writeTo(expectedInMemory, expectedUndefinedKey, undefinedUnderTest);
+                Storage.writeTo(expectedInMemory, expectedNullKey, nullUnderTest);
+                Storage.writeTo(expectedInMemory, expectedArrayKey, arrayUnderTest);
+                Storage.writeTo(expectedInMemory, expectedStringKey, stringUnderTest);
+                Storage.writeTo(expectedInMemory, expectedNanKey, nanUnderTest);
+
+                Storage.persist(expectedMemoryKey, expectedInMemory);
+                expectedOutMemory = Storage.getPersistentMemory(expectedMemoryKey);
+
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedFunctionKey)).to.be.false;
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedUndefinedKey)).to.be.false;
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedNullKey)).to.be.false;
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedNanKey)).to.be.false;
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedObjectKey)).to.true;
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedBooleanTrueKey)).to.true;
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedBooleanFalseKey)).to.true;
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedIntKey)).to.true;
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedFloatKey)).to.true;
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedArrayKey)).to.true;
+                expect(Storage.isAvailableIn(expectedOutMemory, expectedStringKey)).to.true;
+            } else {
+                console.log("Local storage is not available. So test is skipped!");
+            }
 
             done();
         });

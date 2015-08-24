@@ -77,3 +77,40 @@ export function isAvailableIn(memory, key) {
     let value = memory[key];
     return !!(value || TypeUtility.isBoolean(value) || TypeUtility.isNumber(value));
 }
+
+/**
+ * Writes the given memory object to the local storage
+ * @param {string} key - The key of the memory to persist
+ * @param {object} memory - The memory object to persist
+ */
+export function persist(key, memory) {
+    localStorage.setItem(key, memory);
+}
+
+/**
+ * Gets a specific memory object from the local storage
+ * @param {string} key - The key of the memory to get
+ * @returns {object|undefined} The memory object or undefined if not exists
+ */
+export function getPersistentMemory(key) {
+    return localStorage.getItem(key);
+}
+
+/**
+ * Checks whether the local storage is available. Whenever
+ * the user use the private mode in iOS or OSX the local
+ * and session storage is not available.
+ * @return {boolean} Returns true if local storage is available, otherwise false
+ */
+export function isLocalStorageAvailable() {
+    let key = "local_storage",
+        storage = window.sessionStorage;
+
+    try {
+        storage.setItem(key, "value");
+        storage.removeItem(key);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
