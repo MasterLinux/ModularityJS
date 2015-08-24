@@ -55,8 +55,7 @@ export function isWritable(value) {
  * @return {*|undefined}
  */
 export function readFrom(memory, key) {
-    let value = memory[key];
-    return isAvailableIn(memory, key) ? value : undefined;
+    return isAvailableIn(memory, key) ? memory[key] : undefined;
 }
 
 /**
