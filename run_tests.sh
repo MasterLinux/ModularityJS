@@ -2,4 +2,4 @@
 
 source ./config.sh
 
-./node_modules/.bin/mocha build/modularity_tests.js
+./node_modules/.bin/jake build:all && ./node_modules/.bin/mocha build/modularity_tests.js
