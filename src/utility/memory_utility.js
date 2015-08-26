@@ -2,7 +2,7 @@ import {ValueOverrideError} from "../error/value_override_error.js";
 import * as TypeUtility from "../utility/type_utility.js";
 
 /**
- * Writes a value to the given memory object
+ * Writes a value to the given memory object. It is not possible to write undefined and null values
  * @param {object} memory - The object which should be used as storage
  * @param {string} key - The key of the value
  * @param {boolean} [isMutable=false] - If set to true the memory allows overwriting values
@@ -14,45 +14,16 @@ export function writeTo(memory, key, value, isMutable) {
 
     if (isAvailableIn(memory, key) && !isMutable) {
         throw new ValueOverrideError(key);
-    } else {
+    } else if (value !== null) {
         memory[key] = value;
     }
-}
-
-/**
- * Checks whether the given value is a value which can be written to memory
- * @param {*} value - The value to check
- * @return {boolean} true if value can be written to memory
- * @example
- * // returns false
- * isWritable(null);
- * isWritable(undefined);
- * isWritable(NaN);
- * isWritable(function() {});
- *
- * // returns true
- * isWritable({});
- * isWritable(true);
- * isWritable(false);
- * isWritable(0);
- * isWritable(1.1);
- * isWritable([]);
- * isWritable("string");
- */
-export function isWritable(value) {
-    return !(
-        TypeUtility.isUndefined(value) ||
-        TypeUtility.isNull(value) ||
-        TypeUtility.isFunction(value) ||
-        TypeUtility.isNaN(value)
-    )
 }
 
 /**
  * Gets the value with the given key or undefined if no value with this key exists
  * @param {object} memory - The object which contains the value
  * @param {string} key - The key of the value to read
- * @return {*|undefined}
+ * @return {*|undefined} Returns the value if exists in memory, otherwise undefined 
  */
 export function readFrom(memory, key) {
     return isAvailableIn(memory, key) ? memory[key] : undefined;

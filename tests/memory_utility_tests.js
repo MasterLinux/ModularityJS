@@ -55,7 +55,7 @@ export var MemoryUtilityTests = (function () {
             MemoryUtility.writeTo(expectedMemory, expectedNanKey, nanUnderTest);
 
             expect(expectedMemory[expectedUndefinedKey]).to.be.undefined;
-            expect(expectedMemory[expectedNullKey]).to.be.null;
+            expect(expectedMemory[expectedNullKey]).to.be.undefined;
             expect(expectedMemory[expectedNanKey]).to.be.NaN;
 
             expect(expectedMemory[expectedFunctionKey]).to.be.equal(functionUnderTest);
@@ -66,22 +66,6 @@ export var MemoryUtilityTests = (function () {
             expect(expectedMemory[expectedFloatKey]).to.equal(floatUnderTest);
             expect(expectedMemory[expectedArrayKey]).to.equal(arrayUnderTest);
             expect(expectedMemory[expectedStringKey]).to.equal(stringUnderTest);
-            done();
-        });
-
-        it("should be check whether value is writable", (done) => {
-            expect(MemoryUtility.isWritable(functionUnderTest)).to.be.false;
-            expect(MemoryUtility.isWritable(undefinedUnderTest)).to.be.false;
-            expect(MemoryUtility.isWritable(nullUnderTest)).to.be.false;
-            expect(MemoryUtility.isWritable(nanUnderTest)).to.be.false;
-
-            expect(MemoryUtility.isWritable(objectUnderTest)).to.be.true;
-            expect(MemoryUtility.isWritable(booleanTrueUnderTest)).to.be.true;
-            expect(MemoryUtility.isWritable(booleanFalseUnderTest)).to.be.true;
-            expect(MemoryUtility.isWritable(intUnderTest)).to.be.true;
-            expect(MemoryUtility.isWritable(floatUnderTest)).to.be.true;
-            expect(MemoryUtility.isWritable(arrayUnderTest)).to.be.true;
-            expect(MemoryUtility.isWritable(stringUnderTest)).to.be.true;
             done();
         });
 
