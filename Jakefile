@@ -55,7 +55,9 @@ namespace('build', function () {
     desc('Task used to merge all ES6 modules into one');
     task('mergeModules', taskOptions, function (params) {
         console.log("Start merging ES6 modules");
-        /*esperanto.bundle({
+        /*
+        
+        esperanto.bundle({
             base: params.inputDir,
             entry: params.fileName
         }).then(function (bundle) {
@@ -65,14 +67,16 @@ namespace('build', function () {
                 fail("Failed to merge modules: " + e.message);
             }
         });
+
         */
 
+        // TODO - lets try babel
 
-        complete(babel.transform(params.source, {
-            sourceMaps: false,
-            comments: true,
-            ast: false
-        }).code);
+        var result = babel.transform(params.source);
+        console.log(result.code, result.map, result.ast);
+        complete(result.code);
+
+
 
 
     });
