@@ -55,7 +55,7 @@ namespace('build', function () {
     desc('Task used to merge all ES6 modules into one');
     task('mergeModules', taskOptions, function (params) {
         console.log("Start merging ES6 modules");
-        esperanto.bundle({
+        /*esperanto.bundle({
             base: params.inputDir,
             entry: params.fileName
         }).then(function (bundle) {
@@ -65,6 +65,16 @@ namespace('build', function () {
                 fail("Failed to merge modules: " + e.message);
             }
         });
+        */
+
+
+        complete(babel.transform(params.source, {
+            sourceMaps: false,
+            comments: true,
+            ast: false
+        }).code);
+
+
     });
 
 
@@ -142,11 +152,11 @@ namespace('build', function () {
     desc('Task used to build the framework');
     task('all', taskOptions, function (params) {
         params = params || {};
-        params.testDir = params.testDir || "./../tests";
+        params.testDir = params.testDir || "./tests";
         params.testFileName = params.testFileName || "all_tests.js";
-        params.srcDir = params.srcDir || "./../src";
+        params.srcDir = params.srcDir || "./src";
         params.fileName = params.fileName || "modularity.js";
-        params.outputDir = params.outputDir || "./../build/";
+        params.outputDir = params.outputDir || "./build/";
         // params.isMinified
         // params.extension
         // params.source
@@ -212,7 +222,7 @@ namespace('build', function () {
 
     desc('Task used to generate the documentation');
     task('docs', taskOptions, function () {
-        childProcess.exec('jsdoc ../../build/modularity.js -d ../../build/docs/', {
+        childProcess.exec('jsdoc ./build/modularity.js -d ./build/docs/', {
             cwd: "./node_modules/.bin/"
         }, function (error, stdout, stderr) {
             if (error) {
