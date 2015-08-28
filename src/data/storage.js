@@ -1,18 +1,27 @@
 import * as MemoryUtility from "../utility/memory_utility.js";
+import {UniqueId} from "./unique_id.js";
 
+/**
+ * @class Storage
+ */
 export class Storage {
 
-    constructor(isMutable) {
+    /**
+     * Initializes the storage
+     * @param {string} id - ID of the storage required to persist the storage data
+     * @param {boolean} isMutable
+     */
+    constructor(id, isMutable) {
         this.isLocalStorageAvailable = MemoryUtility.isLocalStorageAvailable();
         this.isMutable = isMutable || false;
         this.memory = {};
-        this.id = new UniqueId().generate();
+        this.id = id;
     }
 
     /**
-     *
-     * @param key
-     * @param value
+     * Writes the given value to the storage
+     * @param {string} key - The key of the value to write
+     * @param {*} value - The value to write
      */
     write(key, value) {
         MemoryUtility.writeTo(this.memory, key, value, this.isMutable);

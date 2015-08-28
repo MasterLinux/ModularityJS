@@ -8,9 +8,9 @@ export class UniqueId {
      * @param {string} [prefix] - A prefix added to the generated ID 
      */ 
     constructor(prefix) {
-        this.index = 0;
         this.prefix = prefix || UniqueId.getDefaultPrefix();
-    } 
+        this.index = 0;
+    }
     
     /**
      * Generates a new ID
