@@ -11,9 +11,9 @@ export class Storage {
      * @param {string} id - ID of the storage required to persist the storage data
      * @param {boolean} [isMutable=false] - If true values can be overwritten, if false the storage throws an exception when trying to write a value with an already existing key
      */
-    constructor(id, isMutable) {
+    constructor(id, isMutable = false) {
         this.isLocalStorageAvailable = MemoryUtility.isLocalStorageAvailable();
-        this.isMutable = isMutable || false;
+        this.isMutable = isMutable;
         this.memory = {};
         this.id = id;
     }
