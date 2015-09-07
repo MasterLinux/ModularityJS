@@ -153,7 +153,7 @@ namespace('build', function () {
         }]);
     });
 
-    desc('Task used to build the framework and all tests');
+    desc('Task used to build the all tests');
     task('tests', {async: true}, function (params) {
         params = params || {};
 
@@ -166,7 +166,7 @@ namespace('build', function () {
         });
 
         console.log("\n-------------------------");
-        console.log("Start compiling framework and tests");
+        console.log("Start compiling tests");
 
         compileTestsTask.execute.apply(compileTestsTask, [{
             fileName: testFileName,
