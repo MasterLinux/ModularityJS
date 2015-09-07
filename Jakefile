@@ -4,11 +4,11 @@ var childProcess = require('child_process'),
     uglify = require("uglify-js"),
     fs = require('fs');
 
-namespace('io', function () {
+namespace('io', function() {
 
 
     desc('Task used to write a file to storage');
-    task('writeFile', function (params) {
+    task('writeFile', function(params) {
         var extension = params.isMinified ? ".min.js" : ".js",
             filePath = params.outputDir + params.fileName + extension;
 
@@ -28,7 +28,7 @@ namespace('io', function () {
     });
 
     desc('Task used to write files to storage');
-    task('writeFiles', function (params) {
+    task('writeFiles', function(params) {
         var writeTask = jake.Task['io:writeFile'],
             files = params.files,
             file,
@@ -47,20 +47,21 @@ namespace('io', function () {
     });
 });
 
-namespace('build', function () {
+namespace('build', function() {
 
-    var taskOptions = {async: true};
+    var
+        taskOptions = {async: true};
 
 
     desc('Task used to merge all ES6 modules into one');
-    task('mergeModules', taskOptions, function (params) {
+    task('mergeModules', taskOptions, function(params) {
         console.log("Start merging ES6 modules");
         /*
         
         esperanto.bundle({
             base: params.inputDir,
             entry: params.fileName
-        }).then(function (bundle) {
+        }).then(function(bundle) {
             try {
                 complete(bundle.toCjs({strict: true}).code);
             } catch (e) {
@@ -83,7 +84,7 @@ namespace('build', function () {
 
 
     desc('Task used to transform ES6 code to ES5');
-    task('transformToES5', taskOptions, function (params) {
+    task('transformToES5', taskOptions, function(params) {
         console.log("Start transforming ES6 code to ES5");
         complete(babel.transform(params.source, {
             sourceMaps: false,
@@ -94,7 +95,7 @@ namespace('build', function () {
 
 
     desc('Task used to minify source code');
-    task('minify', taskOptions, function (params) {
+    task('minify', taskOptions, function(params) {
         console.log("Start minifying source code");
         try {
             complete(uglify.minify(params.source, {
@@ -109,12 +110,12 @@ namespace('build', function () {
 
 
     desc('Task used to merge and transform and minify ES6 source code');
-    task('compile', taskOptions, function (params) {
+    task('compile', taskOptions, function(params) {
         var mergeTask = jake.Task['build:mergeModules'],
             toES5Task = jake.Task['build:transformToES5'],
             minifyTask = jake.Task['build:minify'],
             transformedCode;
-        mergeTask.addListener('complete', function (code) {
+        mergeTask.addListener('complete', function(code) {
             if (code) {
                 toES5Task.execute.apply(toES5Task, [{
                     source: code
@@ -124,7 +125,7 @@ namespace('build', function () {
             }
         });
 
-        toES5Task.addListener('complete', function (code) {
+        toES5Task.addListener('complete', function(code) {
             if (code) {
                 transformedCode = code;
                 minifyTask.execute.apply(minifyTask, [{
@@ -135,7 +136,7 @@ namespace('build', function () {
             }
         });
 
-        minifyTask.addListener('complete', function (minifiedCode) {
+        minifyTask.addListener('complete', function(minifiedCode) {
             if (minifiedCode) {
                 complete({
                     code: transformedCode,
@@ -154,7 +155,7 @@ namespace('build', function () {
 
 
     desc('Task used to build the framework');
-    task('all', taskOptions, function (params) {
+    task('all', taskOptions, function(params) {
         params = params || {};
         params.testDir = params.testDir || "./tests";
         params.testFileName = params.testFileName || "all_tests.js";
@@ -170,11 +171,11 @@ namespace('build', function () {
             buildDocsTask = jake.Task['build:docs'],
             isFrameworkCompiled = false;
 
-        buildDocsTask.addListener('complete', function () {
+        buildDocsTask.addListener('complete', function() {
             complete();
         });
 
-        compileTask.addListener('complete', function (code) {
+        compileTask.addListener('complete', function(code) {
             if (!isFrameworkCompiled) {
                 isFrameworkCompiled = true;
 
@@ -225,10 +226,10 @@ namespace('build', function () {
 
 
     desc('Task used to generate the documentation');
-    task('docs', taskOptions, function () {
+    task('docs', taskOptions, function() {
         childProcess.exec('jsdoc ./build/modularity.js -d ./build/docs/', {
             cwd: "./node_modules/.bin/"
-        }, function (error, stdout, stderr) {
+        }, function(error, stdout, stderr) {
             if (error) {
                 fail("Failed to generate documentation. stdout: " + stdout + " - stderr: " + stderr)
             } else {
@@ -241,13 +242,13 @@ namespace('build', function () {
 });
 
 
-jake.addListener('complete', function () {
+jake.addListener('complete', function() {
     console.log("\nShutting down jake");
     process.exit();
 });
 
 
-jake.addListener('error', function (msg, code) {
+jake.addListener('error', function(msg, code) {
     console.log("\nError occurred: " + msg);
     process.exit();
 });
