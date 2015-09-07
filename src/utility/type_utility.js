@@ -1,13 +1,12 @@
 /**
- * Collection of utilities used for type checking.
+ * Collection of utility functions used for type checking.
  * These utilities are inspired by lodash {@link https://lodash.com/}
- * @namespace TypeUtility
+ * @module TypeUtility
+ * @author Christoph Grundmann
  */
 
 /**
  * Checks whether the given value is a function
- * @memberOf TypeUtility
- * @function isFunction
  * @param {*} value - The value to check
  * @returns {boolean} Returns true if the given value is a function, otherwise false
  */
@@ -17,8 +16,6 @@ export function isFunction(value) {
 
 /**
  * Checks whether the given value is a string
- * @memberOf TypeUtility
- * @function isString
  * @param {*} value - The value to check
  * @returns {boolean} Returns true if the given value is a string, otherwise false
  */
@@ -28,8 +25,6 @@ export function isString(value) {
 
 /**
  * Checks whether the given value is an object
- * @memberOf TypeUtility
- * @function isObject
  * @param {*} value - The value to check
  * @returns {boolean} Returns true if the given value is an object, otherwise false
  */
@@ -40,8 +35,6 @@ export function isObject(value) {
 
 /**
  * Checks whether the given value is an array
- * @memberOf TypeUtility
- * @function isArray
  * @param {*} value - The value to check
  * @returns {boolean} Returns true if the given value is an array, otherwise false
  */
@@ -51,8 +44,6 @@ export function isArray(value) {
 
 /**
  * Checks whether the given value is object-like
- * @memberOf TypeUtility
- * @function isObjectLike
  * @private
  * @param {*} value - The value to check
  * @returns {boolean} Returns true if the given value is object-like, otherwise false
@@ -63,8 +54,6 @@ export function isObjectLike(value) {
 
 /**
  * Checks whether the given value is a number
- * @memberOf TypeUtility
- * @function isNumber
  * @param {*} value - The value to check
  * @returns {boolean} Returns true if the given value is a number, otherwise false
  */
@@ -74,8 +63,6 @@ export function isNumber(value) {
 
 /**
  * Checks whether the given value is undefined
- * @memberOf TypeUtility
- * @function isUndefined
  * @param {*} value - The value to check
  * @returns {boolean} Returns true if the given value is undefined, otherwise false
  */
@@ -85,8 +72,6 @@ export function isUndefined(value) {
 
 /**
  * Checks whether the given value is null
- * @memberOf TypeUtility
- * @function isNull
  * @param {*} value - The value to check
  * @returns {boolean} Returns true if the given value is null, otherwise false
  */
@@ -96,8 +81,6 @@ export function isNull(value) {
 
 /**
  * Checks whether the given value is NaN
- * @memberOf TypeUtility
- * @function isNaN
  * @param {*} value - The value to check
  * @returns {boolean} Returns true if the given value is NaN, otherwise false
  */
@@ -107,8 +90,6 @@ export function isNaN(value) {
 
 /**
  * Checks whether the given value is a boolean
- * @memberOf TypeUtility
- * @function isBoolean
  * @param {*} value - The value to check
  * @returns {boolean} Returns true if the given value is a boolean, otherwise false
  */

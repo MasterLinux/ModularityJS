@@ -1,3 +1,19 @@
+/**
+ * Collection of utility functions to manage a memory object
+ * @module MemoryUtilities
+ * @author Christoph Grundmann
+ * @example
+ * import * as MemoryUtilities from "../utility/memory_utility.js";
+ *
+ * // create object used as memory
+ * let memory = {};
+ *
+ * // write to memory
+ * MemoryUtilities.writeTo(memory, "my_key", 42);
+ *
+ * // read from memory
+ * let value = MemoryUtilities.readFrom(memory, "my_key");
+ */
 import {ValueOverrideError} from "../error/value_override_error.js";
 import * as TypeUtility from "../utility/type_utility.js";
 
