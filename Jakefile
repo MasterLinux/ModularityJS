@@ -173,19 +173,6 @@ namespace('build', function () {
             inputDir: testDir
         }]);
     });
-
-    desc('Task used to generate the documentation');
-    task('docs', {async: true}, function () {
-        childProcess.exec('jsdoc ../../build/modularity.js -d ../../build/docs/', {
-            cwd: "./node_modules/.bin/"
-        }, function (error, stdout, stderr) {
-            if (error) {
-                fail("Failed to generate documentation. stdout: " + stdout + " - stderr: " + stderr)
-            } else {
-                complete();
-            }
-        });
-    });
 });
 
 jake.addListener('complete', function () {
