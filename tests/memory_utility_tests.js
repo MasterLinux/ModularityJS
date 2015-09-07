@@ -250,7 +250,7 @@ export var MemoryUtilityTests = (function () {
                 expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedArrayKey)).to.true;
                 expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedStringKey)).to.true;
             } else {
-                console.log("Local storage is not available. So test is skipped!");
+                console.log("\n    ? Local storage is not available. So the following test is skipped!");
             }
 
             done();

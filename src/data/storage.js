@@ -9,7 +9,7 @@ export class Storage {
     /**
      * Initializes the storage
      * @param {string} id - ID of the storage required to persist the storage data
-     * @param {boolean} isMutable
+     * @param {boolean} [isMutable=false] - If true values can be overwritten, if false the storage throws an exception when trying to write a value with an already existing key
      */
     constructor(id, isMutable) {
         this.isLocalStorageAvailable = MemoryUtility.isLocalStorageAvailable();
@@ -22,6 +22,7 @@ export class Storage {
      * Writes the given value to the storage
      * @param {string} key - The key of the value to write
      * @param {*} value - The value to write
+     * @throws Will throw error if storage is not mutable and a value with an already available key will be written
      */
     write(key, value) {
         MemoryUtility.writeTo(this.memory, key, value, this.isMutable);
