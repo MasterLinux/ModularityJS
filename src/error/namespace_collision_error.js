@@ -7,7 +7,7 @@ import * as TypeUtility from "../utility/type_utility.js";
  * @param {number} [index] - The index of the namespace part which is not an object to extend
  * @constructor
  */
-export default function NamespaceCollisionError(namespace, index) {
+export function NamespaceCollisionError(namespace, index) {
     let message = this.buildMessage(namespace, index),
         base = Error.apply(this, [message]);
 
@@ -24,6 +24,12 @@ NamespaceCollisionError.prototype = Object.create(Error.prototype, {
     }
 });
 
+/**
+ * Builds the error message
+ * @param {string} [namespace] - The namespace of the extension which already exists
+ * @param {number} [index] - The index of the namespace part which is not an object to extend
+ * @return {string} - The error message
+ */
 NamespaceCollisionError.prototype.buildMessage = function (namespace, index) {
     if (namespace && TypeUtility.isNumber(index)) {
         let markedNamespace = "", lastIndex = namespace.length - 1;

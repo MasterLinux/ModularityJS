@@ -3,8 +3,8 @@
  * @module NamespaceUtility
  * @author Christoph
  */
-import NamespaceCollisionError from "../error/namespace_collision_error.js";
-import ExtensionExistsError from "../error/extension_exists_error.js";
+import {NamespaceCollisionError} from "../error/namespace_collision_error.js";
+import {ExtensionExistsError} from "../error/extension_exists_error.js";
 import * as TypeUtility from "./type_utility.js";
 
 
