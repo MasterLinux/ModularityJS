@@ -1,10 +1,9 @@
-/**
- * Helper class used to generate unique IDs
- */ 
 export class UniqueId {
     
     /**
-     * Initializes the ID generator
+     * Helper class used to generate unique IDs
+     * @author Sven Lang
+     * @class UniqueId
      * @param {string} [prefix] - A prefix added to the generated ID 
      */ 
     constructor(prefix) {
@@ -14,6 +13,8 @@ export class UniqueId {
     
     /**
      * Generates a new ID
+     * @memberOf UniqueId
+     * @function generate
      * @return {string} The generated ID
      */ 
     generate() {
@@ -22,6 +23,8 @@ export class UniqueId {
     
     /**
      * Gets the default prefix, used if no prefix is set
+     * @memberOf UniqueId
+     * @function getDefaultPrefix
      * @static
      * @return {string} The default prefix
      */

@@ -1,7 +1,7 @@
 /**
  * Collection of utilitiy functions used to work with namespaces
  * @module NamespaceUtility
- * @author Christoph
+ * @author Christoph Grundmann
  */
 import {NamespaceCollisionError} from "../error/namespace_collision_error.js";
 import {ExtensionExistsError} from "../error/extension_exists_error.js";

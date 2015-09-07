@@ -1,14 +1,13 @@
 import * as MemoryUtility from "../utility/memory_utility.js";
 
-/**
- * @class Storage
- */
 export class Storage {
 
     /**
      * Initializes the storage
+     * @author Christoph Grundmann
      * @param {string} id - ID of the storage required to persist the storage data
-     * @param {boolean} [isMutable=false] - If true values can be overwritten, if false the storage throws an exception when trying to write a value with an already existing key
+     * @param {boolean} [isMutable=false] - If true values can be overwritten, if false the storage throws an error when trying to write a value with an already existing key
+     * @class Storage
      */
     constructor(id, isMutable = false) {
         this.isLocalStorageAvailable = MemoryUtility.isLocalStorageAvailable();
@@ -19,9 +18,11 @@ export class Storage {
 
     /**
      * Writes the given value to the storage
+     * @memberOf Storage
+     * @function write
      * @param {string} key - The key of the value to write
      * @param {*} value - The value to write
-     * @throws Will throw error if storage is not mutable and a value with an already available key will be written
+     * @throws Will throw an error if storage is not mutable and a value with an already available key will be written
      */
     write(key, value) {
         MemoryUtility.writeTo(this.memory, key, value, this.isMutable);
@@ -30,6 +31,8 @@ export class Storage {
 
     /**
      * Gets a specific value by its key
+     * @memberOf Storage
+     * @function read
      * @param {string} key - The key of the value to get
      * @return {*|undefined} Returns the value or undefined if not exists
      */
@@ -39,6 +42,8 @@ export class Storage {
 
     /**
      * Removes a specific value by its key
+     * @memberOf Storage
+     * @function remove
      * @param {string }key - The key of the value to remove
      */
     remove(key) {
@@ -48,6 +53,8 @@ export class Storage {
 
     /**
      * Checks whether the storage contains a value with the given key
+     * @memberOf Storage
+     * @function contains
      * @param {string} key - The key of the value to check
      * @return {boolean} Returns true if the storage contains a value with the given key, false otherwise
      */
@@ -57,6 +64,8 @@ export class Storage {
 
     /**
      * Writes the whole storage data to local storage
+     * @memberOf Storage
+     * @function persist
      * @private
      * @return {boolean} Returns true if the storage data could be written to local storage, false otherwise
      */

@@ -2,10 +2,10 @@ import * as TypeUtility from "../utility/type_utility.js";
 
 /**
  * Error which is thrown whenever an extension can not be added because the namespace to extend is not an object
+ * @author Christoph Grundmann
  * @class NamespaceCollisionError
  * @param {string[]} [namespace] - The namespace of the extension which already exists
  * @param {number} [index] - The index of the namespace part which is not an object to extend
- * @constructor
  */
 export function NamespaceCollisionError(namespace, index) {
     let message = this.buildMessage(namespace, index),
