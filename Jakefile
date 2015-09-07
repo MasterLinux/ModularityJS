@@ -6,51 +6,6 @@ var childProcess = require('child_process'),
     path = require('path'),
     mkdirp = require('mkdirp');
 
-namespace('io', function () {
-    desc('Task used to write a file to storage');
-    task('writeFile', function (params) {
-        var outputDir = path.join(params.outputDir || "./build/"),
-            extension = params.isMinified ? ".min.js" : ".js",
-            fileName = params.fileName,
-            source = params.source,
-            filePath;
-
-        try {
-            // create folder if not exists
-            if (!fs.existsSync(outputDir)) {
-                fs.mkdirSync(outputDir);
-            }
-
-            filePath = path.join(outputDir, fileName + extension);
-            fs.writeFileSync(filePath, source);
-
-            console.log("Writing of File <" + filePath + "> successful");
-
-        } catch (e) {
-            fail("Unable to write file <" + fileName + ">", e);
-        }
-    });
-
-    desc('Task used to write files to storage');
-    task('writeFiles', function (params) {
-        var writeTask = jake.Task['io:writeFile'],
-            outputDir = params.outputDir,
-            files = params.files,
-            file, i;
-
-        for (i = 0; i < files.length; i++) {
-            file = files[i];
-
-            writeTask.execute.apply(writeTask, [{
-                isMinified: file.isMinified,
-                fileName: file.fileName,
-                source: file.source,
-                outputDir: outputDir
-            }]);
-        }
-    });
-});
-
 namespace('build', function () {
     desc('Task used to merge all source code files into one');
     task('merge', {async: true}, function (params) {
@@ -59,8 +14,6 @@ namespace('build', function () {
             outputDir = params.outputDir || "./build",
             inputPath = path.join("../../", inputDir, params.fileName + ".js"),
             outputPath = path.join("../../", outputDir, params.fileName + ".js");
-
-        console.log(inputPath);
 
         childProcess.exec('browserify ' + inputPath + ' -o ' + outputPath, {
             cwd: "./node_modules/.bin/"
@@ -183,25 +136,41 @@ namespace('build', function () {
         params = params || {};
 
         var compileTask = jake.Task['build:compile'],
-            buildDocsTask = jake.Task['build:docs'],
-            testDir = path.join(params.testDir || "./tests"),
-            testFileName = params.testFileName || "all_tests",
+            compileTestsTask = jake.Task['build:compile'],
             srcDir = path.join(params.srcDir || "./src"),
             fileName = params.fileName || "modularity";
 
-        buildDocsTask.addListener('complete', function () {
-
-        });
-
-        compileTask.addListener('complete', function () {
+        compileTestsTask.addListener('complete', function () {
             complete();
         });
 
         console.log("\n-------------------------");
         console.log("Start compiling framework");
+
         compileTask.execute.apply(compileTask, [{
             fileName: fileName,
             inputDir: srcDir
+        }]);
+    });
+
+    desc('Task used to build the framework and all tests');
+    task('tests', {async: true}, function (params) {
+        params = params || {};
+
+        var compileTestsTask = jake.Task['build:compile'],
+            testDir = path.join(params.testDir || "./tests"),
+            testFileName = params.testFileName || "all_tests";
+
+        compileTestsTask.addListener('complete', function () {
+            complete();
+        });
+
+        console.log("\n-------------------------");
+        console.log("Start compiling framework and tests");
+
+        compileTestsTask.execute.apply(compileTestsTask, [{
+            fileName: testFileName,
+            inputDir: testDir
         }]);
     });
 
