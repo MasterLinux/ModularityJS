@@ -1,5 +1,7 @@
-var childProcess = require('child_process'),
-    esperanto = require('esperanto'),
+
+var
+    childProcess = require('child_process'),
+    // esperanto = require('esperanto'), // todo delete
     babel = require('babel-core'),
     uglify = require("uglify-js"),
     fs = require('fs');
@@ -73,13 +75,29 @@ namespace('build', function() {
 
         // TODO - lets try babel
 
-        var result = babel.transform(params.source);
-        console.log(result.code, result.map, result.ast);
-        complete(result.code);
+        fs.readdir(params.inputDir, function(err, file) {
+            if (err) throw err;
 
+            console.log(params.inputDir, file);
+            file.forEach(function(item) {
+                var data = params.inputDir + "/" + item;
 
+                if (fs.lstatSync(data).isFile()) {
+                    fs.readFile(data, 'utf-8', function(err, result) {
+                        if (err) throw err;
 
+                        // console.log(result.code, result.map, result.ast);
+                        complete(babel.transform(result, {
+                            sourceMaps: true,
+                            comments: true,
+                            ast: false
+                        }).code);
 
+                    });
+                }
+            });
+
+        });
     });
 
 
