@@ -7,7 +7,7 @@ Für alle anderen Fälle sollte ein `Cache` bevorzugt werden.
 > TODO: Cache Dokumenttion hinzufügen und verlinken
 
 ##Verwendung
-####Storage erzeugen
+###Storage erzeugen
 Es gibt zwei Arten von Storages: 
 1. Zum einen gibt es das `Immutable Storage`, welches es **nicht** erlaubt Werte zu **überschreiben**. So wird ein Fehler geworfen, falls ein Wert mit einem Key gespeichert werden soll, welcher schon im STorage vorhanden ist
 2. Zum anderen gibt es ein `Mutable Storage`, bei dem Werte überschrieben werden dürfen 
@@ -22,7 +22,7 @@ let immutableStorage = new Storage("my_id");
 let mutableStorage = new Storage("my_id", true);
 ```
 
-####Storage wiederherstellen
+###Storage wiederherstellen
 Wenn ein Storage wiederhergestellt werden soll. Falls z.B. die App beendet wurde und bei einem erneuten Start der App die Daten wieder benötigt werden, kann die statische `getPersistentStorage` Funktion genutzt werden.
 
 ```js
@@ -30,7 +30,7 @@ Wenn ein Storage wiederhergestellt werden soll. Falls z.B. die App beendet wurde
 let storage = Storage.getPersistentStorage("my_id");
 ```
 
-####Werte schreiben
+###Werte schreiben
 Um Werte im Storage zu speichern wird die `write` Funktion genutzt.
 
 ```js
@@ -50,14 +50,14 @@ immutableStorage.write("my_key", "a string");
 immutableStorage.write("my_key", 42);
 ```
 
-######Achtung!
+####Achtung!
 Nicht alle Werte werden im `LocalStorage` persistiert. So sollten folgende Datentypen nicht im Storage gespeichert werden:
 * function
 * undefined
 * null
 * NaN
 
-####Werte lesen
+###Werte lesen
 Um Werte zu lesen wird die `read` Funktion genutzt. Falls ein Wert nicht existiert wird `undefined` zurück gegeben.
 ```js
 // Liest einen Wert mit dem Key "my_key"
@@ -67,7 +67,7 @@ let value = mutableStorage.read("my_key");
 let undefinedValue = mutableStorage.read("another_key");
 ```
 
-####Werte löschen
+###Werte löschen
 Um Werte wieder zu löschen wird die `remove` Funktion genutzt. Falls es den Wert nicht gibt macht die Funktion nichts.
 
 ```js
@@ -75,7 +75,7 @@ Um Werte wieder zu löschen wird die `remove` Funktion genutzt. Falls es den Wer
 mutableStorage.remove("my_key");
 ```
 
-####Überprüfen ob es einen bestimmten Wert gibt
+###Überprüfen ob es einen bestimmten Wert gibt
 Um zu prüfen ob ein bestimmter Wert im Storage vorhanden ist wird die `contains` Funktion genutzt.
 
 ```js
