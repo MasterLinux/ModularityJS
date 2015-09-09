@@ -255,7 +255,5 @@ export var MemoryUtilityTests = (function () {
 
             done();
         });
-
-        // TODO add function to test whether local storage is available due private mode
     });
 })();

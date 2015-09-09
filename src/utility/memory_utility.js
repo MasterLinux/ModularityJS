@@ -92,11 +92,10 @@ export function getPersistentMemory(key) {
  * @return {boolean} Returns true if local storage is available, otherwise false
  */
 export function isLocalStorageAvailable() {
-    let key = "__local_storage_test__",
-        storage;
+    let key = "__local_storage_test__";
 
     try {
-        storage = window.localStorage;
+        let storage = window.localStorage;
         storage.setItem(key, "value");
         storage.removeItem(key);
         return true;

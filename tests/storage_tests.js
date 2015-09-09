@@ -1,4 +1,5 @@
 import {Storage} from "../src/data/storage.js";
+import * as MemoryUtilites from "../src/utility/memory_utility.js";
 import {ValueOverrideError} from "../src/error/value_override_error.js";
 import {expect, assert} from "chai";
 
@@ -38,6 +39,12 @@ export var StorageTests = (function () {
             expectedNanKey = "test_nan_key",
             nanUnderTest = NaN;
 
+        beforeEach(function () {
+            if (MemoryUtilites.isLocalStorageAvailable()) {
+                // clear local storage before each test
+                localStorage.clear()
+            }
+        });
 
         it("should write and read value", (done) => {
             let storage = new Storage("test_id");
@@ -186,10 +193,10 @@ export var StorageTests = (function () {
 
         it("should persist storage", (done) => {
             let expectedStorageId = "persistent_test_id",
-                storage = new Storage(expectedStorageId),
+                storage = new Storage(expectedStorageId, true),
                 anotherStorage;
 
-            if (storage.isLocalStorageAvailable) {
+            if (MemoryUtilites.isLocalStorageAvailable()) {
                 storage.write(expectedObjectKey, objectUnderTest);
                 storage.write(expectedFunctionKey, functionUnderTest);
                 storage.write(expectedBooleanTrueKey, booleanTrueUnderTest);
@@ -211,20 +218,20 @@ export var StorageTests = (function () {
                 expect(anotherStorage.contains(expectedFunctionKey)).to.be.false;
                 expect(anotherStorage.contains(expectedNanKey)).to.be.false;
 
-                expect(anotherStorage.contains(expectedObjectKey)).to.true;
-                expect(anotherStorage.contains(expectedBooleanTrueKey)).to.true;
-                expect(anotherStorage.contains(expectedBooleanFalseKey)).to.true;
-                expect(anotherStorage.contains(expectedIntKey)).to.true;
-                expect(anotherStorage.contains(expectedFloatKey)).to.true;
-                expect(anotherStorage.contains(expectedArrayKey)).to.true;
-                expect(anotherStorage.contains(expectedStringKey)).to.true;
+                expect(anotherStorage.contains(expectedObjectKey)).to.be.true;
+                expect(anotherStorage.contains(expectedBooleanTrueKey)).to.be.true;
+                expect(anotherStorage.contains(expectedBooleanFalseKey)).to.be.true;
+                expect(anotherStorage.contains(expectedIntKey)).to.be.true;
+                expect(anotherStorage.contains(expectedFloatKey)).to.be.true;
+                expect(anotherStorage.contains(expectedArrayKey)).to.be.true;
+                expect(anotherStorage.contains(expectedStringKey)).to.be.true;
+
+                expect(anotherStorage.isMutable).to.be.true;
             } else {
                 console.log("\n    ? Local storage is not available. So the following test is skipped!");
             }
 
             done();
         });
-
-        // TODO add function to test whether local storage is available due private mode
     });
 })();
