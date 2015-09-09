@@ -2,6 +2,19 @@ import * as MemoryUtility from "../utility/memory_utility.js";
 
 export class Storage {
 
+    static getPersistentStorage(id) {
+        let memory = MemoryUtility.getPersistentMemory(id);
+        let storage = new Storage(id, memory["__isMutable__"]);
+
+        for (let key in memory) {
+            if (memory.hasOwnProperty(key) && key !== "__isMutable__") {
+                storage.write(key, memory[key]);
+            }
+        }
+
+        return storage;
+    }
+
     /**
      * Initializes the storage
      * @author Christoph Grundmann
@@ -12,7 +25,9 @@ export class Storage {
     constructor(id, isMutable = false) {
         this.isLocalStorageAvailable = MemoryUtility.isLocalStorageAvailable();
         this.isMutable = isMutable;
-        this.memory = {};
+        this.memory = {
+            "__isMutable__": isMutable
+        };
         this.id = id;
     }
 

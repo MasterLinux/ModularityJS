@@ -4,7 +4,57 @@ var childProcess = require('child_process'),
     fs = require('fs'),
     fileWalker = require('walk'),
     path = require('path'),
-    mkdirp = require('mkdirp');
+    mkdirp = require('mkdirp'),
+    KarmaServer = require("karma").Server;
+
+var KARMA_CONFIG = "./karma.conf.js";
+
+namespace("spec", function () {
+    desc("Run all specs");
+    task("run", function () {
+        var options = {
+            configFile: path.resolve(KARMA_CONFIG),
+            browsers: ["PhantomJS2"],
+            reporters: ["dots"],
+            singleRun: true,
+            autoWatch: false,
+            colors: false
+        };
+
+        var server = new KarmaServer(options, function (exitCode) {
+            if (exitCode === 0) {
+                complete();
+            }
+            else {
+                fail("Karma has exited with " + exitCode);
+            }
+        });
+
+        server.start();
+    }, {async: true});
+
+    desc("Watch files and run specs on changes");
+    task("watch", {async: true}, function () {
+        var options = {
+            configFile: path.resolve(KARMA_CONFIG),
+            browsers: ["PhantomJS2"],
+            reporters: ["progress"],
+            singleRun: false,
+            autoWatch: true,
+            colors: true
+        };
+
+        var server = new KarmaServer(options, function (exitCode) {
+            if (exitCode === 0) {
+                complete();
+            }
+            else {
+                fail("Karma has exited with " + exitCode);
+            }
+        });
+        server.start();
+    });
+});
 
 namespace('build', function () {
     desc('Task used to merge all source code files into one');

@@ -208,9 +208,9 @@ export var StorageTests = (function () {
                 expect(anotherStorage.contains("unavailable_key")).to.be.false;
                 expect(anotherStorage.contains(expectedUndefinedKey)).to.be.false;
                 expect(anotherStorage.contains(expectedNullKey)).to.be.false;
+                expect(anotherStorage.contains(expectedFunctionKey)).to.be.false;
+                expect(anotherStorage.contains(expectedNanKey)).to.be.false;
 
-                expect(anotherStorage.contains(expectedFunctionKey)).to.be.true;
-                expect(anotherStorage.contains(expectedNanKey)).to.be.true;
                 expect(anotherStorage.contains(expectedObjectKey)).to.true;
                 expect(anotherStorage.contains(expectedBooleanTrueKey)).to.true;
                 expect(anotherStorage.contains(expectedBooleanFalseKey)).to.true;

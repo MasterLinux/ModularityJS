@@ -71,7 +71,8 @@ export function isAvailableIn(memory, key) {
  * @param {object} memory - The memory object to persist
  */
 export function persist(key, memory) {
-    localStorage.setItem(key, memory);
+    let value = JSON.stringify(memory);
+    localStorage.setItem(key, value);
 }
 
 /**
@@ -80,7 +81,8 @@ export function persist(key, memory) {
  * @returns {object|undefined} The memory object or undefined if not exists
  */
 export function getPersistentMemory(key) {
-    return localStorage.getItem(key);
+    let value = localStorage.getItem(key);
+    return JSON.parse(value);
 }
 
 /**
@@ -90,11 +92,11 @@ export function getPersistentMemory(key) {
  * @return {boolean} Returns true if local storage is available, otherwise false
  */
 export function isLocalStorageAvailable() {
-    let key = "local_storage",
+    let key = "__local_storage_test__",
         storage;
 
     try {
-        storage = window.sessionStorage;
+        storage = window.localStorage;
         storage.setItem(key, "value");
         storage.removeItem(key);
         return true;
