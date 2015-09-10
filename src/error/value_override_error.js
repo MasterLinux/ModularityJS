@@ -1,3 +1,5 @@
+import {UnsupportedOperationError} from "unsupported_operation_error.js";
+
 /**
  * Error which is thrown whenever a value can not be overwritten
  * @author Christoph Grundmann
@@ -12,7 +14,7 @@ export function ValueOverrideError(key) {
 }
 
 // inherit from Error
-ValueOverrideError.prototype = Object.create(Error.prototype, {
+ValueOverrideError.prototype = Object.create(UnsupportedOperationError.prototype, {
     constructor: {
         value: ValueOverrideError,
         writable: true,
