@@ -25,9 +25,7 @@ import * as TypeUtility from "../utility/type_utility.js";
  * @param {*} value - The value to write
  * @throws Will throw error if memory is not mutable and a value with an already available key will be written
  */
-export function writeTo(memory, key, value, isMutable) {
-    isMutable = isMutable || false;
-
+export function writeTo(memory, key, value, isMutable = false) {
     if (isAvailableIn(memory, key) && !isMutable) {
         throw new ValueOverrideError(key);
     } else if (value !== null) {
