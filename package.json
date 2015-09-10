@@ -20,7 +20,13 @@
     "jake": "latest",
     "jsdoc": "~3.3.2",
     "karma": "~0.13.9",
+    "karma-browserify": "~4.3.0",
+    "karma-mocha": "~0.2.0",
+    "karma-phantomjs2-launcher": "~0.3.2",
+    "karma-source-map-support": "~1.1.0",
+    "mkdirp": "~0.5.1",
     "mocha": "~2.2.5",
-    "uglify-js": "~2.4.24"
+    "uglify-js": "~2.4.24",
+    "walk": "~2.3.9"
   }
 }
