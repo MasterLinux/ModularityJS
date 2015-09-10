@@ -8,8 +8,8 @@ import * as TypeUtility from "../utility/type_utility.js";
  * @param {number} [index] - The index of the namespace part which is not an object to extend
  */
 export function NamespaceCollisionError(namespace, index) {
-    let message = this.buildMessage(namespace, index),
-        base = Error.apply(this, [message]);
+    let message = this.buildMessage(namespace, index);
+    let base = Error.apply(this, [message]);
 
     base.name = this.name = "NamespaceCollisionError";
     this.message = base.message;
@@ -48,7 +48,7 @@ NamespaceCollisionError.prototype.buildMessage = function (namespace, index) {
         }
 
         return "Unable to resolve namespace because <" + namespace[index] + "> in namespace <" + markedNamespace + "> is not an object";
-    } else {
-        return "Unable to resolve namespace";
     }
+
+    return "Unable to resolve namespace";
 };
