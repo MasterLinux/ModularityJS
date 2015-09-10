@@ -37,7 +37,7 @@ NamespaceCollisionError.prototype.buildMessage = function (namespace, index) {
         // mark critical namespace part
         for (let i = 0; i < namespace.length; i++) {
             if (i == index) {
-                markedNamespace += "{" + namespace[i] + "}";
+                markedNamespace += `{${namespace[i]}`;
             } else {
                 markedNamespace += namespace[i];
             }
@@ -47,7 +47,7 @@ NamespaceCollisionError.prototype.buildMessage = function (namespace, index) {
             }
         }
 
-        return "Unable to resolve namespace because <" + namespace[index] + "> in namespace <" + markedNamespace + "> is not an object";
+        return `Unable to resolve namespace because <${namespace[index]}> in namespace <${markedNamespace}> is not an object`;
     }
 
     return "Unable to resolve namespace";
