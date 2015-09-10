@@ -69,8 +69,7 @@ export function isAvailableIn(memory, key) {
  * @param {object} memory - The memory object to persist
  */
 export function persist(key, memory) {
-    let value = JSON.stringify(memory);
-    localStorage.setItem(key, value);
+    localStorage.setItem(key, JSON.stringify(memory));
 }
 
 /**
@@ -80,7 +79,12 @@ export function persist(key, memory) {
  */
 export function getPersistentMemory(key) {
     let value = localStorage.getItem(key);
-    return JSON.parse(value);
+
+    if (value) {
+        return JSON.parse(value);
+    }
+
+    return undefined;
 }
 
 /**
