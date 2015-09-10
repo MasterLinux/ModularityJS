@@ -9,7 +9,7 @@ Für alle anderen Fälle sollte ein `Cache` bevorzugt werden.
 ##Verwendung
 ###Storage erzeugen
 Es gibt zwei Arten von Storages: 
-1. Zum einen gibt es das `Immutable Storage`, welches es **nicht** erlaubt Werte zu **überschreiben**. So wird ein Fehler geworfen, falls ein Wert mit einem Key gespeichert werden soll, welcher schon im STorage vorhanden ist
+1. Zum einen gibt es das `Immutable Storage`, welches es **nicht** erlaubt Werte zu **überschreiben**. So wird ein Fehler geworfen, falls ein Wert mit einem Key gespeichert werden soll, welcher schon im Storage vorhanden ist
 2. Zum anderen gibt es ein `Mutable Storage`, bei dem Werte überschrieben werden dürfen 
 
 ```js
