@@ -14,7 +14,7 @@
  * // read from memory
  * let value = MemoryUtilities.readFrom(memory, "my_key");
  */
-import {ValueOverrideError} from "../error/value_override_error.js";
+import {UnsupportedOperationError} from "../error/unsupported_operation_error.js";
 import * as TypeUtility from "../utility/type_utility.js";
 
 /**
@@ -22,13 +22,16 @@ import * as TypeUtility from "../utility/type_utility.js";
  * @param {object} memory - The object which should be used as storage
  * @param {string} key - The key of the value
  * @param {boolean} [isMutable=false] - If set to true the memory allows overwriting values
- * @param {*} value - The value to write
+ * @param {(boolean|string|number)} value - The value to write
  * @throws Will throw error if memory is not mutable and a value with an already available key will be written
+ * @throws Will throw error if value cannot be written to memory, because the data-type of the given value is not supported. See {@link MemoryUtilities#isWriteable}
  */
 export function writeTo(memory, key, value, isMutable = false) {
-    if (isAvailableIn(memory, key) && !isMutable) {
-        throw new ValueOverrideError(key);
-    } else if (value !== null) {
+    if (!isWriteable(value)) {
+        throw new UnsupportedOperationError(`Value for key <${key}> cannot be written to memory, because the data-type <${typeof value}> is not supported.`);
+    } else if (isAvailableIn(memory, key) && !isMutable) {
+        throw new UnsupportedOperationError(`Value for key <${key}> can not be overwritten, because memory is immutable.`);
+    } else {
         memory[key] = value;
     }
 }
@@ -37,7 +40,7 @@ export function writeTo(memory, key, value, isMutable = false) {
  * Gets the value with the given key or undefined if no value with this key exists
  * @param {object} memory - The object which contains the value
  * @param {string} key - The key of the value to read
- * @return {*|undefined} Returns the value if exists in memory, otherwise undefined 
+ * @return {(boolean|string|number|undefined)} Returns the value if exists in memory, otherwise undefined
  */
 export function readFrom(memory, key) {
     return isAvailableIn(memory, key) ? memory[key] : undefined;
@@ -85,6 +88,16 @@ export function getPersistentMemory(key) {
     }
 
     return undefined;
+}
+
+/**
+ * Checks whether the given value can be written to memory
+ * @param {*} value - The value to check
+ * @return {boolean} Returns true if value can be written to memory, otherwise false
+ */
+export function isWriteable(value) {
+    return TypeUtility.isBoolean(value) || TypeUtility.isString(value) ||
+        (!TypeUtility.isNaN(value) && TypeUtility.isNumber(value));
 }
 
 /**

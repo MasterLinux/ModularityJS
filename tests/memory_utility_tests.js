@@ -1,5 +1,5 @@
 import * as MemoryUtility from "../src/utility/memory_utility.js";
-import {ValueOverrideError} from "../src/error/value_override_error.js";
+import {UnsupportedOperationError} from "../src/error/unsupported_operation_error.js";
 import {expect, assert} from "chai";
 
 export var MemoryUtilityTests = (function () {
@@ -38,34 +38,74 @@ export var MemoryUtilityTests = (function () {
             expectedNanKey = "test_nan_key",
             nanUnderTest = NaN;
 
+        beforeEach(function () {
+            if (MemoryUtility.isLocalStorageAvailable()) {
+                // clear local storage before each test
+                localStorage.clear()
+            }
+        });
+
+        it("should check whether value is writable to memory", (done) => {
+            expect(MemoryUtility.isWriteable(objectUnderTest)).to.be.false;
+            expect(MemoryUtility.isWriteable(functionUnderTest)).to.be.false;
+            expect(MemoryUtility.isWriteable(undefinedUnderTest)).to.be.false;
+            expect(MemoryUtility.isWriteable(nullUnderTest)).to.be.false;
+            expect(MemoryUtility.isWriteable(nanUnderTest)).to.be.false;
+            expect(MemoryUtility.isWriteable(arrayUnderTest)).to.be.false;
+
+            expect(MemoryUtility.isWriteable(booleanTrueUnderTest)).to.be.true;
+            expect(MemoryUtility.isWriteable(booleanFalseUnderTest)).to.be.true;
+            expect(MemoryUtility.isWriteable(intUnderTest)).to.be.true;
+            expect(MemoryUtility.isWriteable(floatUnderTest)).to.be.true;
+            expect(MemoryUtility.isWriteable(stringUnderTest)).to.be.true;
+            done();
+        });
 
         it("should write value to memory", (done) => {
             let expectedMemory = {};
 
-            MemoryUtility.writeTo(expectedMemory, expectedObjectKey, objectUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedFunctionKey, functionUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedBooleanTrueKey, booleanTrueUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedBooleanFalseKey, booleanFalseUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedIntKey, intUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedFloatKey, floatUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedUndefinedKey, undefinedUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedNullKey, nullUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedArrayKey, arrayUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedStringKey, stringUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedNanKey, nanUnderTest);
 
-            expect(expectedMemory[expectedUndefinedKey]).to.be.undefined;
-            expect(expectedMemory[expectedNullKey]).to.be.undefined;
-            expect(expectedMemory[expectedNanKey]).to.be.NaN;
+            expect(expectedMemory[expectedBooleanTrueKey]).to.be.equal(booleanTrueUnderTest);
+            expect(expectedMemory[expectedBooleanFalseKey]).to.be.equal(booleanFalseUnderTest);
+            expect(expectedMemory[expectedIntKey]).to.be.equal(intUnderTest);
+            expect(expectedMemory[expectedFloatKey]).to.be.equal(floatUnderTest);
+            expect(expectedMemory[expectedStringKey]).to.be.equal(stringUnderTest);
 
-            expect(expectedMemory[expectedFunctionKey]).to.be.equal(functionUnderTest);
-            expect(expectedMemory[expectedObjectKey]).to.equal(objectUnderTest);
-            expect(expectedMemory[expectedBooleanTrueKey]).to.equal(booleanTrueUnderTest);
-            expect(expectedMemory[expectedBooleanFalseKey]).to.equal(booleanFalseUnderTest);
-            expect(expectedMemory[expectedIntKey]).to.equal(intUnderTest);
-            expect(expectedMemory[expectedFloatKey]).to.equal(floatUnderTest);
-            expect(expectedMemory[expectedArrayKey]).to.equal(arrayUnderTest);
-            expect(expectedMemory[expectedStringKey]).to.equal(stringUnderTest);
+            done();
+        });
+
+        it("should throw error if a value can not be written to memory, because it is not writeable", (done) => {
+            let expectedMemory = {};
+
+            expect(() => {
+                MemoryUtility.writeTo(expectedMemory, expectedObjectKey, objectUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
+            expect(() => {
+                MemoryUtility.writeTo(expectedMemory, expectedArrayKey, arrayUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
+            expect(() => {
+                MemoryUtility.writeTo(expectedMemory, expectedNanKey, nanUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
+            expect(() => {
+                MemoryUtility.writeTo(expectedMemory, expectedFunctionKey, functionUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
+            expect(() => {
+                MemoryUtility.writeTo(expectedMemory, expectedUndefinedKey, undefinedUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
+            expect(() => {
+                MemoryUtility.writeTo(expectedMemory, expectedNullKey, nullUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
             done();
         });
 
@@ -93,7 +133,7 @@ export var MemoryUtilityTests = (function () {
             expect(() => {
                 MemoryUtility.writeTo(expectedMemory, expectedKey, expectedValue);
                 MemoryUtility.writeTo(expectedMemory, expectedKey, expectedValue);
-            }).to.throw(ValueOverrideError);
+            }).to.throw(UnsupportedOperationError);
 
             done();
         });
@@ -107,7 +147,7 @@ export var MemoryUtilityTests = (function () {
             expect(() => {
                 MemoryUtility.writeTo(expectedMemory, expectedKey, expectedValue, isMutable);
                 MemoryUtility.writeTo(expectedMemory, expectedKey, expectedValue, isMutable);
-            }).to.not.throw(ValueOverrideError);
+            }).to.not.throw(UnsupportedOperationError);
 
             done();
         });
@@ -115,30 +155,17 @@ export var MemoryUtilityTests = (function () {
         it("should read value from memory", (done) => {
             let expectedMemory = {};
 
-            MemoryUtility.writeTo(expectedMemory, expectedObjectKey, objectUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedFunctionKey, functionUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedBooleanTrueKey, booleanTrueUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedBooleanFalseKey, booleanFalseUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedIntKey, intUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedFloatKey, floatUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedUndefinedKey, undefinedUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedNullKey, nullUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedArrayKey, arrayUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedStringKey, stringUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedNanKey, nanUnderTest);
 
-            expect(MemoryUtility.readFrom(expectedMemory, expectedUndefinedKey)).to.be.undefined;
-            expect(MemoryUtility.readFrom(expectedMemory, expectedNullKey)).to.be.undefined;
-            expect(MemoryUtility.readFrom(expectedMemory, expectedNanKey)).to.be.NaN;
-
-            expect(MemoryUtility.readFrom(expectedMemory, expectedFunctionKey)).to.be.equal(functionUnderTest);
-            expect(MemoryUtility.readFrom(expectedMemory, expectedObjectKey)).to.equal(objectUnderTest);
-            expect(MemoryUtility.readFrom(expectedMemory, expectedBooleanTrueKey)).to.equal(booleanTrueUnderTest);
-            expect(MemoryUtility.readFrom(expectedMemory, expectedBooleanFalseKey)).to.equal(booleanFalseUnderTest);
-            expect(MemoryUtility.readFrom(expectedMemory, expectedIntKey)).to.equal(intUnderTest);
-            expect(MemoryUtility.readFrom(expectedMemory, expectedFloatKey)).to.equal(floatUnderTest);
-            expect(MemoryUtility.readFrom(expectedMemory, expectedArrayKey)).to.equal(arrayUnderTest);
-            expect(MemoryUtility.readFrom(expectedMemory, expectedStringKey)).to.equal(stringUnderTest);
+            expect(MemoryUtility.readFrom(expectedMemory, expectedBooleanTrueKey)).to.be.equal(booleanTrueUnderTest);
+            expect(MemoryUtility.readFrom(expectedMemory, expectedBooleanFalseKey)).to.be.equal(booleanFalseUnderTest);
+            expect(MemoryUtility.readFrom(expectedMemory, expectedIntKey)).to.be.equal(intUnderTest);
+            expect(MemoryUtility.readFrom(expectedMemory, expectedFloatKey)).to.be.equal(floatUnderTest);
+            expect(MemoryUtility.readFrom(expectedMemory, expectedStringKey)).to.be.equal(stringUnderTest);
             done();
         });
 
@@ -174,7 +201,7 @@ export var MemoryUtilityTests = (function () {
 
             expect(() => {
                 MemoryUtility.writeTo(expectedMemory, expectedKey, expectedValue);
-            }).to.not.throw(ValueOverrideError);
+            }).to.not.throw(UnsupportedOperationError);
 
             done();
         });
@@ -183,30 +210,17 @@ export var MemoryUtilityTests = (function () {
             let expectedMemory = {},
                 deletedKey = "deleted_key";
 
-            MemoryUtility.writeTo(expectedMemory, expectedObjectKey, objectUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedFunctionKey, functionUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedBooleanTrueKey, booleanTrueUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedBooleanFalseKey, booleanFalseUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedIntKey, intUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedFloatKey, floatUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedUndefinedKey, undefinedUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedNullKey, nullUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedArrayKey, arrayUnderTest);
             MemoryUtility.writeTo(expectedMemory, expectedStringKey, stringUnderTest);
-            MemoryUtility.writeTo(expectedMemory, expectedNanKey, nanUnderTest);
 
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedUndefinedKey)).to.be.false;
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedNullKey)).to.be.false;
-
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedFunctionKey)).to.be.true;
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedNanKey)).to.be.true;
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedObjectKey)).to.true;
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedBooleanTrueKey)).to.true;
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedBooleanFalseKey)).to.true;
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedIntKey)).to.true;
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedFloatKey)).to.true;
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedArrayKey)).to.true;
-            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedStringKey)).to.true;
+            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedBooleanTrueKey)).to.be.true;
+            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedBooleanFalseKey)).to.be.true;
+            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedIntKey)).to.be.true;
+            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedFloatKey)).to.be.true;
+            expect(MemoryUtility.isAvailableIn(expectedMemory, expectedStringKey)).to.be.true;
 
             expect(MemoryUtility.isAvailableIn(expectedMemory, "unavailable_key")).to.be.false;
 
@@ -223,32 +237,34 @@ export var MemoryUtilityTests = (function () {
                 expectedMemoryKey = "memory_key";
 
             if (MemoryUtility.isLocalStorageAvailable()) {
-                MemoryUtility.writeTo(expectedInMemory, expectedObjectKey, objectUnderTest);
-                MemoryUtility.writeTo(expectedInMemory, expectedFunctionKey, functionUnderTest);
                 MemoryUtility.writeTo(expectedInMemory, expectedBooleanTrueKey, booleanTrueUnderTest);
                 MemoryUtility.writeTo(expectedInMemory, expectedBooleanFalseKey, booleanFalseUnderTest);
                 MemoryUtility.writeTo(expectedInMemory, expectedIntKey, intUnderTest);
                 MemoryUtility.writeTo(expectedInMemory, expectedFloatKey, floatUnderTest);
-                MemoryUtility.writeTo(expectedInMemory, expectedUndefinedKey, undefinedUnderTest);
-                MemoryUtility.writeTo(expectedInMemory, expectedNullKey, nullUnderTest);
-                MemoryUtility.writeTo(expectedInMemory, expectedArrayKey, arrayUnderTest);
                 MemoryUtility.writeTo(expectedInMemory, expectedStringKey, stringUnderTest);
-                MemoryUtility.writeTo(expectedInMemory, expectedNanKey, nanUnderTest);
 
                 MemoryUtility.persist(expectedMemoryKey, expectedInMemory);
                 expectedOutMemory = MemoryUtility.getPersistentMemory(expectedMemoryKey);
 
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedFunctionKey)).to.be.false;
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedUndefinedKey)).to.be.false;
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedNullKey)).to.be.false;
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedNanKey)).to.be.false;
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedObjectKey)).to.true;
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedBooleanTrueKey)).to.true;
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedBooleanFalseKey)).to.true;
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedIntKey)).to.true;
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedFloatKey)).to.true;
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedArrayKey)).to.true;
-                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedStringKey)).to.true;
+                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedBooleanTrueKey)).to.be.true;
+                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedBooleanFalseKey)).to.be.true;
+                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedIntKey)).to.be.true;
+                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedFloatKey)).to.be.true;
+                expect(MemoryUtility.isAvailableIn(expectedOutMemory, expectedStringKey)).to.be.true;
+            } else {
+                console.log("\n    ? Local storage is not available. So the following test is skipped!");
+            }
+
+            done();
+        });
+
+        it("should not throw if persistent memory not exists", (done) => {
+            let expectedMemoryKey = "memory_key",
+                expectedOutMemory;
+
+            if (MemoryUtility.isLocalStorageAvailable()) {
+                expectedOutMemory = MemoryUtility.getPersistentMemory(expectedMemoryKey);
+                expect(expectedOutMemory).to.be.undefined;
             } else {
                 console.log("\n    ? Local storage is not available. So the following test is skipped!");
             }

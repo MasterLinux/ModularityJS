@@ -1,6 +1,6 @@
 import {Storage} from "../src/data/storage.js";
 import * as MemoryUtilites from "../src/utility/memory_utility.js";
-import {ValueOverrideError} from "../src/error/value_override_error.js";
+import {UnsupportedOperationError} from "../src/error/unsupported_operation_error.js";
 import {expect, assert} from "chai";
 
 export var StorageTests = (function () {
@@ -49,30 +49,47 @@ export var StorageTests = (function () {
         it("should write and read value", (done) => {
             let storage = new Storage("test_id");
 
-            storage.write(expectedObjectKey, objectUnderTest);
-            storage.write(expectedFunctionKey, functionUnderTest);
             storage.write(expectedBooleanTrueKey, booleanTrueUnderTest);
             storage.write(expectedBooleanFalseKey, booleanFalseUnderTest);
             storage.write(expectedIntKey, intUnderTest);
             storage.write(expectedFloatKey, floatUnderTest);
-            storage.write(expectedUndefinedKey, undefinedUnderTest);
-            storage.write(expectedNullKey, nullUnderTest);
-            storage.write(expectedArrayKey, arrayUnderTest);
             storage.write(expectedStringKey, stringUnderTest);
-            storage.write(expectedNanKey, nanUnderTest);
 
-            expect(storage.read(expectedUndefinedKey)).to.be.undefined;
-            expect(storage.read(expectedNullKey)).to.be.undefined;
-            expect(storage.read(expectedNanKey)).to.be.NaN;
-
-            expect(storage.read(expectedFunctionKey)).to.be.equal(functionUnderTest);
-            expect(storage.read(expectedObjectKey)).to.equal(objectUnderTest);
             expect(storage.read(expectedBooleanTrueKey)).to.equal(booleanTrueUnderTest);
             expect(storage.read(expectedBooleanFalseKey)).to.equal(booleanFalseUnderTest);
             expect(storage.read(expectedIntKey)).to.equal(intUnderTest);
             expect(storage.read(expectedFloatKey)).to.equal(floatUnderTest);
-            expect(storage.read(expectedArrayKey)).to.equal(arrayUnderTest);
             expect(storage.read(expectedStringKey)).to.equal(stringUnderTest);
+            done();
+        });
+
+        it("should throw error if a value can not be written to storage, because it is not writeable", (done) => {
+            let storage = new Storage("test_id");
+
+            expect(() => {
+                storage.write(expectedObjectKey, objectUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
+            expect(() => {
+                storage.write(expectedFunctionKey, functionUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
+            expect(() => {
+                storage.write(expectedUndefinedKey, undefinedUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
+            expect(() => {
+                storage.write(expectedNullKey, nullUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
+            expect(() => {
+                storage.write(expectedArrayKey, arrayUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
+            expect(() => {
+                storage.write(expectedNanKey, nanUnderTest);
+            }).to.throw(UnsupportedOperationError);
+
             done();
         });
 
@@ -99,7 +116,7 @@ export var StorageTests = (function () {
             expect(() => {
                 storage.write(expectedKey, expectedValue);
                 storage.write(expectedKey, expectedValue);
-            }).to.throw(ValueOverrideError);
+            }).to.throw(UnsupportedOperationError);
 
             done();
         });
@@ -112,7 +129,7 @@ export var StorageTests = (function () {
             expect(() => {
                 storage.write(expectedKey, expectedValue);
                 storage.write(expectedKey, expectedValue);
-            }).to.not.throw(ValueOverrideError);
+            }).to.not.throw(UnsupportedOperationError);
 
             done();
         });
@@ -149,7 +166,7 @@ export var StorageTests = (function () {
 
             expect(() => {
                 storage.write(expectedKey, expectedValue);
-            }).to.not.throw(ValueOverrideError);
+            }).to.not.throw(UnsupportedOperationError);
 
             done();
         });
@@ -158,30 +175,16 @@ export var StorageTests = (function () {
             let storage = new Storage("test_id"),
                 deletedKey = "deleted_key";
 
-            storage.write(expectedObjectKey, objectUnderTest);
-            storage.write(expectedFunctionKey, functionUnderTest);
             storage.write(expectedBooleanTrueKey, booleanTrueUnderTest);
             storage.write(expectedBooleanFalseKey, booleanFalseUnderTest);
             storage.write(expectedIntKey, intUnderTest);
             storage.write(expectedFloatKey, floatUnderTest);
-            storage.write(expectedUndefinedKey, undefinedUnderTest);
-            storage.write(expectedNullKey, nullUnderTest);
-            storage.write(expectedArrayKey, arrayUnderTest);
             storage.write(expectedStringKey, stringUnderTest);
-            storage.write(expectedNanKey, nanUnderTest);
 
-            expect(storage.contains("unavailable_key")).to.be.false;
-            expect(storage.contains(expectedUndefinedKey)).to.be.false;
-            expect(storage.contains(expectedNullKey)).to.be.false;
-
-            expect(storage.contains(expectedFunctionKey)).to.be.true;
-            expect(storage.contains(expectedNanKey)).to.be.true;
-            expect(storage.contains(expectedObjectKey)).to.true;
             expect(storage.contains(expectedBooleanTrueKey)).to.true;
             expect(storage.contains(expectedBooleanFalseKey)).to.true;
             expect(storage.contains(expectedIntKey)).to.true;
             expect(storage.contains(expectedFloatKey)).to.true;
-            expect(storage.contains(expectedArrayKey)).to.true;
             expect(storage.contains(expectedStringKey)).to.true;
 
             storage.write(deletedKey, expectedIntKey);
@@ -197,36 +200,38 @@ export var StorageTests = (function () {
                 anotherStorage;
 
             if (MemoryUtilites.isLocalStorageAvailable()) {
-                storage.write(expectedObjectKey, objectUnderTest);
-                storage.write(expectedFunctionKey, functionUnderTest);
                 storage.write(expectedBooleanTrueKey, booleanTrueUnderTest);
                 storage.write(expectedBooleanFalseKey, booleanFalseUnderTest);
                 storage.write(expectedIntKey, intUnderTest);
                 storage.write(expectedFloatKey, floatUnderTest);
-                storage.write(expectedUndefinedKey, undefinedUnderTest);
-                storage.write(expectedNullKey, nullUnderTest);
-                storage.write(expectedArrayKey, arrayUnderTest);
                 storage.write(expectedStringKey, stringUnderTest);
-                storage.write(expectedNanKey, nanUnderTest);
 
                 storage.persist();
                 anotherStorage = Storage.getPersistentStorage(expectedStorageId);
 
                 expect(anotherStorage.contains("unavailable_key")).to.be.false;
-                expect(anotherStorage.contains(expectedUndefinedKey)).to.be.false;
-                expect(anotherStorage.contains(expectedNullKey)).to.be.false;
-                expect(anotherStorage.contains(expectedFunctionKey)).to.be.false;
-                expect(anotherStorage.contains(expectedNanKey)).to.be.false;
 
-                expect(anotherStorage.contains(expectedObjectKey)).to.be.true;
                 expect(anotherStorage.contains(expectedBooleanTrueKey)).to.be.true;
                 expect(anotherStorage.contains(expectedBooleanFalseKey)).to.be.true;
                 expect(anotherStorage.contains(expectedIntKey)).to.be.true;
                 expect(anotherStorage.contains(expectedFloatKey)).to.be.true;
-                expect(anotherStorage.contains(expectedArrayKey)).to.be.true;
                 expect(anotherStorage.contains(expectedStringKey)).to.be.true;
 
                 expect(anotherStorage.isMutable).to.be.true;
+            } else {
+                console.log("\n    ? Local storage is not available. So the following test is skipped!");
+            }
+
+            done();
+        });
+
+        it("should not throw if persistent storage not exists", (done) => {
+            let expectedStorageId = "persistent_test_id",
+                storage;
+
+            if (MemoryUtilites.isLocalStorageAvailable()) {
+                storage = Storage.getPersistentStorage(expectedStorageId);
+                expect(storage).to.be.undefined;
             } else {
                 console.log("\n    ? Local storage is not available. So the following test is skipped!");
             }

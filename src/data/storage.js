@@ -29,15 +29,20 @@ export class Storage {
      */
     static getPersistentStorage(id) {
         let memory = MemoryUtility.getPersistentMemory(id);
-        let storage = new Storage(id, memory[Storage.kIsMutableMemoryKey]);
 
-        for (let key in memory) {
-            if (memory.hasOwnProperty(key) && key !== Storage.kIsMutableMemoryKey) {
-                storage.write(key, memory[key]);
+        if (memory) {
+            let storage = new Storage(id, memory[Storage.kIsMutableMemoryKey]);
+
+            for (let key in memory) {
+                if (memory.hasOwnProperty(key) && key !== Storage.kIsMutableMemoryKey) {
+                    storage.write(key, memory[key]);
+                }
             }
+
+            return storage;
         }
 
-        return storage;
+        return undefined;
     }
 
     /**
@@ -85,8 +90,10 @@ export class Storage {
      * @function write
      * @instance
      * @param {string} key - The key of the value to write
-     * @param {*} value - The value to write
+     * @param {(boolean|string|number)} value - The value to write
      * @throws Will throw an error if storage is not mutable and a value with an already available key will be written
+     *
+     * @throws Will throw error if value cannot be written to memory, because the data-type of the given value is not supported. See {@link MemoryUtilities#isWriteable}
      */
     write(key, value) {
         MemoryUtility.writeTo(this._memory, key, value, this.isMutable);
@@ -99,7 +106,7 @@ export class Storage {
      * @function read
      * @instance
      * @param {string} key - The key of the value to get
-     * @return {*|undefined} Returns the value or undefined if not exists
+     * @return {(boolean|string|number|undefined)} Returns the value or undefined if not exists
      */
     read(key) {
         return MemoryUtility.readFrom(this._memory, key);

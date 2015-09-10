@@ -57,6 +57,8 @@ Nicht alle Werte werden im `LocalStorage` persistiert. So sollten folgende Daten
 * undefined
 * null
 * NaN
+* array
+* object
 
 ###Werte lesen
 Um Werte zu lesen wird die `read` Funktion genutzt. Falls ein Wert nicht existiert wird `undefined` zurück gegeben.
