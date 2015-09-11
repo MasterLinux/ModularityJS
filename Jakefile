@@ -74,9 +74,9 @@ namespace('build', function () {
              * 'x86' on 32-bit CPU architecture
              * 'x64' on 64-bit CPU architecture
              */
-            userPath = os.platform() === "darwin" ? "./" : "../../",
-            inputPath = path.resolve(userPath, inputDir, params.fileName + ".js"),
-            outputPath = path.resolve(userPath, outputDir, params.fileName + ".js");
+            platformPath = os.platform() === "darwin" ? "./" : "../../",
+            inputPath = path.resolve(platformPath, inputDir, params.fileName + ".js"),
+            outputPath = path.resolve(platformPath, outputDir, params.fileName + ".js");
 
         jake.exec(['browserify ' + inputPath + ' -o ' + outputPath], {printStdout: true}, function () {
             complete();
