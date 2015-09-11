@@ -7,4 +7,5 @@ if [ ! -f $SCRIPT_PATH/node_modules/.bin/jake ]
 then
     npm rebuild
 fi
-./node_modules/.bin/mocha build/modularity_tests.js
+#./node_modules/.bin/jake build:all && ./node_modules/.bin/jake build:tests && ./node_modules/.bin/mocha build/all_tests.js
+./node_modules/.bin/jake spec:watch
