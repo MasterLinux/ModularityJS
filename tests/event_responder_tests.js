@@ -10,13 +10,11 @@ export class MockEventResponder extends EventResponder {
     }
 
     // overwrite error handling to propagate or cancel error handling
-    onErrorPropagation(error) {
+    onErrorPropagation(event) {
         if (this._callback) {
-            this._callback(error);
-            return;
+            this._callback(event.error);
+            event.stopPropagation();
         }
-
-        return error;
     }
 }
 
