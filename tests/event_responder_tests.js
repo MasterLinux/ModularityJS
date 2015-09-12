@@ -1,11 +1,10 @@
-import {UnsupportedOperationError} from "../src/error/unsupported_operation_error.js";
 import {EventResponder} from "../src/event_responder.js";
 import {expect, assert} from "chai";
 
 export class MockEventResponder extends EventResponder {
 
-    constructor(callback) {
-        super();
+    constructor(responder, callback) {
+        super(responder);
         this._callback = callback;
     }
 
@@ -23,20 +22,17 @@ export var EventResponderTests = (function () {
 
         it("should handle error", (done) => {
             let expectedErrorMessage = "test_message";
-            let expectedError = new UnsupportedOperationError(expectedErrorMessage);
+            let expectedError = new Error(expectedErrorMessage);
 
-            let responderUnderTest = new MockEventResponder((actualError) => {
+            let responderUnderTest = new MockEventResponder(null, (actualError) => {
                 expect(expectedError).to.be.equal(actualError);
                 expect(expectedErrorMessage).to.be.equal(actualError.message);
 
                 done();
             });
 
-            let responderUnderTest2 = new MockEventResponder();
-            responderUnderTest2.nextResponder = responderUnderTest;
-
-            let lastResponderUnderTest = new MockEventResponder();
-            lastResponderUnderTest.nextResponder = responderUnderTest2;
+            let responderUnderTest2 = new MockEventResponder(responderUnderTest);
+            let lastResponderUnderTest = new MockEventResponder(responderUnderTest2);
 
             lastResponderUnderTest.propagateError(expectedError);
         });
