@@ -74,24 +74,11 @@ namespace('build', function () {
              */
             platformPath = os.platform() === "darwin" ? "./" : "../../",
             inputPath = path.resolve(platformPath, inputDir, params.fileName + ".js"),
-            outputPath = path.resolve(platformPath, outputDir, params.fileName + ".js"),
-            cmd = "browserify " + inputPath + " -o " + outputPath;
+            outputPath = path.resolve(platformPath, outputDir, params.fileName + ".js");
 
-        if (os.platform() === "darwin") {
-            jake.exec([cmd], {printStdout: true}, function () {
-                complete();
-            });
-        } else {
-            childProcess.exec(cmd, {
-                cwd: "./node_modules/.bin/"
-            }, function (error, stdout, stderr) {
-                if (error) {
-                    fail("Failed to merge source code. stdout: " + stdout + " - stderr: " + stderr)
-                } else {
-                    complete();
-                }
-            });
-        }
+        jake.exec(["./node_modules/.bin/browserify " + inputPath + " -o " + outputPath], {printStdout: true}, function () {
+            complete();
+        });
 
     });
 
