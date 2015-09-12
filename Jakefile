@@ -1,4 +1,5 @@
-var babel = require('babel-core'),
+var childProcess = require('child_process'),
+    babel = require('babel-core'),
     uglify = require("uglify-js"),
     fs = require('fs'),
     fileWalker = require('walk'),
@@ -73,11 +74,24 @@ namespace('build', function () {
              */
             platformPath = os.platform() === "darwin" ? "./" : "../../",
             inputPath = path.resolve(platformPath, inputDir, params.fileName + ".js"),
-            outputPath = path.resolve(platformPath, outputDir, params.fileName + ".js");
+            outputPath = path.resolve(platformPath, outputDir, params.fileName + ".js"),
+            cmd = "browserify " + inputPath + " -o " + outputPath;
 
-        jake.exec(['browserify ' + inputPath + ' -o ' + outputPath], {printStdout: true}, function () {
-            complete();
-        });
+        if (os.platform() === "darwin") {
+            jake.exec([cmd], {printStdout: true}, function () {
+                complete();
+            });
+        } else {
+            childProcess.exec(cmd, {
+                cwd: "./node_modules/.bin/"
+            }, function (error, stdout, stderr) {
+                if (error) {
+                    fail("Failed to merge source code. stdout: " + stdout + " - stderr: " + stderr)
+                } else {
+                    complete();
+                }
+            });
+        }
 
     });
 
