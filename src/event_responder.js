@@ -7,6 +7,7 @@ export class EventResponder {
      * events through an event chain
      * @author Christoph Grundmann
      * @class EventResponder
+     * @abstract
      * @param {EventResponder} [responder] - The next responder in chain
      */
     constructor(responder) {
