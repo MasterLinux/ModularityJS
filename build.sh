@@ -1,11 +1,5 @@
-#!/usr/bin/env/ bash
+#!/usr/bin/env bash
 
-#SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SCRIPT_PATH="$(pwd)"
-cd $SCRIPT_PATH
+source ./config.sh
 
-if [ ! -f $SCRIPT_PATH/node_modules/.bin/jake ]
-then
-    npm rebuild
-fi
 ./node_modules/.bin/jake build:all
