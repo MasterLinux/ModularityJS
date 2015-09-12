@@ -1,5 +1,4 @@
-var childProcess = require('child_process'),
-    babel = require('babel-core'),
+var babel = require('babel-core'),
     uglify = require("uglify-js"),
     fs = require('fs'),
     fileWalker = require('walk'),
