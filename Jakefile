@@ -9,8 +9,7 @@ var babel = require('babel-core'),
 
 namespace("spec", function () {
 
-    var KARMA_CONFIG = path.resolve("./karma.conf.js"),
-        taskOptions = { async: true };
+    var KARMA_CONFIG = path.resolve("./karma.conf.js");
 
     desc("Run all specs");
     task("run", function () {
@@ -30,10 +29,10 @@ namespace("spec", function () {
         });
 
         server.start();
-    }, taskOptions);
+    }, { async: true });
 
     desc("Watch files and run specs on changes");
-    task("watch", taskOptions, function () {
+    task("watch", { async: true }, function () {
 
         var server = new KarmaServer({
             configFile: KARMA_CONFIG,
@@ -55,10 +54,8 @@ namespace("spec", function () {
 
 namespace('build', function () {
 
-    var taskOptions = { async: true };
-
     desc('Task used to merge all source code files into one');
-    task('merge', taskOptions, function (params) {
+    task('merge', { async: true }, function (params) {
         console.log("Start merging source code");
         var inputDir = params.inputDir || "./build/src",
             outputDir = params.outputDir || "./build",
@@ -85,7 +82,7 @@ namespace('build', function () {
     });
 
     desc('Task used to transform ES6 code to ES5');
-    task('transformToES5', taskOptions, function (params) {
+    task('transformToES5', { async: true }, function (params) {
         console.log("Start transforming ES6 code to ES5");
         var walker = fileWalker.walk(params.inputDir, {followLinks: false});
 
@@ -122,7 +119,7 @@ namespace('build', function () {
     });
 
     desc('Task used to minify source code');
-    task('minify', taskOptions, function (params) {
+    task('minify', { async: true }, function (params) {
         console.log("Start minifying source code");
 
         // get source code
@@ -155,7 +152,7 @@ namespace('build', function () {
     });
 
     desc('Task used to merge and transform and minify ES6 source code');
-    task('compile', taskOptions, function (params) {
+    task('compile', { async: true }, function (params) {
         var toES5Task = jake.Task['build:transformToES5'],
             minifyTask = jake.Task['build:minify'],
             mergeTask = jake.Task['build:merge'],
@@ -190,7 +187,7 @@ namespace('build', function () {
     });
 
     desc('Task used to build the framework');
-    task('all', taskOptions, function (params) {
+    task('all', { async: true }, function (params) {
         params = params || {};
 
         var compileTask = jake.Task['build:compile'],
@@ -212,7 +209,7 @@ namespace('build', function () {
     });
 
     desc('Task used to build the all tests');
-    task('tests', taskOptions, function (params) {
+    task('tests', { async: true }, function (params) {
         params = params || {};
 
         var compileTestsTask = jake.Task['build:compile'],
