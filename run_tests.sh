@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
-source ./config.sh
+if [ ! -f ./node_modules/.bin/jake ]
+then
+    npm rebuild
+fi
 
 ./node_modules/.bin/jake spec:watch
