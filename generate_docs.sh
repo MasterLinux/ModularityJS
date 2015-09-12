@@ -9,7 +9,7 @@ sh ./build.sh && echo "Start create documentation" &&
 
 if [ "$(uname)" == "Darwin" ]; then
     # Mac OSX require some config to generate documentation
-    ./node_modules/.bin/jsdoc ./build/modularity.js -d ./build/docs/ -c ./jsdoc.mac.conf.json
+    ./node_modules/.bin/jsdoc ./build/modularity.js -d ./build/docs/ -c ./jsdoc.osx.conf
 else
     ./node_modules/.bin/jsdoc ./build/modularity.js -d ./build/docs/
 fi
