@@ -1,54 +1,51 @@
-var childProcess = require('child_process'),
-    babel = require('babel-core'),
+var babel = require('babel-core'),
     uglify = require("uglify-js"),
     fs = require('fs'),
     fileWalker = require('walk'),
     path = require('path'),
     mkdirp = require('mkdirp'),
-    KarmaServer = require("karma").Server;
-
-var KARMA_CONFIG = "./karma.conf.js";
+    KarmaServer = require("karma").Server,
+    os = require('os');
 
 namespace("spec", function () {
+
+    var KARMA_CONFIG = path.resolve("./karma.conf.js"),
+        taskOptions = { async: true };
+
     desc("Run all specs");
     task("run", function () {
-        var options = {
-            configFile: path.resolve(KARMA_CONFIG),
+        var server = new KarmaServer({
+            configFile: KARMA_CONFIG,
             browsers: ["PhantomJS2"],
             reporters: ["dots"],
             singleRun: true,
             autoWatch: false,
             colors: false
-        };
-
-        var server = new KarmaServer(options, function (exitCode) {
+        }, function (exitCode) {
             if (exitCode === 0) {
                 complete();
-            }
-            else {
+            } else {
                 fail("Karma has exited with " + exitCode);
             }
         });
 
         server.start();
-    }, {async: true});
+    }, taskOptions);
 
     desc("Watch files and run specs on changes");
-    task("watch", {async: true}, function () {
-        var options = {
-            configFile: path.resolve(KARMA_CONFIG),
+    task("watch", taskOptions, function () {
+
+        var server = new KarmaServer({
+            configFile: KARMA_CONFIG,
             browsers: ["PhantomJS2"],
             reporters: ["progress"],
             singleRun: false,
             autoWatch: true,
             colors: true
-        };
-
-        var server = new KarmaServer(options, function (exitCode) {
+        }, function (exitCode) {
             if (exitCode === 0) {
                 complete();
-            }
-            else {
+            } else {
                 fail("Karma has exited with " + exitCode);
             }
         });
@@ -57,45 +54,56 @@ namespace("spec", function () {
 });
 
 namespace('build', function () {
+
+    var taskOptions = { async: true };
+
     desc('Task used to merge all source code files into one');
-    task('merge', {async: true}, function (params) {
+    task('merge', taskOptions, function (params) {
         console.log("Start merging source code");
         var inputDir = params.inputDir || "./build/src",
             outputDir = params.outputDir || "./build",
-            inputPath = path.join("../../", inputDir, params.fileName + ".js"),
-            outputPath = path.join("../../", outputDir, params.fileName + ".js");
+            /**
+             * Solution for Windows & OSX
+             *
+             * os.platform();
+             * 'linux' on Linux
+             * 'win32' on Windows 32-bit
+             * 'win64' on Windows 64-bit
+             * 'darwin' on OSX
+             * os.arch();
+             * 'x86' on 32-bit CPU architecture
+             * 'x64' on 64-bit CPU architecture
+             */
+            platformPath = os.platform() === "darwin" ? "./" : "../../",
+            inputPath = path.resolve(platformPath, inputDir, params.fileName + ".js"),
+            outputPath = path.resolve(platformPath, outputDir, params.fileName + ".js");
 
-        childProcess.exec('browserify ' + inputPath + ' -o ' + outputPath, {
-            cwd: "./node_modules/.bin/"
-        }, function (error, stdout, stderr) {
-            if (error) {
-                fail("Failed to merge source code. stdout: " + stdout + " - stderr: " + stderr)
-            } else {
-                complete();
-            }
+        jake.exec(['browserify ' + inputPath + ' -o ' + outputPath], {printStdout: true}, function () {
+            complete();
         });
+
     });
 
     desc('Task used to transform ES6 code to ES5');
-    task('transformToES5', {async: true}, function (params) {
+    task('transformToES5', taskOptions, function (params) {
         console.log("Start transforming ES6 code to ES5");
         var walker = fileWalker.walk(params.inputDir, {followLinks: false});
 
         walker.on('file', function (root, stat, next) {
-            var outputDir = path.join(params.outputDir, root);
-            var outputPath = path.join(outputDir, stat.name);
-            var inputPath = path.join(root, stat.name);
+            var outputDir = path.join(params.outputDir, root),
+                outputPath = path.join(outputDir, stat.name),
+                inputPath = path.join(root, stat.name),
 
-            // get source code
-            var source = fs.readFileSync(inputPath, {encoding: 'utf-8'});
+                // get source code
+                source = fs.readFileSync(inputPath, {encoding: 'utf-8'}),
 
-            // transform to ES5
-            var transformed = babel.transform(source, {
-                modules: "common",
-                sourceMaps: false,
-                comments: true,
-                ast: false
-            }).code;
+                // transform to ES5
+                transformed = babel.transform(source, {
+                    modules: "common",
+                    sourceMaps: false,
+                    comments: true,
+                    ast: false
+                }).code;
 
             // create folder if not exists
             if (!fs.existsSync(outputDir)) {
@@ -114,7 +122,7 @@ namespace('build', function () {
     });
 
     desc('Task used to minify source code');
-    task('minify', {async: true}, function (params) {
+    task('minify', taskOptions, function (params) {
         console.log("Start minifying source code");
 
         // get source code
@@ -147,7 +155,7 @@ namespace('build', function () {
     });
 
     desc('Task used to merge and transform and minify ES6 source code');
-    task('compile', {async: true}, function (params) {
+    task('compile', taskOptions, function (params) {
         var toES5Task = jake.Task['build:transformToES5'],
             minifyTask = jake.Task['build:minify'],
             mergeTask = jake.Task['build:merge'],
@@ -182,7 +190,7 @@ namespace('build', function () {
     });
 
     desc('Task used to build the framework');
-    task('all', {async: true}, function (params) {
+    task('all', taskOptions, function (params) {
         params = params || {};
 
         var compileTask = jake.Task['build:compile'],
@@ -204,7 +212,7 @@ namespace('build', function () {
     });
 
     desc('Task used to build the all tests');
-    task('tests', {async: true}, function (params) {
+    task('tests', taskOptions, function (params) {
         params = params || {};
 
         var compileTestsTask = jake.Task['build:compile'],

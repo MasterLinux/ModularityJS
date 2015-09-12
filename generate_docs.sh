@@ -1,10 +1,12 @@
-#!/usr/bin/env/ bash
+#!/usr/bin/env bash
 
-SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd $SCRIPT_PATH
+source ./config.sh
 
-if [ ! -f $SCRIPT_PATH/node_modules/.bin/jake ]
-then
-    npm rebuild
+sh ./build.sh && echo "Start create documentation" &&
+
+if [ "$(uname)" == "Darwin" ]; then
+    # Do something under Mac OS X platform
+    ./node_modules/.bin/jsdoc ./build/modularity.js -d ./build/docs/ -c ./config_jsdoc.json
+else
+    ./node_modules/.bin/jsdoc ./build/modularity.js -d ./build/docs/
 fi
-./node_modules/.bin/jake build:all && ./node_modules/.bin/jsdoc ./build/src -r -d ./build/docs/
