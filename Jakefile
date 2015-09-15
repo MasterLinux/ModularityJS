@@ -1,12 +1,11 @@
 var babel = require('babel-core'),
-    childProcess = require('child_process'),
     fileWalker = require('walk'),
     fs = require('fs'),
     uglify = require("uglify-js"),
     KarmaServer = require("karma").Server,
     mkdirp = require('mkdirp'),
-    os = require('os'),
-    path = require('path');
+    path = require('path'),
+    browserify = require("browserify");
 
 namespace("spec", function () {
 
@@ -30,10 +29,10 @@ namespace("spec", function () {
         });
 
         server.start();
-    }, { async: true });
+    }, {async: true});
 
     desc("Watch files and run specs on changes");
-    task("watch", { async: true }, function () {
+    task("watch", {async: true}, function () {
 
         var server = new KarmaServer({
             configFile: KARMA_CONFIG,
@@ -56,47 +55,30 @@ namespace("spec", function () {
 namespace('build', function () {
 
     desc('Task used to merge all source code files into one');
-    task('merge', { async: true }, function (params) {
+    task('merge', {async: true}, function (params) {
         console.log("Start merging source code");
         var inputDir = params.inputDir || "./build/src",
             outputDir = params.outputDir || "./build",
-            /**
-             * Solution for Windows & OSX
-             *
-             * os.platform();
-             * 'linux' on Linux
-             * 'win32' on Windows 32-bit
-             * 'win64' on Windows 64-bit
-             * 'darwin' on OSX
-             * os.arch();
-             * 'x86' on 32-bit CPU architecture
-             * 'x64' on 64-bit CPU architecture
-             */
-            platformPath = os.platform() === "darwin" ? "./" : "../../",
-            inputPath = path.resolve(platformPath, inputDir, params.fileName + ".js"),
-            outputPath = path.resolve(platformPath, outputDir, params.fileName + ".js"),
-            cmd = "browserify " + inputPath + " -o " + outputPath;
+            inputPath = path.join(inputDir, params.fileName + ".js"),
+            outputPath = path.join(outputDir, params.fileName + ".js"),
+            outputStream = fs.createWriteStream(outputPath),
+            bundle = browserify();
 
-        if (os.platform() === "darwin") {
-            jake.exec([cmd], {printStdout: true}, function () {
-                complete();
-            });
-        } else {
-            childProcess.exec(cmd, {
-                cwd: "./node_modules/.bin/"
-            }, function (error, stdout, stderr) {
-                if (error) {
-                    fail("Failed to merge source code. stdout: " + stdout + " - stderr: " + stderr)
-                } else {
-                    complete();
-                }
-            });
-        }
+        bundle.add(inputPath);
 
+        outputStream.on('finish', function () {
+            complete();
+        });
+
+        outputStream.on('error', function () {
+            fail("Merging source code failed");
+        });
+
+        bundle.bundle().pipe(outputStream)
     });
 
     desc('Task used to transform ES6 code to ES5');
-    task('transformToES5', { async: true }, function (params) {
+    task('transformToES5', {async: true}, function (params) {
         console.log("Start transforming ES6 code to ES5");
         var walker = fileWalker.walk(params.inputDir, {followLinks: false});
 
@@ -105,10 +87,10 @@ namespace('build', function () {
                 outputPath = path.join(outputDir, stat.name),
                 inputPath = path.join(root, stat.name),
 
-                // get source code
+            // get source code
                 source = fs.readFileSync(inputPath, {encoding: 'utf-8'}),
 
-                // transform to ES5
+            // transform to ES5
                 transformed = babel.transform(source, {
                     modules: "common",
                     sourceMaps: false,
@@ -133,7 +115,7 @@ namespace('build', function () {
     });
 
     desc('Task used to minify source code');
-    task('minify', { async: true }, function (params) {
+    task('minify', {async: true}, function (params) {
         console.log("Start minifying source code");
 
         // get source code
@@ -166,7 +148,7 @@ namespace('build', function () {
     });
 
     desc('Task used to merge and transform and minify ES6 source code');
-    task('compile', { async: true }, function (params) {
+    task('compile', {async: true}, function (params) {
         var toES5Task = jake.Task['build:transformToES5'],
             minifyTask = jake.Task['build:minify'],
             mergeTask = jake.Task['build:merge'],
@@ -201,7 +183,7 @@ namespace('build', function () {
     });
 
     desc('Task used to build the framework');
-    task('all', { async: true }, function (params) {
+    task('all', {async: true}, function (params) {
         params = params || {};
 
         var compileTask = jake.Task['build:compile'],
@@ -223,7 +205,7 @@ namespace('build', function () {
     });
 
     desc('Task used to build the all tests');
-    task('tests', { async: true }, function (params) {
+    task('tests', {async: true}, function (params) {
         params = params || {};
 
         var compileTestsTask = jake.Task['build:compile'],
