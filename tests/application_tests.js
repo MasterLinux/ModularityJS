@@ -1,4 +1,4 @@
-import {Application} from "../src/application.js";
+import {Version, Application} from "../src/application.js";
 import {EventResponder} from "../src/event_responder.js";
 import {expect, assert} from "chai";
 
@@ -20,6 +20,24 @@ export var ApplicationTests = (function () {
             expect(appUnderTest.version.major).to.be.equal(expectedMajorVersion);
             expect(appUnderTest.version.minor).to.be.equal(expectedMinorVersion);
             expect(appUnderTest.version.maintenance).to.be.equal(expectedMaintenanceVersion);
+
+            done();
+        });
+
+    });
+
+    describe("Info", () => {
+
+        it("should parse version", (done) => {
+            let expectedMajorVersion = 1;
+            let expectedMinorVersion = 2;
+            let expectedMaintenanceVersion = 4;
+            let expectedVersionNumber = `${expectedMajorVersion}.${expectedMinorVersion}.${expectedMaintenanceVersion}`;
+            let versionUnderTest = new Version(expectedVersionNumber);
+
+            expect(versionUnderTest.major).to.be.equal(expectedMajorVersion);
+            expect(versionUnderTest.minor).to.be.equal(expectedMinorVersion);
+            expect(versionUnderTest.maintenance).to.be.equal(expectedMaintenanceVersion);
 
             done();
         });
