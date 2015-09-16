@@ -3,7 +3,7 @@ import {NamespaceCollisionError} from "../src/error/namespace_collision_error.js
 import {ExtensionExistsError} from "../src/error/extension_exists_error.js";
 import {expect, assert} from "chai";
 
-export var NamespaceUtilityTests = (function () {
+(function () {
     describe("Namespace utility", () => {
 
         it("should resolve namespace", (done) => {

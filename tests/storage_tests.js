@@ -3,7 +3,7 @@ import * as MemoryUtilites from "../src/utility/memory_utility.js";
 import {UnsupportedOperationError} from "../src/error/unsupported_operation_error.js";
 import {expect, assert} from "chai";
 
-export var StorageTests = (function () {
+(function () {
     describe("Storage", () => {
         let expectedObjectKey = "test_object_key",
             objectUnderTest = {},

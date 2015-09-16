@@ -1,7 +1,7 @@
 import {Stack} from "../src/data/stack.js";
 import {expect, assert} from "chai";
 
-export var StackTests = (function () {
+(function () {
     describe("Stack", () => {
 
         it("should add value via constructor", (done) => {

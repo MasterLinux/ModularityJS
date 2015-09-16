@@ -1,7 +1,7 @@
 import {UniqueId} from "../src/data/unique_id.js";
 import {expect, assert} from "chai";
 
-export var UniqueIdTests = (function () {
+(function () {
     describe("Unique ID", () => {
         
         

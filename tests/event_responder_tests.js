@@ -17,7 +17,7 @@ export class MockEventResponder extends EventResponder {
     }
 }
 
-export var EventResponderTests = (function () {
+(function () {
     describe("Event Responder", () => {
 
         it("should handle error", (done) => {

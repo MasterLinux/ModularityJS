@@ -1,7 +1,7 @@
 import {Version} from "../src/data/version.js";
 import {expect, assert} from "chai";
 
-export var VersionTests = (function () {
+(function () {
 
     describe("Version", () => {
 

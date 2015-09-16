@@ -3,7 +3,6 @@ import {Version} from "./data/version.js";
 
 export class Application extends EventResponder {
 
-
     constructor({name, version}) {
         super();
 

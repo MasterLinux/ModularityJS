@@ -1,7 +1,7 @@
 import {Event, ErrorEvent} from "../src/event.js";
 import {expect, assert} from "chai";
 
-export var EventTests = (function () {
+(function () {
     describe("Event", () => {
 
         it("should stop propagation", (done) => {

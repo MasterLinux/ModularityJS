@@ -3,7 +3,7 @@ import {Version} from "../src/data/version.js";
 import {EventResponder} from "../src/event_responder.js";
 import {expect, assert} from "chai";
 
-export var ApplicationTests = (function () {
+(function () {
     describe("Application", () => {
 
         it("should initialize app with info", (done) => {
