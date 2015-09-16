@@ -1,4 +1,5 @@
-import {Version, Application} from "../src/application.js";
+import {Application} from "../src/application.js";
+import {Version} from "../src/data/version.js";
 import {EventResponder} from "../src/event_responder.js";
 import {expect, assert} from "chai";
 
@@ -6,41 +7,21 @@ export var ApplicationTests = (function () {
     describe("Application", () => {
 
         it("should initialize app with info", (done) => {
-            let expectedMajorVersion = 1;
-            let expectedMinorVersion = 2;
-            let expectedMaintenanceVersion = 4;
+            let expectedVersion = "1.2.4";
             let expectedAppName = "test_app";
             let appUnderTest = new Application({
                 name: expectedAppName,
-                version: `${expectedMajorVersion}.${expectedMinorVersion}.${expectedMaintenanceVersion}`
+                version: expectedVersion
             });
 
             expect(appUnderTest).to.be.an.instanceof(EventResponder);
             expect(appUnderTest.name).to.be.equal(expectedAppName);
-            expect(appUnderTest.version.major).to.be.equal(expectedMajorVersion);
-            expect(appUnderTest.version.minor).to.be.equal(expectedMinorVersion);
-            expect(appUnderTest.version.maintenance).to.be.equal(expectedMaintenanceVersion);
+            expect(appUnderTest.version).to.be.an.instanceof(Version);
+            expect(appUnderTest.version.toString()).to.be.equal(expectedVersion);
 
             done();
         });
 
     });
 
-    describe("Info", () => {
-
-        it("should parse version", (done) => {
-            let expectedMajorVersion = 1;
-            let expectedMinorVersion = 2;
-            let expectedMaintenanceVersion = 4;
-            let expectedVersionNumber = `${expectedMajorVersion}.${expectedMinorVersion}.${expectedMaintenanceVersion}`;
-            let versionUnderTest = new Version(expectedVersionNumber);
-
-            expect(versionUnderTest.major).to.be.equal(expectedMajorVersion);
-            expect(versionUnderTest.minor).to.be.equal(expectedMinorVersion);
-            expect(versionUnderTest.maintenance).to.be.equal(expectedMaintenanceVersion);
-
-            done();
-        });
-
-    });
 })();

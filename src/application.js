@@ -1,4 +1,5 @@
 import {EventResponder} from "./event_responder.js";
+import {Version} from "./data/version.js";
 
 export class Application extends EventResponder {
 
@@ -16,27 +17,5 @@ export class Application extends EventResponder {
 
     get version() {
         return this._version;
-    }
-}
-
-export class Version {
-    constructor(version) {
-        var [major, minor, maintenance] = version.split(".");
-
-        this._maintenance = parseInt(maintenance);
-        this._major = parseInt(major);
-        this._minor = parseInt(minor);
-    }
-
-    get maintenance() {
-        return this._maintenance;
-    }
-
-    get major() {
-        return this._major;
-    }
-
-    get minor() {
-        return this._minor;
     }
 }
