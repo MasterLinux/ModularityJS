@@ -59,20 +59,21 @@ namespace('build', function () {
     desc('Task used generate all required parser');
     task('buildParser', {async: true}, function (params) {
         console.log("Start building parser");
-        var versionGrammarFilePath = path.join("./grammars", "version.pegjs"),
-            versionGrammar = fs.readFileSync(versionGrammarFilePath, {encoding: 'utf-8'}),
-            outputDir = path.join("./build/grammar/"),
-            outputPath = path.join(outputDir, "version_parser.js");
+        var inputFilePath = path.join("./grammars", "version.pegjs"),
+            versionGrammar = fs.readFileSync(inputFilePath, {encoding: 'utf-8'}),
+            outputDir = path.join("./src/parser/"),
+            outputPath = path.join(outputDir, "version_parser.js"),
+            parserName = "VersionParser";
 
-        var parser = PEG.buildParser(versionGrammar, {
+        // generate parser using grammar
+        var parserSrc = PEG.buildParser(versionGrammar, {
             output: "source"
         });
 
-        //console.log(parser);
-
+        // convert parser to a module
         var src = ejs.render("export var <%- name %> = <%- src %>;", {
-            name: "VersionParser",
-            src: parser
+            name: parserName,
+            src: parserSrc
         });
 
         // create folder if not exists
