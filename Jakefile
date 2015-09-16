@@ -1,31 +1,29 @@
-var childProcess = require('child_process'),
-    babel = require('babel-core'),
-    uglify = require("uglify-js"),
-    fs = require('fs'),
+var babel = require('babel-core'),
     fileWalker = require('walk'),
-    path = require('path'),
+    fs = require('fs'),
+    uglify = require("uglify-js"),
+    KarmaServer = require("karma").Server,
     mkdirp = require('mkdirp'),
-    KarmaServer = require("karma").Server;
-
-var KARMA_CONFIG = "./karma.conf.js";
+    path = require('path'),
+    browserify = require("browserify");
 
 namespace("spec", function () {
+
+    var KARMA_CONFIG = path.resolve("./karma.conf.js");
+
     desc("Run all specs");
     task("run", function () {
-        var options = {
-            configFile: path.resolve(KARMA_CONFIG),
+        var server = new KarmaServer({
+            configFile: KARMA_CONFIG,
             browsers: ["PhantomJS2"],
             reporters: ["dots"],
             singleRun: true,
             autoWatch: false,
             colors: false
-        };
-
-        var server = new KarmaServer(options, function (exitCode) {
+        }, function (exitCode) {
             if (exitCode === 0) {
                 complete();
-            }
-            else {
+            } else {
                 fail("Karma has exited with " + exitCode);
             }
         });
@@ -35,20 +33,18 @@ namespace("spec", function () {
 
     desc("Watch files and run specs on changes");
     task("watch", {async: true}, function () {
-        var options = {
-            configFile: path.resolve(KARMA_CONFIG),
+
+        var server = new KarmaServer({
+            configFile: KARMA_CONFIG,
             browsers: ["PhantomJS2"],
             reporters: ["progress"],
             singleRun: false,
             autoWatch: true,
             colors: true
-        };
-
-        var server = new KarmaServer(options, function (exitCode) {
+        }, function (exitCode) {
             if (exitCode === 0) {
                 complete();
-            }
-            else {
+            } else {
                 fail("Karma has exited with " + exitCode);
             }
         });
@@ -57,23 +53,28 @@ namespace("spec", function () {
 });
 
 namespace('build', function () {
+
     desc('Task used to merge all source code files into one');
     task('merge', {async: true}, function (params) {
         console.log("Start merging source code");
         var inputDir = params.inputDir || "./build/src",
             outputDir = params.outputDir || "./build",
-            inputPath = path.join("../../", inputDir, params.fileName + ".js"),
-            outputPath = path.join("../../", outputDir, params.fileName + ".js");
+            inputPath = path.join(inputDir, params.fileName + ".js"),
+            outputPath = path.join(outputDir, params.fileName + ".js"),
+            outputStream = fs.createWriteStream(outputPath),
+            bundle = browserify();
 
-        childProcess.exec('browserify ' + inputPath + ' -o ' + outputPath, {
-            cwd: "./node_modules/.bin/"
-        }, function (error, stdout, stderr) {
-            if (error) {
-                fail("Failed to merge source code. stdout: " + stdout + " - stderr: " + stderr)
-            } else {
-                complete();
-            }
+        bundle.add(inputPath);
+
+        outputStream.on('finish', function () {
+            complete();
         });
+
+        outputStream.on('error', function () {
+            fail("Merging source code failed");
+        });
+
+        bundle.bundle().pipe(outputStream)
     });
 
     desc('Task used to transform ES6 code to ES5');
@@ -82,20 +83,20 @@ namespace('build', function () {
         var walker = fileWalker.walk(params.inputDir, {followLinks: false});
 
         walker.on('file', function (root, stat, next) {
-            var outputDir = path.join(params.outputDir, root);
-            var outputPath = path.join(outputDir, stat.name);
-            var inputPath = path.join(root, stat.name);
+            var outputDir = path.join(params.outputDir, root),
+                outputPath = path.join(outputDir, stat.name),
+                inputPath = path.join(root, stat.name),
 
             // get source code
-            var source = fs.readFileSync(inputPath, {encoding: 'utf-8'});
+                source = fs.readFileSync(inputPath, {encoding: 'utf-8'}),
 
             // transform to ES5
-            var transformed = babel.transform(source, {
-                modules: "common",
-                sourceMaps: false,
-                comments: true,
-                ast: false
-            }).code;
+                transformed = babel.transform(source, {
+                    modules: "common",
+                    sourceMaps: false,
+                    comments: true,
+                    ast: false
+                }).code;
 
             // create folder if not exists
             if (!fs.existsSync(outputDir)) {

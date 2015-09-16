@@ -8,24 +8,24 @@
   },
   "author": "Christoph Grundmann <christoph.grundmann@googlemail.com>",
   "contributors": [
-    "Sven Lang"
+    "Sven Lang <sven.lang@apuerto.com>"
   ],
   "license": "proprietary",
   "devDependencies": {
-    "jake": "latest",
     "babel-core": "~5.8.21",
-    "uglify-js": "~2.4.24",
+    "babelify": "~6.3.0",
+    "browserify": "~11.0.1",
+    "chai": "~3.0.0",
+    "jake": "latest",
     "jsdoc": "~3.3.2",
     "karma": "~0.13.9",
-    "chai": "~3.0.0",
-    "mocha": "~2.2.5",
-    "walk": "~2.3.9",
-    "browserify": "~11.0.1",
-    "mkdirp": "~0.5.1",
     "karma-browserify": "~4.3.0",
-    "karma-source-map-support": "~1.1.0",
     "karma-mocha": "~0.2.0",
     "karma-phantomjs2-launcher": "~0.3.2",
-    "babelify": "~6.3.0"
+    "karma-source-map-support": "~1.1.0",
+    "mkdirp": "~0.5.1",
+    "mocha": "~2.2.5",
+    "uglify-js": "~2.4.24",
+    "walk": "~2.3.9"
   }
 }
