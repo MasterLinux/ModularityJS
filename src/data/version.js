@@ -4,20 +4,14 @@ import {ParsingError} from "../error/parsing_error.js";
 
 export class Version {
 
-    constructor({
-        major = Version.defaultMajorVersion,
-        minor = Version.defaultMinorVersion,
-        maintenance = Version.defaultMaintenanceVersion
-        } = {}) {
+    constructor({major = 1, minor = 0, maintenance = 0} = {}) {
         this._major = major;
         this._minor = minor;
         this._maintenance = maintenance;
     }
 
     static parse(version) {
-        let major;
-        let minor;
-        let maintenance;
+        let major, minor, maintenance;
 
         try {
             let result = VersionParser.parse(version);
@@ -34,18 +28,6 @@ export class Version {
             minor: minor,
             maintenance: maintenance
         });
-    }
-
-    static get defaultMajorVersion() {
-        return 1;
-    }
-
-    static get defaultMinorVersion() {
-        return 0;
-    }
-
-    static get defaultMaintenanceVersion() {
-        return 0;
     }
 
     get maintenance() {
