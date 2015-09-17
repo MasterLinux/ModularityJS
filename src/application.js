@@ -7,7 +7,7 @@ export class Application extends EventResponder {
         super();
 
         this._name = name;
-        this._version = new Version(version);
+        this._version = Version.parse(version);
     }
 
     get name() {

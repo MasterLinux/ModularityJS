@@ -1,20 +1,39 @@
 import * as TypeUtilities from "../utility/type_utility.js";
 import {VersionParser} from "../parser/version_parser.js";
+import {ParsingError} from "../error/parsing_error.js";
 
 export class Version {
 
-    constructor(version = `${Version.defaultMajorVersion}`) {
+    constructor({
+        major = Version.defaultMajorVersion,
+        minor = Version.defaultMinorVersion,
+        maintenance = Version.defaultMaintenanceVersion
+        } = {}) {
+        this._major = major;
+        this._minor = minor;
+        this._maintenance = maintenance;
+    }
+
+    static parse(version) {
+        let major;
+        let minor;
+        let maintenance;
+
         try {
             let result = VersionParser.parse(version);
 
-            this._major = result.major;
-            this._minor = result.minor;
-            this._maintenance = result.maintenance;
+            major = result.major;
+            minor = result.minor;
+            maintenance = result.maintenance;
         } catch (e) {
-            this._major = Version.defaultMajorVersion;
-            this._minor = Version.defaultMinorVersion;
-            this._maintenance = Version.defaultMaintenanceVersion;
+            throw new ParsingError("Version", version, e);
         }
+
+        return new Version({
+            major: major,
+            minor: minor,
+            maintenance: maintenance
+        });
     }
 
     static get defaultMajorVersion() {
