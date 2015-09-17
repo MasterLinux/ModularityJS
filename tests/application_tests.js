@@ -1,6 +1,8 @@
 import {Application} from "../src/application.js";
 import {Version} from "../src/data/version.js";
 import {EventResponder} from "../src/event_responder.js";
+import {EventResponderMock} from "./mocks/event_responder_mock.js";
+import {ParsingError} from "../src/error/parsing_error.js";
 import {expect, assert} from "chai";
 
 (function () {
@@ -9,13 +11,31 @@ import {expect, assert} from "chai";
         it("should initialize app with info", (done) => {
             let expectedVersion = "1.2.4";
             let expectedAppName = "test_app";
-            let appUnderTest = new Application({
+            let appUnderTest = new Application(null, {
                 name: expectedAppName,
                 version: expectedVersion
             });
 
             expect(appUnderTest).to.be.an.instanceof(EventResponder);
             expect(appUnderTest.name).to.be.equal(expectedAppName);
+            expect(appUnderTest.version).to.be.an.instanceof(Version);
+            expect(appUnderTest.version.toString()).to.be.equal(expectedVersion);
+
+            done();
+        });
+
+        it("should propagate error on initializing app with invalid version number", (done) => {
+            let expectedVersion = "1.0.0";
+
+            let responderUnderTest = new EventResponderMock(null, (actualError) => {
+                expect(actualError).to.be.an.instanceof(ParsingError);
+            });
+
+            let appUnderTest = new Application(responderUnderTest, {
+                name: "test_app",
+                version: "a.2.4"
+            });
+
             expect(appUnderTest.version).to.be.an.instanceof(Version);
             expect(appUnderTest.version.toString()).to.be.equal(expectedVersion);
 
