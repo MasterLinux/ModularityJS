@@ -1,29 +1,20 @@
 import * as TypeUtilities from "../utility/type_utility.js";
+import {VersionParser} from "../parser/version_parser.js";
 
 export class Version {
 
     constructor(version = `${Version.defaultMajorVersion}`) {
-        var [major, minor, maintenance] = version.split(".");
+        try {
+            let result = VersionParser.parse(version);
 
-        maintenance = parseInt(maintenance);
-        major = parseInt(major);
-        minor = parseInt(minor);
-
-        if (!TypeUtilities.isNaN(major) && major >= 0) {
-            this._major = major;
-
-            if (!TypeUtilities.isNaN(minor) && minor >= 0) {
-                this._minor = minor;
-
-                if (!TypeUtilities.isNaN(maintenance) && maintenance >= 0) {
-                    this._maintenance = maintenance;
-                }
-            }
+            this._major = result.major;
+            this._minor = result.minor;
+            this._maintenance = result.maintenance;
+        } catch (e) {
+            this._major = Version.defaultMajorVersion;
+            this._minor = Version.defaultMinorVersion;
+            this._maintenance = Version.defaultMaintenanceVersion;
         }
-
-        this._major = TypeUtilities.isNumber(this.major) ? this.major : Version.defaultMajorVersion;
-        this._minor = TypeUtilities.isNumber(this.minor) ? this.minor : Version.defaultMinorVersion;
-        this._maintenance = TypeUtilities.isNumber(this.maintenance) ? this.maintenance : Version.defaultMaintenanceVersion;
     }
 
     static get defaultMajorVersion() {
