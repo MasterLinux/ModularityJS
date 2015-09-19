@@ -1,4 +1,5 @@
 import * as NamespaceUtility from "./utility/namespace_utility.js";
+import {Application} from "./application.js";
 
 /**
  * The main framework facade used to register new modules and extensions
