@@ -1,4 +1,3 @@
-import * as TypeUtilities from "../utility/type_utility.js";
 import {VersionParser} from "../parser/version_parser.js";
 import {ParsingError} from "../error/parsing_error.js";
 
