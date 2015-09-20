@@ -1,7 +1,7 @@
 import * as TypeUtility from "../src/utility/type_utility.js";
 import {expect, assert} from "chai";
 
-export var TypeUtilityTests = (function () {
+(function () {
     describe("Type utility", () => {
         let objectUnderTest = {},
             functionUnderTest = function () {},

@@ -5,7 +5,9 @@ var babel = require('babel-core'),
     KarmaServer = require("karma").Server,
     mkdirp = require('mkdirp'),
     path = require('path'),
-    browserify = require("browserify");
+    browserify = require("browserify"),
+    PEG = require("pegjs"),
+    ejs = require("ejs");
 
 namespace("spec", function () {
 
@@ -53,6 +55,38 @@ namespace("spec", function () {
 });
 
 namespace('build', function () {
+
+    desc('Task used generate all required parser');
+    task('buildParser', {async: true}, function (params) {
+        console.log("Start building parser");
+        var inputFilePath = path.join("./grammars", "version.pegjs"),
+            versionGrammar = fs.readFileSync(inputFilePath, {encoding: 'utf-8'}),
+            outputDir = path.join("./src/parser/"),
+            outputPath = path.join(outputDir, "version_parser.js"),
+            parserName = "VersionParser";
+
+        // generate parser using grammar
+        var parserSrc = PEG.buildParser(versionGrammar, {
+            output: "source"
+        });
+
+        // convert parser to a module
+        var src = ejs.render("export var <%- name %> = <%- src %>;", {
+            name: parserName,
+            src: parserSrc
+        });
+
+        // create folder if not exists
+        if (!fs.existsSync(outputDir)) {
+            mkdirp.sync(outputDir);
+        }
+
+        // write file to storage
+        fs.writeFileSync(outputPath, src);
+
+        complete();
+    });
+
 
     desc('Task used to merge all source code files into one');
     task('merge', {async: true}, function (params) {

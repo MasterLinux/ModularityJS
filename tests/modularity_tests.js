@@ -3,7 +3,7 @@ import {Modularity} from "../src/modularity.js";
 import {ExtensionExistsError} from "../src/error/extension_exists_error.js";
 import {NamespaceCollisionError} from "../src/error/namespace_collision_error.js";
 
-export var ModularityTests = (function () {
+(function () {
     describe("Modularity", () => {
 
         beforeEach(function () {

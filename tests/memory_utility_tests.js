@@ -2,7 +2,7 @@ import * as MemoryUtility from "../src/utility/memory_utility.js";
 import {UnsupportedOperationError} from "../src/error/unsupported_operation_error.js";
 import {expect, assert} from "chai";
 
-export var MemoryUtilityTests = (function () {
+(function () {
     describe("Memory", () => {
         let expectedObjectKey = "test_object_key",
             objectUnderTest = {},
