@@ -19,7 +19,7 @@ export class Page extends EventResponder {
         this._id = id;
         this._title = title;
         this._nextPage = null;
-        this._previousPage = parent;
+        this._previousPage = parent instanceof Page ? parent : null;
         this._children = children;
     }
 
@@ -55,15 +55,21 @@ export class Page extends EventResponder {
         return this._previousPage;
     }
 
+    /**
+     * Renders the page with the given ID
+     * @param {String} pageId - ID of the page to render
+     * @returns {Boolean} true if a page with the given ID exists and navigation was successful, false otherwise
+     */
     navigateTo(pageId) {
         let pageConfig = this.children.getItem(pageId);
+        let canNavigate = !!pageConfig;
 
-        if (pageConfig) {
+        if (canNavigate) {
             this._nextPage = Page.create(this, pageConfig);
-            return true;
         } else {
             this.propagateError(new NavigationError(this.id, pageId));
-            return false;
         }
+
+        return canNavigate;
     }
 }

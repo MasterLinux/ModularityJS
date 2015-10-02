@@ -119,6 +119,31 @@ import {expect, assert} from "chai";
             pageUnderTest.navigateTo("unavailable_page_id");
         });
 
+        it("should set parent", (done) => {
+            let responderUnderTest = new EventResponderMock(null, (_) => {});
+
+            // should set previousPage to null if parent is not a page
+            let pageUnderTest = Page.create(responderUnderTest, {
+                id: "test_id"
+            });
+
+            // should set page as previousPage
+            let anotherPageUnderTest = Page.create(pageUnderTest, {
+                id: "test_id"
+            });
+
+            // each other value should set null, too
+            let yetAnotherPageUnderTest = Page.create(undefined, {
+                id: "test_id"
+            });
+
+            expect(pageUnderTest.previousPage).to.be.null;
+            expect(anotherPageUnderTest.previousPage).to.be.not.null;
+            expect(anotherPageUnderTest.previousPage).to.be.instanceOf(Page);
+            expect(yetAnotherPageUnderTest.previousPage).to.be.null;
+            done();
+        });
+
     });
 
 })();
