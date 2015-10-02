@@ -43,7 +43,7 @@ export class Page extends EventResponder {
         return this._title;
     }
 
-    get navigationStack() {
+    get children() {
         return this._children;
     }
 
@@ -56,7 +56,7 @@ export class Page extends EventResponder {
     }
 
     navigateTo(pageId) {
-        let pageConfig = this.navigationStack.getItem(pageId);
+        let pageConfig = this.children.getItem(pageId);
 
         if (pageConfig) {
             this._nextPage = Page.create(this, pageConfig);

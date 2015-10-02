@@ -67,9 +67,9 @@ import {expect, assert} from "chai";
             });
 
             expect(pageUnderTest.nextPage).to.be.null;
-            expect(pageUnderTest.navigationStack).to.be.not.null;
-            expect(pageUnderTest.navigationStack).to.be.instanceOf(Dictionary);
-            expect(pageUnderTest.navigationStack.length).to.be.equal(1);
+            expect(pageUnderTest.children).to.be.not.null;
+            expect(pageUnderTest.children).to.be.instanceOf(Dictionary);
+            expect(pageUnderTest.children.length).to.be.equal(1);
 
             pageUnderTest.navigateTo(expectedId);
 
