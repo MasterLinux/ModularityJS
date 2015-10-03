@@ -49,6 +49,32 @@ import {expect, assert} from "chai";
             done()
         });
 
+        it("should set parent", (done) => {
+            let responderUnderTest = new EventResponderMock(null, (_) => {
+            });
+
+            // should set previousPage to null if parent is not a page
+            let pageUnderTest = Page.create(responderUnderTest, {
+                id: "test_id"
+            });
+
+            // should set page as previousPage
+            let anotherPageUnderTest = Page.create(pageUnderTest, {
+                id: "test_id"
+            });
+
+            // each other value should set null, too
+            let yetAnotherPageUnderTest = Page.create(undefined, {
+                id: "test_id"
+            });
+
+            expect(pageUnderTest.previousPage).to.be.null;
+            expect(anotherPageUnderTest.previousPage).to.be.not.null;
+            expect(anotherPageUnderTest.previousPage).to.be.instanceOf(Page);
+            expect(yetAnotherPageUnderTest.previousPage).to.be.null;
+            done();
+        });
+
         it("should add page to navigation stack", (done) => {
             let expectedTitle = "test_title";
             let expectedId = "test_id";
@@ -106,6 +132,58 @@ import {expect, assert} from "chai";
             done()
         });
 
+        it("should be rendered", (done) => {
+            let expectedId = "test_id";
+
+            let expectedPage = {
+                id: expectedId
+            };
+
+            let pageUnderTest = Page.create(undefined, {
+                id: "test_id_2",
+                children: [expectedPage]
+            });
+
+            // root page must be rendered by calling render()
+            expect(pageUnderTest.isRendered).to.be.false;
+            pageUnderTest.addToDOM();
+            expect(pageUnderTest.isRendered).to.be.true;
+
+            // just one page is rendered at a time
+            pageUnderTest.navigateTo(expectedId);
+            expect(pageUnderTest.isRendered).to.be.false;
+            expect(pageUnderTest.nextPage.isRendered).to.be.true;
+
+            pageUnderTest.nextPage.navigateBack();
+            expect(pageUnderTest.isRendered).to.be.true;
+
+            done()
+        });
+
+        it("should navigate back", (done) => {
+            let expectedId = "test_id";
+
+            let expectedPage = {
+                id: expectedId
+            };
+
+            let pageUnderTest = Page.create(undefined, {
+                id: "test_id_2",
+                children: [expectedPage]
+            });
+
+            pageUnderTest.addToDOM();
+
+            pageUnderTest.navigateTo(expectedId);
+            expect(pageUnderTest.nextPage).to.be.not.null;
+            expect(pageUnderTest.nextPage.previousPage).to.be.equal(pageUnderTest);
+
+            pageUnderTest.nextPage.navigateBack();
+            expect(pageUnderTest.nextPage).to.be.null;
+
+            done()
+        });
+
         it("should propagate error on missing page on navigation", (done) => {
             let responderUnderTest = new EventResponderMock(null, (actualError) => {
                 expect(actualError).to.be.an.instanceof(NavigationError);
@@ -117,31 +195,6 @@ import {expect, assert} from "chai";
             });
 
             pageUnderTest.navigateTo("unavailable_page_id");
-        });
-
-        it("should set parent", (done) => {
-            let responderUnderTest = new EventResponderMock(null, (_) => {});
-
-            // should set previousPage to null if parent is not a page
-            let pageUnderTest = Page.create(responderUnderTest, {
-                id: "test_id"
-            });
-
-            // should set page as previousPage
-            let anotherPageUnderTest = Page.create(pageUnderTest, {
-                id: "test_id"
-            });
-
-            // each other value should set null, too
-            let yetAnotherPageUnderTest = Page.create(undefined, {
-                id: "test_id"
-            });
-
-            expect(pageUnderTest.previousPage).to.be.null;
-            expect(anotherPageUnderTest.previousPage).to.be.not.null;
-            expect(anotherPageUnderTest.previousPage).to.be.instanceOf(Page);
-            expect(yetAnotherPageUnderTest.previousPage).to.be.null;
-            done();
         });
 
     });

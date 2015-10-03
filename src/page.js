@@ -7,10 +7,11 @@ import * as TypeUtilities from "./utility/type_utility.js";
 export class Page extends EventResponder {
 
     /**
-     *
-     * @param {(Page|EventResponder)} parent
-     * @param {String} id
-     * @param {String} [title]
+     * Initializes the page. This constructor should not be used directly.
+     * Use the {@link Page#create} function instead
+     * @param {(Page|EventResponder)} parent - The parent page or an event responder
+     * @param {String} id - The ID of the page used for navigation
+     * @param {String} [title] - An optional title
      * @param {Dictionary} [children]
      */
     constructor(parent, id, title = null, children = new Dictionary()) {
@@ -21,6 +22,7 @@ export class Page extends EventResponder {
         this._nextPage = null;
         this._previousPage = parent instanceof Page ? parent : null;
         this._children = children;
+        this._isRendered = false;
     }
 
     static create(parent = null, {id, title, children = []} = {}) {
@@ -47,12 +49,46 @@ export class Page extends EventResponder {
         return this._children;
     }
 
+    get isRendered() {
+        return this._isRendered;
+    }
+
     get nextPage() {
         return this._nextPage;
     }
 
     get previousPage() {
         return this._previousPage;
+    }
+
+    addToDOM() {
+        this._isRendered = true;
+
+        // TODO: add page to DOM
+    }
+
+    removeFromDOM() {
+        // TODO: remove from DOM
+
+        this._isRendered = false;
+    }
+
+    onNavigatedBack(page) {
+        if (this.nextPage === page) {
+            this.nextPage.removeFromDOM();
+            this.addToDOM();
+
+            // remove page from navigation stack
+            this._nextPage = null;
+        }
+    }
+
+    navigateBack() {
+        if (this.previousPage instanceof Page) {
+            this.previousPage.onNavigatedBack(this);
+        } else {
+            // TODO propagate error
+        }
     }
 
     /**
@@ -66,6 +102,10 @@ export class Page extends EventResponder {
 
         if (canNavigate) {
             this._nextPage = Page.create(this, pageConfig);
+
+            this.removeFromDOM();
+            this.nextPage.addToDOM();
+
         } else {
             this.propagateError(new NavigationError(this.id, pageId));
         }
