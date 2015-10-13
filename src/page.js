@@ -3,6 +3,8 @@ import {EventResponder} from "./event_responder.js";
 import {MissingIdentifierError} from "./error/missing_identifier_error.js";
 import {NavigationError} from "./error/navigation_error.js";
 import * as TypeUtilities from "./utility/type_utility.js";
+import {PageView} from "./view/page_view.js";
+import React from "react";
 
 export class Page extends EventResponder {
 
@@ -35,6 +37,15 @@ export class Page extends EventResponder {
         } else {
             throw new MissingIdentifierError(`Unable to create page because of an invalid or missing identifier. id must be a <String> and not empty but is currently <${id}>`);
         }
+    }
+
+    // TODO: implement solution for dynamic view selection
+    get view() {
+        return (
+            <PageView>
+                <div />
+            </PageView>
+        );
     }
 
     get id() {

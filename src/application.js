@@ -2,6 +2,9 @@ import {EventResponder} from "./event_responder.js";
 import {Version} from "./data/version.js";
 import {Author} from "./data/author.js";
 import {Stack} from "./data/stack.js";
+import {Page} from "./page.js";
+import ReactDOM from "react-dom";
+import React from "react";
 
 export class Application extends EventResponder {
 
@@ -102,4 +105,20 @@ export class Application extends EventResponder {
             this.propagateError(e);
         }
     }
+
+    // TODO: refactoring required. This is just for testing purposes
+    render() {
+        let page = Page.create(null, {
+            id: "id"
+        });
+
+        ReactDOM.render(page.view, document.getElementById('body'));
+    }
 }
+
+// TODO: Remove the following lines. These are just for testing purposes
+let app = new Application(null, {
+    name: "app_name"
+});
+
+app.render();
