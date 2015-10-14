@@ -3,6 +3,7 @@ import {Version} from "./data/version.js";
 import {Author} from "./data/author.js";
 import {Stack} from "./data/stack.js";
 import {Page} from "./page.js";
+import {Dictionary} from "./data/dictionary.js";
 import ReactDOM from "react-dom";
 import React from "react";
 
@@ -22,6 +23,7 @@ export class Application extends EventResponder {
     constructor(responder, {name, version, author, company} = {}) {
         super(responder);
 
+        this._pages = new Dictionary();
         this._name = name;
         this._company = company;
         this._setVersion(version);
@@ -76,6 +78,19 @@ export class Application extends EventResponder {
         return this._company;
     }
 
+    get pages() {
+        return this._pages;
+    }
+
+    registerPage({id, title}) {
+        let page = Page.create(this, {
+            title: title,
+            id: id
+        });
+
+        this.pages.insert(page);
+    }
+
     /**
      * @memberOf Application
      * @function _setVersion
@@ -112,7 +127,7 @@ export class Application extends EventResponder {
             id: "id"
         });
 
-        ReactDOM.render(page.view, document.getElementById('body'));
+        //ReactDOM.render(page.view, document.getElementById('body'));
     }
 }
 

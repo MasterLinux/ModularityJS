@@ -15,7 +15,7 @@ import {expect, assert} from "chai";
             done()
         });
 
-        it("should add array", (done) => {
+        it("should add array on initializing", (done) => {
             let expectedId = "test_id_1";
             let expectedValue = "test_value_1";
             let anotherExpectedId = "test_id_2";
@@ -30,6 +30,23 @@ import {expect, assert} from "chai";
             let dictionaryUnderTest = new Dictionary(expectedArray);
 
             expect(dictionaryUnderTest.length).to.be.equal(2);
+            expect(dictionaryUnderTest.isEmpty).to.be.false;
+            expect(dictionaryUnderTest.isNotEmpty).to.be.true;
+
+            done()
+        });
+
+        it("should add item", (done) => {
+            let expectedId = "test_id_1";
+            let expectedValue = "test_value_1";
+            let dictionaryUnderTest = new Dictionary();
+
+            dictionaryUnderTest.insert({
+                id: expectedId,
+                value: expectedValue
+            });
+
+            expect(dictionaryUnderTest.length).to.be.equal(1);
             expect(dictionaryUnderTest.isEmpty).to.be.false;
             expect(dictionaryUnderTest.isNotEmpty).to.be.true;
 
