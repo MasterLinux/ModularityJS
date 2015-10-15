@@ -41,11 +41,7 @@ export class Page extends EventResponder {
 
     // TODO: implement solution for dynamic view selection
     get view() {
-        return (
-            <PageView>
-                <div />
-            </PageView>
-        );
+        return React.createElement("PageView", null, [React.createElement("PageView", {key: 1}), React.createElement("PageView", {key: 2})]);
     }
 
     get id() {
