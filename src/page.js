@@ -4,7 +4,6 @@ import {MissingIdentifierError} from "./error/missing_identifier_error.js";
 import {NavigationError} from "./error/navigation_error.js";
 import * as TypeUtilities from "./utility/type_utility.js";
 import {PageView} from "./view/page_view.js";
-import React from "react";
 
 export class Page extends EventResponder {
 
@@ -41,7 +40,7 @@ export class Page extends EventResponder {
 
     // TODO: implement solution for dynamic view selection
     get view() {
-        return React.createElement("PageView", null, [React.createElement("PageView", {key: 1}), React.createElement("PageView", {key: 2})]);
+        return null;
     }
 
     get id() {

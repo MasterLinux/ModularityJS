@@ -4,8 +4,7 @@ import {Author} from "./data/author.js";
 import {Stack} from "./data/stack.js";
 import {Page} from "./page.js";
 import {Dictionary} from "./data/dictionary.js";
-import ReactDOM from "react-dom";
-import React from "react";
+import {Renderer} from "./renderer.js";
 
 export class Application extends EventResponder {
 
@@ -28,6 +27,7 @@ export class Application extends EventResponder {
         this._company = company;
         this._setVersion(version);
         this._setAuthor(author);
+        this._renderer = new Renderer(this, "body");
     }
 
     /**
@@ -127,7 +127,29 @@ export class Application extends EventResponder {
             id: "id"
         });
 
-        //ReactDOM.render(page.view, document.getElementById('body'));
+        this._renderer.render({
+            type: "PageView",
+            attributes: {
+                name: "test"
+            },
+            children: [{
+                type: "PageView",
+                attributes: {
+                    name: "test"
+                },
+                children: [{
+                    type: "PageView",
+                    attributes: {
+                        name: "test"
+                    }
+                }]
+            },{
+                type: "PageView",
+                attributes: {
+                    name: "test"
+                }
+            }]
+        });
     }
 }
 
