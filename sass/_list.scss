@@ -1,0 +1,71 @@
+@import "style";
+
+$list-padding: $padding-normal / 2;
+$list-icon-height: 20px;
+$list-icon-width: 20px;
+
+@mixin list-background-image($image-name, $background: transparent) {
+  @include background-image($image-name, $background, $position: left center, $size: $list-icon-width $list-icon-height, $repeat: no-repeat);
+}
+
+nav {
+  ul {
+    &.list {
+      list-style: none;
+      font-weight: lighter;
+      box-sizing: border-box;
+
+      li {
+        > ul {
+          &.list {
+            padding-left: $list-icon-width;
+          }
+        }
+
+        a {
+          //border-bottom: 1px solid $color-primary-dark;
+          padding: $list-padding;
+          box-sizing: border-box;
+          display: block;
+
+          &.selected,
+          &:hover {
+            background: $color-secondary;
+            font-weight: normal;
+            cursor: pointer;
+          }
+
+          &:active {
+            background: $color-secondary-dark;
+          }
+
+          &.file {
+            @include list-background-image("ic_file.png");
+            padding-left: $list-icon-width;
+
+            &:hover {
+              @include list-background-image("ic_file.png", $color-secondary);
+            }
+
+            &:active {
+              @include list-background-image("ic_file.png", $color-secondary-dark);
+            }
+          }
+
+          &.folder {
+            @include list-background-image("ic_folder.png");
+            padding-left: $list-icon-width;
+
+            &:hover {
+              @include list-background-image("ic_folder.png", $color-secondary);
+            }
+
+            &:active {
+              @include list-background-image("ic_folder.png", $color-secondary-dark);
+            }
+          }
+        }
+      }
+    }
+  }
+}

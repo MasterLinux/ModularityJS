@@ -1,0 +1,93 @@
+// android pixel ratios
+$pixel-ratio-mdpi: 1.0;
+$pixel-ratio-hdpi: 1.5;
+$pixel-ratio-xhdpi: 2.0;
+$pixel-ratio-xxhdpi: 3.0;
+$pixel-ratio-xxxhdpi: 4.0;
+
+/* fonts */
+// font for texts, inputs, buttons, etc.
+@mixin font-primary() {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+// font for headers, etc.
+@mixin font-secondary() {
+  font-family: 'Noto Serif', serif;
+}
+
+/* colors */
+$color-primary: rgb(85, 98, 112);
+$color-primary-light: rgb(130, 146, 163);
+$color-primary-dark: rgb(51, 51, 51);
+$color-secondary: rgb(251, 184, 41);
+$color-secondary-light: rgb(255, 204, 0);
+$color-secondary-dark: rgb(255, 153, 0);
+$color-font-dark: rgb(12, 12, 12);
+$color-font-light: rgb(224, 224, 224);
+$color-error: rgb(240, 35, 17);
+$color-warning: rgb(251, 184, 41);
+
+// used for fonts with an inset style
+@mixin font-inset($color: $color-primary, $offset: 42) {
+  text-shadow: 1px 1px 0 ($color + $offset), -1px -1px 1px ($color - $offset);
+  color: $color;
+}
+
+/* sizes */
+$font-size-normal: 14px;
+$padding-normal: 10px;
+$border-radius-normal: 8px;
+
+$media-width-phone: 768px;
+$media-width-tablet: 970px;
+
+/* backgrounds */
+$path-image-root: "../images";
+
+// get the file path of the given image name
+@function create-image-url($ratio, $image-name) {
+  @return url($path-image-root + "/drawable-" + $ratio + "/" + $image-name);
+}
+
+@mixin background-image($image-name, $color: transparent, $position: 0% 0%, $size: auto auto, $repeat: repeat, $attachment: scroll) {
+  @media screen and (-webkit-max-device-pixel-ratio: $pixel-ratio-mdpi) {
+    background-image: create-image-url(mdpi, $image-name);
+  }
+
+  @media screen and (-webkit-device-pixel-ratio: $pixel-ratio-hdpi) {
+    background-image: create-image-url(hdpi, $image-name);
+  }
+
+  @media screen and (-webkit-device-pixel-ratio: $pixel-ratio-xhdpi) {
+    background-image: create-image-url(xhdpi, $image-name);
+  }
+
+  @media screen and (-webkit-device-pixel-ratio: $pixel-ratio-xxhdpi) {
+    background-image: create-image-url(xxhdpi, $image-name);
+  }
+
+  @media screen and (-webkit-device-pixel-ratio: $pixel-ratio-xxxhdpi) {
+    background-image: create-image-url(xxxhdpi, $image-name);
+  }
+
+  @if ($size != auto auto) {
+    background-size: $size !important;
+  }
+
+  @if $attachment != scroll {
+    background-attachment: $attachment;
+  }
+
+  @if ($position != 0% 0%) {
+    background-position: $position;
+  }
+
+  @if $repeat != repeat {
+    background-repeat: $repeat;
+  }
+
+  @if $color != transparent {
+    background-color: $color;
+  }
+}

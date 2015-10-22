@@ -1,0 +1,51 @@
+@import "style";
+
+$text-icon-width: 32px;
+$text-icon-height: auto;
+$text-icon-pos-horizontal: -2px;
+$text-icon-pos-vertical: -2px;
+
+$text-types: (
+        (
+                type: warning,
+                background: $color-warning
+        ), (
+                type: error,
+                background: $color-error,
+                color: $color-font-light
+        )
+);
+
+@function calc-text-padding-left() {
+  @return $padding-normal * 2 + $text-icon-width + $text-icon-pos-horizontal * 2;
+}
+
+@function calc-text-icon-pos() {
+  $pos-horizontal: $padding-normal + $text-icon-pos-horizontal;
+  $pos-vertical: $padding-normal + $text-icon-pos-vertical;
+
+  @return $pos-horizontal $pos-vertical;
+}
+
+p {
+  &.text {
+    @include font-secondary();
+    color: $color-font-dark;
+    box-sizing: border-box;
+    font-weight: normal;
+
+    // create all text type styles
+    @each $type in $text-types {
+      $type-name: map_get($type, type);
+
+      &.#{$type-name} {
+        @include background-image("ic_" + $type-name + ".png", map_get($type, background), calc-text-icon-pos(), $text-icon-width $text-icon-height, no-repeat);
+        padding: $padding-normal $padding-normal $padding-normal calc-text-padding-left();
+
+        @if map_has_key($type, color) {
+          color: map_get($type, color);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+@import "style";
+@import "grid";
+
+input {
+  width: 100%;
+}
+
+.row {
+  .column {
+    &.example-column-1,
+    &.example-column-2 {
+
+      //phones
+      @media (max-width: $grid-size-small) {
+        @include grid-columns($grid-type-small, true);
+      }
+
+      //tablets
+      @media (min-width: $grid-size-small) and (max-width: $grid-size-medium) {
+        @include grid-columns($grid-type-medium, true);
+      }
+
+      //desktops
+      @media (min-width: $grid-size-medium) {
+        @include grid-columns($grid-type-large, true);
+      }
+    }
+  }
+}
+
+@for $i from 1 through 2 {
+  .example-column-#{$i} {
+    $column: $i % 2;
+
+    @if $column == 0 {
+      background: $color-primary-dark;
+      color: $color-primary-light;
+    } @else {
+      background: $color-primary-light;
+      color: $color-primary-dark;
+    }
+
+    margin-bottom: 5px;
+  }
+}

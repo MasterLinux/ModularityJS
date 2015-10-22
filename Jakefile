@@ -7,7 +7,8 @@ var babel = require('babel-core'),
     path = require('path'),
     browserify = require("browserify"),
     PEG = require("pegjs"),
-    ejs = require("ejs");
+    ejs = require("ejs"),
+    sass = require('node-sass');
 
 namespace("spec", function () {
 
@@ -220,6 +221,9 @@ namespace('build', function () {
     task('all', {async: true}, function (params) {
         params = params || {};
 
+        // TODO:
+        compileSCSS();
+
         var compileTask = jake.Task['build:compile'],
             compileTestsTask = jake.Task['build:compile'],
             srcDir = path.join(params.srcDir || "./src"),
@@ -269,3 +273,28 @@ jake.addListener('error', function (msg, code) {
     console.log("\nError occurred: " + msg);
     process.exit();
 });
+
+
+function compileSCSS() {
+    var result = sass.renderSync({
+        file: path.join("./sass/modularity.scss"),
+        outputStyle: 'compressed'
+    });
+
+    console.log(result.stats.includedFiles);
+
+    writeToFileSystem("build", "modularity.css", result.css);
+}
+
+function writeToFileSystem(directory, filename, data) {
+    var outputDir = path.join("./", directory);
+    var outputPath = path.join(outputDir, filename);
+
+    // create folder if not exists
+    if (!fs.existsSync(outputDir)) {
+        mkdirp.sync(outputDir);
+    }
+
+    // write file to storage
+    fs.writeFileSync(outputPath, data);
+}
