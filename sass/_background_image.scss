@@ -1,0 +1,48 @@
+@import "style";
+
+// get the file path of the given image name
+@function create-image-url($ratio, $image-name) {
+  @return url($path-image-root + "/drawable-" + $ratio + "/" + $image-name);
+}
+
+@mixin background-image($image-name, $color: transparent, $position: 0% 0%, $size: auto auto, $repeat: repeat, $attachment: scroll) {
+  @media screen and (-webkit-max-device-pixel-ratio: $pixel-ratio-mdpi) {
+    background-image: create-image-url(mdpi, $image-name);
+  }
+
+  @media screen and (-webkit-device-pixel-ratio: $pixel-ratio-hdpi) {
+    background-image: create-image-url(hdpi, $image-name);
+  }
+
+  @media screen and (-webkit-device-pixel-ratio: $pixel-ratio-xhdpi) {
+    background-image: create-image-url(xhdpi, $image-name);
+  }
+
+  @media screen and (-webkit-device-pixel-ratio: $pixel-ratio-xxhdpi) {
+    background-image: create-image-url(xxhdpi, $image-name);
+  }
+
+  @media screen and (-webkit-device-pixel-ratio: $pixel-ratio-xxxhdpi) {
+    background-image: create-image-url(xxxhdpi, $image-name);
+  }
+
+  @if ($size != auto auto) {
+    background-size: $size !important;
+  }
+
+  @if $attachment != scroll {
+    background-attachment: $attachment;
+  }
+
+  @if ($position != 0% 0%) {
+    background-position: $position;
+  }
+
+  @if $repeat != repeat {
+    background-repeat: $repeat;
+  }
+
+  @if $color != transparent {
+    background-color: $color;
+  }
+}

@@ -1,6 +1,7 @@
 import {EventResponder} from "./event_responder.js";
 import ReactDOM from "react-dom";
 import React from "react";
+import {PageView} from "./view/page_view.js";
 
 export class Renderer extends EventResponder {
 
@@ -12,7 +13,7 @@ export class Renderer extends EventResponder {
 
     render(template) {
         if (this._rootElement) {
-            ReactDOM.render(this.createElement(template), this._rootElement);
+            ReactDOM.render(<PageView title="My Page" />, this._rootElement);//this.createElement(template), this._rootElement);
         } else {
             // TODO populate error
         }

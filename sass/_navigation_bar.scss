@@ -1,0 +1,37 @@
+@import "style";
+
+$navigation-bar-height: 40px;
+
+div {
+  &.navigation-bar {
+    background: $color-primary;
+    height: $navigation-bar-height;
+
+    .title {
+      height: $navigation-bar-height;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .navigation-items {
+      box-sizing: border-box;
+      height: $navigation-bar-height;
+      display: flex;
+      align-items: center;
+
+      &.left {
+        justify-content: flex-start;
+      }
+
+      &.right {
+        justify-content: flex-end;
+      }
+
+      .back-button {
+        background: #f02311;
+      }
+    }
+  }
+}
