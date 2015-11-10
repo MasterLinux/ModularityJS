@@ -27,6 +27,7 @@ $color-font-dark: rgb(12, 12, 12);
 $color-font-light: rgb(224, 224, 224);
 $color-error: rgb(240, 35, 17);
 $color-warning: rgb(251, 184, 41);
+$color-icon: rgb(255, 153, 0);
 
 // used for fonts with an inset style
 @mixin font-inset($color: $color-primary, $offset: 42) {

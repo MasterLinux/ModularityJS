@@ -1,6 +1,8 @@
 @import "style";
 
 $navigation-bar-height: 40px;
+$navigation-bar-button-height: 30px;
+$navigation-bar-button-width: 30px;
 
 div {
   &.navigation-bar {
@@ -29,8 +31,28 @@ div {
         justify-content: flex-end;
       }
 
-      .back-button {
-        background: #f02311;
+      .button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        .icon {
+          width: $navigation-bar-button-width;
+          height: $navigation-bar-button-height;
+          float: left;
+        }
+
+        .title {
+          float: left;
+
+          &::after {
+            visibility: hidden;
+            display: block;
+            clear: both;
+            content: " ";
+          }
+        }
       }
     }
   }
