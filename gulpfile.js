@@ -9,7 +9,7 @@ var $Gulp = require('gulp'),
     $Path = require('path'),
     $FileSystem = require('fs');
 
-$Gulp.task('build parser', function() {
+$Gulp.task('build parser', function () {
     // TODO: get all parser and generate each of them
     var parser = new PEGParser("Author", "grammars");
     parser.build().writeTo("src/parser");
@@ -18,41 +18,61 @@ $Gulp.task('build parser', function() {
     parser.build().writeTo("src/parser");
 });
 
-$Gulp.task('compile SCSS', function() {
+$Gulp.task('transform SCSS to CSS', function () {
 
 });
 
-$Gulp.task('compile ES6', function() {
-    var transformer = new ES5Transformer();
+$Gulp.task('transform ES6 to ES5', function (done) {
+    var transformer = new SourceTransformer();
 
-    // transform to ES5 and browserify
-    transformer.browserify(
-        "src", "modularity.js",
-        "build", "modularity.js"
+    transformer.transform(
+        "src", "modularity",
+        "build", "modularity",
+        function (error) {
+            if (error) {
+                done(error);
+            } else {
+                done()
+            }
+        }
     );
-
-    // minify source
-    transformer.minify(
-        "build", "modularity.js",
-        "build", "modularity.min.js"
-    )
 });
 
-
-function ES5Transformer() {
+function SourceTransformer() {
 
 }
 
-ES5Transformer.prototype.transform = function(inputDir, outputDir) {
+SourceTransformer.prototype.transform = function (inputDir, inputFileName, outputDir, outputFileName, done) {
+    var transformer = this;
+
+    console.log("1. Start transforming ES6 to ES5");
+    this.transformES6ToES5(inputDir, outputDir);
+
+    console.log("2. Start to make source code browser compatible");
+    this.browserify(inputDir, inputFileName, outputDir, outputFileName, function (error) {
+
+        if (!error) {
+            console.log("3. Start to minify source code");
+            transformer.minify(outputDir, inputFileName, outputDir, outputFileName);
+            done();
+
+        } else {
+            done(error);
+        }
+    });
+};
+
+SourceTransformer.prototype.transformES6ToES5 = function (inputDir, outputDir) {
     var inDir = $Path.join("./", inputDir);
-    var files = new FileSystem().readFiles(inDir, function(root, name) {
-        // TODO: filter all non .js files
-        return true;
+
+    // get all JavaScript files
+    var files = new Directory(inDir).readFiles(function (file) {
+        return file.hasExtension(".js");
     });
 
-    for (var i=0; i < files.length; i++) {
+    for (var i = 0; i < files.length; i++) {
         var file = files[i];
-        var outDir = $Path.join("./", outputDir, "out", file.path);
+        var outDir = $Path.join("./", outputDir, file.path);
 
         // get source code
         var source = file.read();
@@ -69,41 +89,37 @@ ES5Transformer.prototype.transform = function(inputDir, outputDir) {
     }
 };
 
-// TODO: make this function sync
-ES5Transformer.prototype.browserify = function(inputDir, inputFileName, outputDir, outputFileName) {
-    var inputPath = $Path.join("./", outputDir, "out", inputDir, inputFileName);
-    var outputPath = $Path.join("./", outputDir, outputFileName);
+SourceTransformer.prototype.browserify = function (inputDir, inputFileName, outputDir, outputFileName, done) {
+    var inputPath = $Path.join("./", outputDir, inputDir, inputFileName + ".js");
+    var outputPath = $Path.join("./", outputDir, outputFileName + ".js");
     var outputStream = $FileSystem.createWriteStream(outputPath);
     var bundle = $Browserify();
-
-    this.transform(inputDir, outputDir);
 
     bundle.add(inputPath);
 
     outputStream.on('finish', function () {
-        console.log("done");
+        done();
     });
 
-    outputStream.on('error', function () {
-        // TODO: fails on first execution, if no build dir exists
-        console.log("error");
+    outputStream.on('error', function (error) {
+        done(error);
     });
 
-    bundle.bundle().pipe(outputStream)
+    bundle.bundle().pipe(outputStream);
 };
 
 /**
  * Obfuscates the source code of the given file
  */
-ES5Transformer.prototype.minify = function(inputDir, inputFileName, outputDir, outputFileName) {
-    var source = new File(inputDir, inputFileName).read();
+SourceTransformer.prototype.minify = function (inputDir, inputFileName, outputDir, outputFileName) {
+    var source = new File(inputDir, inputFileName + ".js").read();
 
     // obfuscate code
     source = $Uglify.minify(source, {
         fromString: true
     }).code;
 
-    new File(outputDir, outputFileName).write(source);
+    new File(outputDir, outputFileName + ".min.js").write(source);
 };
 
 /**
@@ -127,7 +143,7 @@ function PEGParser(name, path) {
  * @example
  *      PEGParser("Author", "grammars").build().writeTo("src/parser");
  */
-PEGParser.prototype.build = function() {
+PEGParser.prototype.build = function () {
     var grammarFileName = this._name.toLowerCase() + ".pegjs";
     var parserFileName = this._name.toLowerCase() + "_parser.js";
     var grammar = new File(this._path, grammarFileName).read();
@@ -144,14 +160,14 @@ PEGParser.prototype.build = function() {
     });
 
     return {
-        writeTo: function(path) {
+        writeTo: function (path) {
             new File(path, parserFileName).write(source);
         }
     };
 };
 
 /**
- * Helper class used to read or write files
+ * Representation of a file. Can be used to read or write data to the file-system
  * @param {String} name - The name of the file to write or read
  * @param {String} path - The path of the directory which contains or should contain the file
  * @constructor
@@ -173,7 +189,7 @@ function File(path, name) {
  * Writes the file to the given directory path
  * @param {String} data - The data to write
  */
-File.prototype.write = function(data) {
+File.prototype.write = function (data) {
     var directory = $Path.join("./", this.path);
     var filePath = $Path.join(directory, this.name);
 
@@ -185,36 +201,52 @@ File.prototype.write = function(data) {
     $FileSystem.writeFileSync(filePath, data);
 };
 
+// TODO: find solution which is able to detect the whole file extension
+File.prototype.hasExtension = function (fileExtension) {
+    return $Path.extname(this.name) === fileExtension;
+};
+
 /**
  * Reads the file from the given directory path
  * @returns {String} An UTF-8 encoded string which represents the content of the file
  */
-File.prototype.read = function() {
+File.prototype.read = function () {
     var filePath = $Path.join("./", this.path, this.name);
     return $FileSystem.readFileSync(filePath, {encoding: 'utf-8'});
 };
 
-function FileSystem() {
-
+/**
+ * Representation of a directory
+ * @param {String} path - The path of the directory
+ * @constructor
+ * @example
+ *      var directory = new Directory("path/to/directory");
+ *      var files = directory.readFiles();
+ */
+function Directory(path) {
+    this._path = path;
 }
 
-FileSystem.prototype.readFiles = function(path, filter) {
-    var directory = $Path.join("./" + path);
+// TODO: Add recursive parameter
+Directory.prototype.readFiles = function (filter) {
+    var directory = $Path.join("./" + this._path);
     var files = [];
 
     $FileWalker.walkSync(directory, {
         followLinks: false,
         listeners: {
 
-            file: function(filePath, fileInfo, next) {
-                if (!filter || filter(filePath, fileInfo.name)) {
-                    files.push(new File(filePath, fileInfo.name));
+            file: function (filePath, fileInfo, next) {
+                var file = new File(filePath, fileInfo.name);
+
+                if (!filter || filter(file)) {
+                    files.push(file);
                 }
 
                 next();
             },
 
-            error: function(filePath, fileInfo, next) {
+            error: function (filePath, fileInfo, next) {
                 console.log("Unable to read file: " + fileInfo.name + " from: " + filePath);
                 next();
             }
