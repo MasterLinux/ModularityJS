@@ -25,25 +25,70 @@ $Gulp.task('transform SCSS to CSS', function () {
 $Gulp.task('transform ES6 to ES5', function (done) {
     var transformer = new SourceTransformer();
 
-    transformer.transform(
-        "src", "modularity",
-        "build", "modularity",
-        function (error) {
+    transformer.transform({
+        inputDir: "src",
+        inputFileName: "modularity",
+        outputDir: "build",
+        outputFileName: "modularity",
+        minify: true,
+        done: function (error) {
             if (error) {
                 done(error);
             } else {
                 done()
             }
         }
-    );
+    });
 });
 
-function SourceTransformer() {
 
+//**************************** Utility classes ****************************//
+
+/**
+ * Transformer used to transform ES6 to ES5. In addition it
+ * allows to generate a minified source file
+ * @constructor
+ */
+function SourceTransformer() {
 }
 
-SourceTransformer.prototype.transform = function (inputDir, inputFileName, outputDir, outputFileName, done) {
-    var transformer = this;
+/**
+ * Callback which is called if transforming is done
+ * @callback SourceTransformer~done
+ * @param {Error} [error] - The occurred error or undefined if no error occurred
+ */
+
+/**
+ * Transforms ECMAScript 6 source code to ECMAScript 5
+ * @param {Object} options
+ * @param {String} options.inputDir - Path to the src directory
+ * @param {String} options.inputFileName - File name (without file extension) of the ES6 file which should be transformed to ES5
+ * @param {String} options.outputDir - Path to the destination directory
+ * @param {String} options.outputFileName - File name (without file extension) of the transformed ES5 file
+ * @param {Boolean} [options.minify=false] - If set to true an additional minified version will be generated
+ * @param {SourceTransformer~done} options.done - Callback which is called if transforming is done
+ * @example
+ *      var transformer = new SourceTransformer();
+ *
+ *      transformer.transform({
+ *          inputDir: "path/to/src/dir",
+ *          inputFileName: "file_name",
+ *          outputDir: "path/to/dest/dir",
+ *          outputFileName: "file_name",
+ *          minify: true,
+ *          done: function (error) {
+ *              // transforming is done
+ *          }
+ *      });
+ */
+SourceTransformer.prototype.transform = function (options) {
+    var inputDir = options.inputDir;
+    var inputFileName = options.inputFileName;
+    var outputDir = options.outputDir;
+    var outputFileName = options.outputFileName;
+    var shouldMinified = options.minify || false;
+    var done = options.done;
+    var instance = this;
 
     console.log("1. Start transforming ES6 to ES5");
     this.transformES6ToES5(inputDir, outputDir);
@@ -52,8 +97,10 @@ SourceTransformer.prototype.transform = function (inputDir, inputFileName, outpu
     this.browserify(inputDir, inputFileName, outputDir, outputFileName, function (error) {
 
         if (!error) {
-            console.log("3. Start to minify source code");
-            transformer.minify(outputDir, inputFileName, outputDir, outputFileName);
+            if (shouldMinified) {
+                console.log("3. Start to minify source code");
+                instance.minify(outputDir, inputFileName, outputDir, outputFileName);
+            }
             done();
 
         } else {
@@ -62,6 +109,11 @@ SourceTransformer.prototype.transform = function (inputDir, inputFileName, outpu
     });
 };
 
+/**
+ * Transforms all ES6 files in the src directory to ES5
+ * @param {String} inputDir - Path to the src directory
+ * @param {String} outputDir - Path to the destination directory
+ */
 SourceTransformer.prototype.transformES6ToES5 = function (inputDir, outputDir) {
     var inDir = $Path.join("./", inputDir);
 
@@ -89,6 +141,14 @@ SourceTransformer.prototype.transformES6ToES5 = function (inputDir, outputDir) {
     }
 };
 
+/**
+ * Makes source code browser compatible so it can be executed client-side
+ * @param inputDir - Path to the src directory
+ * @param inputFileName - File name (without file extension) of the ES5 file which should be transformed
+ * @param outputDir - Path to the destination directory
+ * @param outputFileName - File name (without file extension) of the browser compatible file
+ * @param {SourceTransformer~done} done - Callback which is called if transforming is done
+ */
 SourceTransformer.prototype.browserify = function (inputDir, inputFileName, outputDir, outputFileName, done) {
     var inputPath = $Path.join("./", outputDir, inputDir, inputFileName + ".js");
     var outputPath = $Path.join("./", outputDir, outputFileName + ".js");
@@ -110,6 +170,10 @@ SourceTransformer.prototype.browserify = function (inputDir, inputFileName, outp
 
 /**
  * Obfuscates the source code of the given file
+ * @param {String} inputDir - Path to the src directory
+ * @param {String} inputFileName - File name (without file extension) of the file which should be minified
+ * @param {String} outputDir - Path to the destination directory
+ * @param {String} outputFileName - File name (without file extension) of the minified file
  */
 SourceTransformer.prototype.minify = function (inputDir, inputFileName, outputDir, outputFileName) {
     var source = new File(inputDir, inputFileName + ".js").read();
@@ -119,6 +183,7 @@ SourceTransformer.prototype.minify = function (inputDir, inputFileName, outputDi
         fromString: true
     }).code;
 
+    // TODO: create source map
     new File(outputDir, outputFileName + ".min.js").write(source);
 };
 
@@ -227,8 +292,19 @@ function Directory(path) {
     this._path = path;
 }
 
-// TODO: Add recursive parameter
+/**
+ * Filter function which can be used to define which files should be read
+ * @callback Directory~filter
+ * @param {File} file - The file of the current iteration
+ */
+
+/**
+ * Reads all files of the directory recursively
+ * @param {Directory~filter} filter
+ * @returns {Array} Array of files
+ */
 Directory.prototype.readFiles = function (filter) {
+    // TODO: Add recursive parameter
     var directory = $Path.join("./" + this._path);
     var files = [];
 
