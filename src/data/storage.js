@@ -117,7 +117,7 @@ export class Storage {
      * @memberOf Storage
      * @function remove
      * @instance
-     * @param {string }key - The key of the value to remove
+     * @param {string} key - The key of the value to remove
      */
     remove(key) {
         MemoryUtility.deleteFrom(this._memory, key);
