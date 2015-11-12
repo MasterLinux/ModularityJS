@@ -4,10 +4,14 @@ var $Gulp = require('gulp'),
     $Uglify = require("uglify-js"),
     $PEG = require("pegjs"),
     $EJS = require("ejs"),
+    $Sass = require('node-sass'),
     $FileWalker = require('walk'),
     $Mkdirp = require('mkdirp'),
     $Path = require('path'),
-    $FileSystem = require('fs');
+    $FileSystem = require('fs'),
+    $KarmaServer = require("karma").Server;
+
+var KARMA_CONFIG = $Path.resolve("./karma.conf.js");
 
 $Gulp.task('build parser', function () {
     // TODO: get all parser and generate each of them
@@ -19,13 +23,22 @@ $Gulp.task('build parser', function () {
 });
 
 $Gulp.task('transform SCSS to CSS', function () {
+    var filePath = $Path.join("./", "sass", "modularity.scss");
 
+    var css = $Sass.renderSync({
+        file: filePath,
+        outputStyle: 'compressed'
+    }).css;
+
+    new File("build", "modularity.css").write(css);
+});
+
+$Gulp.task('start watching SCSS', function () {
+    // TODO: implement
 });
 
 $Gulp.task('transform ES6 to ES5', function (done) {
-    var transformer = new SourceTransformer();
-
-    transformer.transform({
+    new SourceTransformer().transform({
         inputDir: "src",
         inputFileName: "modularity",
         outputDir: "build",
@@ -41,6 +54,47 @@ $Gulp.task('transform ES6 to ES5', function (done) {
     });
 });
 
+$Gulp.task('generate documentation', function () {
+    // TODO: implement
+});
+
+$Gulp.task('start watching JavaScript files and run tests', function (done) {
+    var server = new $KarmaServer({
+        configFile: KARMA_CONFIG,
+        browsers: ["PhantomJS2"],
+        reporters: ["progress"],
+        singleRun: false,
+        autoWatch: true,
+        colors: true
+    }, function (exitCode) {
+        if (exitCode === 0) {
+            done();
+        } else {
+            done(new Error("Karma has exited with " + exitCode));
+        }
+    });
+
+    server.start();
+});
+
+$Gulp.task('run tests', function (done) {
+    var server = new $KarmaServer({
+        configFile: KARMA_CONFIG,
+        browsers: ["PhantomJS2"],
+        reporters: ["dots"],
+        singleRun: true,
+        autoWatch: false,
+        colors: false
+    }, function (exitCode) {
+        if (exitCode === 0) {
+            done();
+        } else {
+            done(new Error("Karma has exited with " + exitCode));
+        }
+    });
+
+    server.start();
+});
 
 //**************************** Utility classes ****************************//
 
