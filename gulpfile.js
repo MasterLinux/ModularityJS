@@ -241,6 +241,7 @@ SourceTransformer.prototype.minify = function (inputDir, inputFileName, outputDi
     new File(outputDir, outputFileName + ".min.js").write(source);
 };
 
+
 /**
  * Utility class used to generate parser from PEG grammar
  * @param {String} name - The name of the parser
@@ -285,6 +286,7 @@ PEGParser.prototype.build = function () {
     };
 };
 
+
 /**
  * Representation of a file. Can be used to read or write data to the file-system
  * @param {String} name - The name of the file to write or read
@@ -305,7 +307,7 @@ function File(path, name) {
 }
 
 /**
- * Writes the file to the given directory path
+ * Writes the file to the file system
  * @param {String} data - The data to write
  */
 File.prototype.write = function (data) {
@@ -320,13 +322,8 @@ File.prototype.write = function (data) {
     $FileSystem.writeFileSync(filePath, data);
 };
 
-// TODO: find solution which is able to detect the whole file extension
-File.prototype.hasExtension = function (fileExtension) {
-    return $Path.extname(this.name) === fileExtension;
-};
-
 /**
- * Reads the file from the given directory path
+ * Reads the file from the file system
  * @returns {String} An UTF-8 encoded string which represents the content of the file
  */
 File.prototype.read = function () {
@@ -335,27 +332,45 @@ File.prototype.read = function () {
 };
 
 /**
+ * Checks whether the file has a specific file extension
+ * @param {String} fileExtension - The expected file extension
+ * @returns {boolean} Returns true if file has the expected file extension, false otherwise
+ * @example
+ *      var isJavaScriptFile = new File("path/to/file", "file_name.js").hasExtension(".js");
+ */
+// TODO: find solution which is able to detect the whole file extension
+File.prototype.hasExtension = function (fileExtension) {
+    return $Path.extname(this.name) === fileExtension;
+};
+
+
+/**
  * Representation of a directory
  * @param {String} path - The path of the directory
  * @constructor
  * @example
  *      var directory = new Directory("path/to/directory");
- *      var files = directory.readFiles();
  */
 function Directory(path) {
     this._path = path;
 }
 
 /**
- * Filter function which can be used to define which files should be read
+ * Creates a result set with all files that pass the test implemented by the provided function
  * @callback Directory~filter
- * @param {File} file - The file of the current iteration
+ * @param {File} file - The current file to test
+ * @returns {Boolean} - Should return true if test is passed, false otherwise
  */
 
 /**
  * Reads all files of the directory recursively
  * @param {Directory~filter} filter
- * @returns {Array} Array of files
+ * @returns {File[]} Array of files
+ * @example
+ *      // gets all JavaScript files
+ *      var files = new Directory("path/to/directory").readFiles(function(file) {
+ *          return file.hasExtension(".js");
+ *      });
  */
 Directory.prototype.readFiles = function (filter) {
     // TODO: Add recursive parameter
