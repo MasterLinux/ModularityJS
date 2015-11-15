@@ -1,7 +1,17 @@
+'use strict';
+
+
 var gulp = require('gulp'),
     babel = require('gulp-babel'),
+    browserify = require('browserify'),
+    buffer = require('vinyl-buffer'),
+    clean = require('gulp-clean'),
     concat = require('gulp-concat'),
     ESdoc = require("gulp-esdoc"),
+    uglify = require('gulp-uglify'),
+    reactify = require('reactify'),
+    sourcemaps = require('gulp-sourcemaps'),
+    gutil = require('gulp-util'),
     KarmaServer = require('karma').Server,
 
     // JSdoc have a bug : https://github.com/jsBoot/gulp-jsdoc/issues/18
@@ -9,7 +19,8 @@ var gulp = require('gulp'),
 
     pegjs = require('gulp-pegjs'),
     rename = require('gulp-rename'),
-    sass = require('gulp-sass');
+    sass = require('gulp-sass'),
+    source = require('vinyl-source-stream');
 
 
 
@@ -75,14 +86,20 @@ gulp.task('build parser', function() {
 
 
 gulp.task('transform ES6 to ES5', [
-        'babel'
-        // 'browserify',
-        // 'minify'
+        '1. babel',
+        '2. browserify',
+        '3. minify'
     ]
 );
 
 
-gulp.task('babel', function () {
+gulp.task('clean build', function () {
+    return gulp.src('build', {read: false})
+        .pipe(clean({force: true}));
+});
+
+
+gulp.task('1. babel', function () {
     return gulp.src('./src/**/*.js')
         .pipe(babel({
             sourceMaps: false,
@@ -93,3 +110,31 @@ gulp.task('babel', function () {
         .pipe(gulp.dest('./build/src'));
 });
 
+
+gulp.task('2. browserify', function () {
+    // set up the browserify instance on a task basis
+    var b = browserify({
+        entries: './build/src/modularity.js',
+        debug: true,
+        // defining transforms here will avoid crashing your stream
+        transform: [reactify]
+    });
+
+    return b.bundle()
+        .pipe(source('modularity_source.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true}))
+        // Add transformation tasks to the pipeline here.
+        //.pipe(uglify())
+        .on('error', gutil.log)
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./build/src/'));
+});
+
+
+gulp.task('3. minify', function () {
+    return gulp.src('./build/src/modularity_source.js')
+        .pipe(uglify())
+        .pipe(rename('modularity_source.min.js'))
+        .pipe(gulp.dest('./build/src'));
+});
