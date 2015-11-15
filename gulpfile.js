@@ -1,4 +1,5 @@
 var gulp = require('gulp'),
+    babel = require('gulp-babel'),
     concat = require('gulp-concat'),
     ESdoc = require("gulp-esdoc"),
     KarmaServer = require('karma').Server,
@@ -71,3 +72,16 @@ gulp.task('build parser', function() {
         }))
         .pipe(gulp.dest('src/parser'));
 });
+
+
+gulp.task('babel', function () {
+    return gulp.src('./src/**/*.js')
+        .pipe(babel({
+            sourceMaps: false,
+            comments: true,
+            ast: false,
+            presets: ["es2015", "react"]
+        }))
+        .pipe(gulp.dest('./build/src'));
+});
+
