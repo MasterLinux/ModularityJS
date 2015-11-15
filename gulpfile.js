@@ -49,3 +49,13 @@ gulp.task('start watching JavaScript files and run tests', function (done) {
 });
 
 
+gulp.task('run tests', function (done) {
+    new KarmaServer({
+        configFile: __dirname + '/karma.conf.js',
+        reporters: ["dots"],
+        singleRun: true,
+        autoWatch: false,
+        colors: false
+    }, done).start();
+});
+
