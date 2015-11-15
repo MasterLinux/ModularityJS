@@ -1,6 +1,7 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     ESdoc = require("gulp-esdoc"),
+    KarmaServer = require('karma').Server,
 
     // JSdoc have a bug : https://github.com/jsBoot/gulp-jsdoc/issues/18
     // JSdoc = require("gulp-jsdoc"),
@@ -34,3 +35,17 @@ gulp.task('generate documentation', function () {
             includeSource: true
         }));
 });
+
+
+
+gulp.task('start watching JavaScript files and run tests', function (done) {
+    new KarmaServer({
+        configFile: __dirname + '/karma.conf.js',
+        reporters: ["progress"],
+        singleRun: false,
+        autoWatch: true,
+        colors: true
+    }, done).start();
+});
+
+
