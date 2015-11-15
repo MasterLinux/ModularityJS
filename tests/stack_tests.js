@@ -146,6 +146,34 @@ import {expect, assert} from "chai";
 
             done()
         });
+
+        it("should iterate through values", (done) => {
+            let expectedValue = "value";
+            let anotherExpectedValue = "another_value";
+            let yetAnotherExpectedValue = "yet_another_value";
+            let stackUnderTest = new Stack(expectedValue, anotherExpectedValue, yetAnotherExpectedValue);
+
+            let index = 0;
+            for (let value of stackUnderTest.values) {
+                switch (index) {
+                    case 0:
+                        expect(value).to.be.equal(expectedValue);
+                        break;
+
+                    case 1:
+                        expect(value).to.be.equal(anotherExpectedValue);
+                        break;
+
+                    case 2:
+                        expect(value).to.be.equal(yetAnotherExpectedValue);
+                        break;
+                }
+
+                index++;
+            }
+
+            done()
+        });
     });
 
 })();
