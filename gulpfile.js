@@ -74,6 +74,14 @@ gulp.task('build parser', function() {
 });
 
 
+gulp.task('transform ES6 to ES5', [
+        'babel'
+        // 'browserify',
+        // 'minify'
+    ]
+);
+
+
 gulp.task('babel', function () {
     return gulp.src('./src/**/*.js')
         .pipe(babel({
