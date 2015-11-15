@@ -61,7 +61,6 @@ $Gulp.task('generate documentation', function () {
 $Gulp.task('start watching JavaScript files and run tests', function (done) {
     var server = new $KarmaServer({
         configFile: KARMA_CONFIG,
-        browsers: ["PhantomJS2"],
         reporters: ["progress"],
         singleRun: false,
         autoWatch: true,
@@ -80,7 +79,6 @@ $Gulp.task('start watching JavaScript files and run tests', function (done) {
 $Gulp.task('run tests', function (done) {
     var server = new $KarmaServer({
         configFile: KARMA_CONFIG,
-        browsers: ["PhantomJS2"],
         reporters: ["dots"],
         singleRun: true,
         autoWatch: false,
