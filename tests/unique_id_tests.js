@@ -8,8 +8,8 @@ import {expect, assert} from "chai";
         it("should generate ID", (done) => {
             let idUnderTest = new UniqueId().generate();
             
-            expect(idUnderTest).to.not.be.undefined;
-            expect(idUnderTest).to.not.be.null;
+            expect(idUnderTest).not.to.be.undefined;
+            expect(idUnderTest).not.to.be.null;
             assert.isString(idUnderTest);
             expect(idUnderTest.length).to.be.gte(0);
 
@@ -21,7 +21,7 @@ import {expect, assert} from "chai";
             let idUnderTest = generator.generate();
             let anotherIdUnderTest = generator.generate();
             
-            expect(idUnderTest).to.not.be.equal(anotherIdUnderTest);
+            expect(idUnderTest).not.to.be.equal(anotherIdUnderTest);
 
             done();
         });
@@ -32,7 +32,7 @@ import {expect, assert} from "chai";
             let idUnderTest = generator.generate();
             let anotherIdUnderTest = generator.generate();
             
-            expect(idUnderTest).to.not.be.equal(anotherIdUnderTest);
+            expect(idUnderTest).not.to.be.equal(anotherIdUnderTest);
             expect(idUnderTest).to.contain(`${expectedPrefix}_`);
             expect(anotherIdUnderTest).to.contain(`${expectedPrefix}_`);
 

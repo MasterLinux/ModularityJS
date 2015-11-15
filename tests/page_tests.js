@@ -69,7 +69,7 @@ import {expect, assert} from "chai";
             });
 
             expect(pageUnderTest.previousPage).to.be.null;
-            expect(anotherPageUnderTest.previousPage).to.be.not.null;
+            expect(anotherPageUnderTest.previousPage).not.to.be.null;
             expect(anotherPageUnderTest.previousPage).to.be.instanceOf(Page);
             expect(yetAnotherPageUnderTest.previousPage).to.be.null;
             done();
@@ -93,7 +93,7 @@ import {expect, assert} from "chai";
             });
 
             expect(pageUnderTest.nextPage).to.be.null;
-            expect(pageUnderTest.children).to.be.not.null;
+            expect(pageUnderTest.children).not.to.be.null;
             expect(pageUnderTest.children).to.be.instanceOf(Dictionary);
             expect(pageUnderTest.children.length).to.be.equal(1);
 
@@ -175,7 +175,7 @@ import {expect, assert} from "chai";
             pageUnderTest.addToDOM();
 
             pageUnderTest.navigateTo(expectedId);
-            expect(pageUnderTest.nextPage).to.be.not.null;
+            expect(pageUnderTest.nextPage).not.to.be.null;
             expect(pageUnderTest.nextPage.previousPage).to.be.equal(pageUnderTest);
 
             pageUnderTest.nextPage.navigateBack();

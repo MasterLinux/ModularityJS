@@ -35,7 +35,7 @@ import {NamespaceCollisionError} from "../src/error/namespace_collision_error.js
 
             let actualExtension = Modularity.test.test_extension_namespace[expectedName];
 
-            expect(actualExtension).to.not.be.undefined;
+            expect(actualExtension).not.to.be.undefined;
             expect(actualExtension.fieldUnderTest).to.equal(expectedFieldValue);
             done();
         });

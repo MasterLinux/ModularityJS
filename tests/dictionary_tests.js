@@ -72,11 +72,11 @@ import {expect, assert} from "chai";
 
             expect(unavailableItem).to.be.undefined;
 
-            expect(actualItem).to.be.not.undefined;
+            expect(actualItem).not.to.be.undefined;
             expect(actualItem.id).to.be.equal(expectedId);
             expect(actualItem.value).to.be.equal(expectedValue);
 
-            expect(anotherActualItem).to.be.not.undefined;
+            expect(anotherActualItem).not.to.be.undefined;
             expect(anotherActualItem.id).to.be.equal(anotherExpectedId);
             expect(anotherActualItem.value).to.be.equal(anotherExpectedValue);
 

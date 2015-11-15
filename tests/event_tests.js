@@ -71,7 +71,7 @@ import {expect, assert} from "chai";
             eventUnderTest.pushError(anotherExpectedError);
             eventUnderTest.pushError(yetAnotherExpectedError);
 
-            expect(eventUnderTest.stack).to.be.not.null;
+            expect(eventUnderTest.stack).not.to.be.null;
             expect(eventUnderTest.stack.length).to.be.equal(3);
 
             done()
