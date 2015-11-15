@@ -6,6 +6,8 @@ var gulp = require('gulp'),
     // JSdoc have a bug : https://github.com/jsBoot/gulp-jsdoc/issues/18
     // JSdoc = require("gulp-jsdoc"),
 
+    pegjs = require('gulp-pegjs'),
+    rename = require('gulp-rename'),
     sass = require('gulp-sass');
 
 
@@ -59,3 +61,13 @@ gulp.task('run tests', function (done) {
     }, done).start();
 });
 
+
+gulp.task('build parser', function() {
+    return gulp.src('src/parser/*.pegjs')
+        .pipe(pegjs())
+        .pipe(rename(function (path) {
+            path.basename += "_parser";
+            path.extname = ".js"
+        }))
+        .pipe(gulp.dest('src/parser'));
+});

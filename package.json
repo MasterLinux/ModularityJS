@@ -23,6 +23,8 @@
     "gulp-concat": "~2.6.0",
     "gulp-esdoc": "~0.1.0",
     "gulp-jsdoc": "~0.1.5",
+    "gulp-pegjs": "~0.0.1",
+    "gulp-rename": "~1.2.2",
     "gulp-sass": "~2.1.0",
     "jsdoc": "~3.3.2",
     "karma": "~0.13.9",
