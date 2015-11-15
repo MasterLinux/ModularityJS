@@ -1,7 +1,10 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     ESdoc = require("gulp-esdoc"),
-    JSdoc = require("gulp-jsdoc"),
+
+    // JSdoc have a bug : https://github.com/jsBoot/gulp-jsdoc/issues/18
+    // JSdoc = require("gulp-jsdoc"),
+
     sass = require('gulp-sass');
 
 
@@ -18,9 +21,11 @@ gulp.task('sass', function () {
 // Generate two documentations in differents folder.
 gulp.task('generate documentation', function () {
 
+/*
     // JSDoc
     gulp.src("./build/modularity.js")
         .pipe(JSdoc('./build/docs/jsdoc'));
+*/
 
     // ESDoc
     gulp.src("./src")
