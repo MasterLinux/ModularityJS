@@ -20,6 +20,8 @@
     "chai": "~3.4.1",
     "ejs": "~2.3.4",
     "gulp": "^3.9.0",
+    "gulp-esdoc": "^0.1.0",
+    "gulp-jsdoc": "^0.1.5",
     "jsdoc": "~3.3.2",
     "karma": "~0.13.9",
     "karma-browserify": "~4.4.0",

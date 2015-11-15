@@ -9,7 +9,9 @@ var $Gulp = require('gulp'),
     $Mkdirp = require('mkdirp'),
     $Path = require('path'),
     $FileSystem = require('fs'),
-    $KarmaServer = require("karma").Server;
+    $KarmaServer = require("karma").Server,
+    $ESdoc = require("gulp-esdoc"),
+    $JSdoc = require("gulp-jsdoc");
 
 var KARMA_CONFIG = $Path.resolve("./karma.conf.js");
 
@@ -54,8 +56,21 @@ $Gulp.task('transform ES6 to ES5', function (done) {
     });
 });
 
+/**
+ * Generate two documentations in different folders.
+ */
 $Gulp.task('generate documentation', function () {
-    // TODO: implement
+
+    // JSDoc
+    $Gulp.src("./build/modularity.js")
+        .pipe($JSdoc('./build/docs_jsdoc'));
+
+    // ESDoc
+    $Gulp.src("./src")
+        .pipe($ESdoc({
+            destination: "./build/docs_esdoc",
+            "includeSource": true
+        }));
 });
 
 $Gulp.task('start watching JavaScript files and run tests', function (done) {
