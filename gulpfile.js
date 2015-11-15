@@ -1,7 +1,8 @@
 'use strict';
 
 
-var gulp = require('gulp'),
+var
+    gulp = require('gulp'),
     babel = require('gulp-babel'),
     browserify = require('browserify'),
     buffer = require('vinyl-buffer'),
@@ -94,7 +95,7 @@ gulp.task('transform ES6 to ES5', [
 
 
 gulp.task('clean build', function () {
-    return gulp.src('build', {read: false})
+    return gulp.src('./build', {read: false})
         .pipe(clean({force: true}));
 });
 
