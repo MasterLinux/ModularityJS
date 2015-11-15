@@ -1,0 +1,50 @@
+@import "background_image";
+@import "style";
+
+$input-padding: $padding-normal / 2;
+$input-icon-width: 25px;
+$input-icon-height: auto;
+
+input {
+  background: $color-primary-dark;
+  border: 1px solid $color-primary-light;
+  color: $color-primary-light;
+  box-sizing: border-box;
+  border-radius: $border-radius-normal;
+  padding: $input-padding;
+  font-weight: lighter;
+
+  &:disabled {
+    background: $color-primary-light;
+    color: $color-primary;
+  }
+
+  &:focus {
+    border: 1px solid $color-secondary;
+    color: $color-secondary;
+    box-shadow: none;
+    outline: 0;
+  }
+
+  &.error {
+    border: 1px solid $color-error;
+    color: $color-error;
+  }
+
+  &.search {
+    @include background-image("ic_search.png", $color-primary-dark, center left, $input-icon-width $input-icon-height, no-repeat);
+    padding: $input-padding $input-padding $input-padding $input-icon-width;
+
+    &:disabled {
+      @include background-image("ic_search_disabled.png", $color-primary-light, center left, $size: $input-icon-width $input-icon-height);
+    }
+
+    &:focus {
+      @include background-image("ic_search_focus.png", $position: center left, $size: $input-icon-width $input-icon-height);
+    }
+
+    &.error {
+      @include background-image("ic_search_error.png", $position: center left, $size: $input-icon-width $input-icon-height);
+    }
+  }
+}

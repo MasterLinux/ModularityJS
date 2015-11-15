@@ -21,8 +21,8 @@ import * as TypeUtility from "../utility/type_utility.js";
  * Writes a value to the given memory object. It is not possible to write undefined and null values
  * @param {object} memory - The object which should be used as storage
  * @param {string} key - The key of the value
- * @param {boolean} [isMutable=false] - If set to true the memory allows overwriting values
  * @param {(boolean|string|number)} value - The value to write
+ * @param {boolean} [isMutable=false] - If set to true the memory allows overwriting values
  * @throws Will throw error if memory is not mutable and a value with an already available key will be written
  * @throws Will throw error if value cannot be written to memory, because the data-type of the given value is not supported. See {@link MemoryUtilities#isWriteable}
  */

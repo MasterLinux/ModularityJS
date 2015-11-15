@@ -1,0 +1,47 @@
+// android pixel ratios
+$pixel-ratio-mdpi: 1.0;
+$pixel-ratio-hdpi: 1.5;
+$pixel-ratio-xhdpi: 2.0;
+$pixel-ratio-xxhdpi: 3.0;
+$pixel-ratio-xxxhdpi: 4.0;
+
+/* fonts */
+// font for texts, inputs, buttons, etc.
+@mixin font-primary() {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+// font for headers, etc.
+@mixin font-secondary() {
+  font-family: 'Noto Serif', serif;
+}
+
+/* colors */
+$color-primary: rgb(85, 98, 112);
+$color-primary-light: rgb(130, 146, 163);
+$color-primary-dark: rgb(51, 51, 51);
+$color-secondary: rgb(251, 184, 41);
+$color-secondary-light: rgb(255, 204, 0);
+$color-secondary-dark: rgb(255, 153, 0);
+$color-font-dark: rgb(12, 12, 12);
+$color-font-light: rgb(224, 224, 224);
+$color-error: rgb(240, 35, 17);
+$color-warning: rgb(251, 184, 41);
+$color-icon: rgb(255, 153, 0);
+
+// used for fonts with an inset style
+@mixin font-inset($color: $color-primary, $offset: 42) {
+  text-shadow: 1px 1px 0 ($color + $offset), -1px -1px 1px ($color - $offset);
+  color: $color;
+}
+
+/* sizes */
+$font-size-normal: 14px;
+$padding-normal: 10px;
+$border-radius-normal: 8px;
+
+$media-width-phone: 768px;
+$media-width-tablet: 970px;
+
+/* file paths */
+$path-image-root: "../images";

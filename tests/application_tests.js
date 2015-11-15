@@ -4,6 +4,7 @@ import {Author} from "../src/data/author.js";
 import {EventResponder} from "../src/event_responder.js";
 import {EventResponderMock} from "./mocks/event_responder_mock.js";
 import {ParsingError} from "../src/error/parsing_error.js";
+import {Page} from "../src/page.js";
 import {expect, assert} from "chai";
 
 (function () {
@@ -64,6 +65,26 @@ import {expect, assert} from "chai";
             });
 
             expect(appUnderTest.author).to.be.null;
+
+            done();
+        });
+
+        it("should register new page using a config", (done) => {
+            let expectedId = "test_page_id";
+
+            let appUnderTest = new Application(null, {
+                name: "test_app",
+                version: "1.0.0"
+            });
+
+            appUnderTest.registerPage({
+                id: expectedId
+            });
+
+            let actualPage = appUnderTest.pages.getItem(expectedId);
+
+            expect(actualPage).to.be.an.instanceof(Page);
+            expect(actualPage.id).to.be.equal(expectedId);
 
             done();
         });
