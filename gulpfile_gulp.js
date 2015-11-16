@@ -25,6 +25,13 @@ var
 
 
 
+gulp.task('watching', function () {
+    gulp.watch('./sass/**/*.scss', ['sass']);
+    gulp.watch('./src/**/*.js', ['1. babel', '2. browserify']);
+    // todo add run tests
+});
+
+
 // This task can watch & solo run
 gulp.task('sass', function () {
     gulp.src('./sass/**/*.scss')
@@ -88,8 +95,7 @@ gulp.task('build parser', function() {
 
 gulp.task('transform ES6 to ES5', [
         '1. babel',
-        '2. browserify',
-        '3. minify'
+        '2. browserify'
     ]
 );
 
@@ -123,19 +129,16 @@ gulp.task('2. browserify', function () {
 
     return b.bundle()
         .pipe(source('modularity_source.js'))
+        .pipe(gulp.dest('./build/src/'))
         .pipe(buffer())
         .pipe(sourcemaps.init({loadMaps: true}))
         // Add transformation tasks to the pipeline here.
-        //.pipe(uglify())
-        .on('error', gutil.log)
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./build/src/'));
-});
-
-
-gulp.task('3. minify', function () {
-    return gulp.src('./build/src/modularity_source.js')
         .pipe(uglify())
         .pipe(rename('modularity_source.min.js'))
-        .pipe(gulp.dest('./build/src'));
+        .pipe(gulp.dest('./build/src/'))
+        .pipe(buffer())
+        .on('error', gutil.log)
+        .pipe(sourcemaps.write('./'))
+        .pipe(rename('modularity_source.min.map'))
+        .pipe(gulp.dest('./build/src/'));
 });
