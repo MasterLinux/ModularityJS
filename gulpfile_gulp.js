@@ -27,8 +27,8 @@ var
 
 gulp.task('watching', function () {
     gulp.watch('./sass/**/*.scss', ['sass']);
-    gulp.watch('./src/**/*.js', ['1. babel', '2. browserify']);
-    // todo add run tests
+    gulp.watch('./src/parser/*.pegjs', ['build parser']);
+    gulp.watch(['./src/**/*.js', './tests/**/*.js'], ['babel', 'browserify', 'run tests']);
 });
 
 
@@ -41,7 +41,7 @@ gulp.task('sass', function () {
 });
 
 
-// Generate two documentations in differents folder.
+// Generate two documentations in different folder.
 gulp.task('generate documentation', function () {
 
 /*
@@ -83,7 +83,7 @@ gulp.task('run tests', function (done) {
 
 
 gulp.task('build parser', function() {
-    return gulp.src('src/parser/*.pegjs')
+    return gulp.src('./src/parser/*.pegjs')
         .pipe(pegjs())
         .pipe(rename(function (path) {
             path.basename += "_parser";
@@ -93,11 +93,7 @@ gulp.task('build parser', function() {
 });
 
 
-gulp.task('transform ES6 to ES5', [
-        '1. babel',
-        '2. browserify'
-    ]
-);
+gulp.task('transform ES6 to ES5', ['1. babel', '2. browserify']);
 
 
 gulp.task('clean build', function () {
@@ -106,7 +102,7 @@ gulp.task('clean build', function () {
 });
 
 
-gulp.task('1. babel', function () {
+gulp.task('babel', function () {
     return gulp.src('./src/**/*.js')
         .pipe(babel({
             sourceMaps: false,
@@ -118,7 +114,7 @@ gulp.task('1. babel', function () {
 });
 
 
-gulp.task('2. browserify', function () {
+gulp.task('browserify', function () {
     // set up the browserify instance on a task basis
     var b = browserify({
         entries: './build/src/modularity.js',
