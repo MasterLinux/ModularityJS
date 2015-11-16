@@ -27,8 +27,10 @@ var
 
 gulp.task('watching', function () {
     gulp.watch('./sass/**/*.scss', ['sass']);
-    gulp.watch('./src/parser/*.pegjs', ['build parser']);
-    gulp.watch(['./src/**/*.js', './tests/**/*.js'], ['babel', 'browserify', 'run tests']);
+    gulp.watch('./grammars/**/*.pegjs', ['build parser']);
+    gulp.watch(['./src/**/*.js', './tests/**/*.js'], ['babel']);
+    gulp.watch(['./build/src/**/*.js'], ['browserify']);
+    gulp.watch('./build/modularity.js', ['run tests']);
 });
 
 
@@ -83,17 +85,17 @@ gulp.task('run tests', function (done) {
 
 
 gulp.task('build parser', function() {
-    return gulp.src('./src/parser/*.pegjs')
+    return gulp.src('./grammars/**/*.pegjs')
         .pipe(pegjs())
         .pipe(rename(function (path) {
             path.basename += "_parser";
             path.extname = ".js"
         }))
-        .pipe(gulp.dest('src/parser'));
+        .pipe(gulp.dest('./src/parser'));
 });
 
 
-gulp.task('transform ES6 to ES5', ['1. babel', '2. browserify']);
+gulp.task('transform ES6 to ES5', ['babel', 'browserify']);
 
 
 gulp.task('clean build', function () {
@@ -124,17 +126,17 @@ gulp.task('browserify', function () {
     });
 
     return b.bundle()
-        .pipe(source('modularity_source.js'))
-        .pipe(gulp.dest('./build/src/'))
+        .pipe(source('modularity.js'))
+        .pipe(gulp.dest('./build'))
         .pipe(buffer())
         .pipe(sourcemaps.init({loadMaps: true}))
         // Add transformation tasks to the pipeline here.
         .pipe(uglify())
-        .pipe(rename('modularity_source.min.js'))
-        .pipe(gulp.dest('./build/src/'))
+        .pipe(rename('modularity.min.js'))
+        .pipe(gulp.dest('./build'))
         .pipe(buffer())
         .on('error', gutil.log)
         .pipe(sourcemaps.write('./'))
-        .pipe(rename('modularity_source.min.map'))
-        .pipe(gulp.dest('./build/src/'));
+        .pipe(rename('modularity.min.map'))
+        .pipe(gulp.dest('./build'));
 });
