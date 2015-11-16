@@ -41,8 +41,8 @@ gulp.task('transform ES6 to ES5', ['babel', 'browserify']);
 
 gulp.task('lint', function () {
     return gulp.src([
-        './src/**/*.js'
-        ,'!./src/parser/*.js' // NOT the parser folder
+        './src/**/*.js',
+        '!./src/parser/*.js' // NOT the parser folder
         // , 'tests/**/*.js'
     ])
         .pipe(eslint({
