@@ -9,6 +9,7 @@ var
     clean = require('gulp-clean'),
     concat = require('gulp-concat'),
     ESdoc = require("gulp-esdoc"),
+    eslint = require('gulp-eslint'),
     uglify = require('gulp-uglify'),
     reactify = require('reactify'),
     sourcemaps = require('gulp-sourcemaps'),
@@ -28,9 +29,47 @@ var
 gulp.task('watching', function () {
     gulp.watch('./sass/**/*.scss', ['sass']);
     gulp.watch('./grammars/**/*.pegjs', ['build parser']);
-    gulp.watch(['./src/**/*.js', './tests/**/*.js'], ['babel']);
-    gulp.watch(['./build/src/**/*.js'], ['browserify']);
+    gulp.watch('./src/**/*.js', ['lint', 'babel']);
+    gulp.watch('./tests/**/*.js', ['babel']);
+    gulp.watch('./build/src/**/*.js', ['browserify']);
     gulp.watch('./build/modularity.js', ['run tests']);
+});
+
+
+gulp.task('transform ES6 to ES5', ['babel', 'browserify']);
+
+
+gulp.task('lint', function () {
+    return gulp.src([
+        './src/**/*.js'
+        ,'!./src/parser/*.js' // NOT the parser folder
+        // , 'tests/**/*.js'
+    ])
+        .pipe(eslint({
+            "extends": "eslint:recommended",
+            "ecmaFeatures": {
+                "jsx": true, // react
+                "modules": true,
+                "classes": true,
+                "blockBindings": true, // let, const
+                "experimentalObjectRestSpread": true // ...values
+            },
+            "globals": {
+                // "jQuery": false,
+                // "$": true
+            },
+            "env": {
+                "es6": true,
+                "node": true,
+                "browser": true
+            },
+            "rules": {},
+            "plugins": [
+                "react"
+            ]
+        }))
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
 });
 
 
@@ -93,9 +132,6 @@ gulp.task('build parser', function() {
         }))
         .pipe(gulp.dest('./src/parser'));
 });
-
-
-gulp.task('transform ES6 to ES5', ['babel', 'browserify']);
 
 
 gulp.task('clean build', function () {
