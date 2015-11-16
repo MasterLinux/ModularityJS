@@ -65,7 +65,7 @@ gulp.task('lint', function () {
             },
             "rules": {},
             "plugins": [
-                "react"
+                "eslint-plugin-react"
             ]
         }))
         .pipe(eslint.format())
