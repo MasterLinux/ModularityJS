@@ -211,10 +211,3 @@ gulp.task('browserify', function () {
         .pipe(rename('modularity.min.map'))
         .pipe(gulp.dest('./build'));
 });
-
-
-gulp.task("peg:compile", function() {
-    return gulp.src("./grammars/**/*.pegjs")
-        .pipe(peg().on("error", gutil.log))
-        .pipe(gulp.dest('build'));
-});
