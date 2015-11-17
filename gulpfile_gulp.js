@@ -22,7 +22,7 @@ var
     // JSdoc = require("gulp-jsdoc"),
 
     path = require('path'),
-    pegjs = require('gulp-pegjs'),
+    peg = require('gulp-peg'),
     rename = require('gulp-rename'),
     sass = require('gulp-sass'),
     source = require('vinyl-source-stream');
@@ -132,7 +132,7 @@ gulp.task('run tests', function (done) {
 
 gulp.task('build parser', function() {
     return gulp.src('./grammars/**/*.pegjs')
-        .pipe(pegjs())
+        .pipe(peg().on("error", gutil.log))
         .pipe(rename(function (path) {
             path.basename += "_parser";
             path.extname = ".js"
@@ -154,7 +154,7 @@ gulp.task('build parser', function() {
 
                         fs.writeFile(
                             fileName,
-                            'export var ' + keyName + ' = ' + data,
+                            data.replace('module.exports = (function() {', 'export var ' + keyName + ' = (function() {'),
                             'utf8',
                             function (err) {
                                 if (err) {
@@ -210,4 +210,11 @@ gulp.task('browserify', function () {
         .pipe(sourcemaps.write('./'))
         .pipe(rename('modularity.min.map'))
         .pipe(gulp.dest('./build'));
+});
+
+
+gulp.task("peg:compile", function() {
+    return gulp.src("./grammars/**/*.pegjs")
+        .pipe(peg().on("error", gutil.log))
+        .pipe(gulp.dest('build'));
 });
