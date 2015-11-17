@@ -10,19 +10,27 @@ var
     concat = require('gulp-concat'),
     ESdoc = require("gulp-esdoc"),
     eslint = require('gulp-eslint'),
+    fs = require('fs'),
     uglify = require('gulp-uglify'),
     reactify = require('reactify'),
     sourcemaps = require('gulp-sourcemaps'),
+    tap = require('gulp-tap'),
     gutil = require('gulp-util'),
     KarmaServer = require('karma').Server,
 
     // JSdoc have a bug : https://github.com/jsBoot/gulp-jsdoc/issues/18
     // JSdoc = require("gulp-jsdoc"),
 
+    path = require('path'),
     pegjs = require('gulp-pegjs'),
     rename = require('gulp-rename'),
     sass = require('gulp-sass'),
     source = require('vinyl-source-stream');
+
+
+String.prototype.toUpperCaseFirstLetter = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
 
 
 
@@ -100,7 +108,6 @@ gulp.task('generate documentation', function () {
 });
 
 
-
 gulp.task('start watching JavaScript files and run tests', function (done) {
     new KarmaServer({
         configFile: __dirname + '/karma.conf.js',
@@ -130,7 +137,35 @@ gulp.task('build parser', function() {
             path.basename += "_parser";
             path.extname = ".js"
         }))
-        .pipe(gulp.dest('./src/parser'));
+        .pipe(gulp.dest('./src/parser'))
+
+        // convert parser-file to a module
+        .pipe(tap(
+            function(file) {
+                if (path.extname(file.path) === '.js') {
+                    var item = path.parse(file.path),
+                        fileName = item.dir + '/' + item.base,
+                        keyName = item.name.replace('_p', 'P').toUpperCaseFirstLetter(); // author_parser -> AuthorParser
+
+                    fs.readFile(fileName, 'utf8', function (err, data) {
+                        if (err) {
+                            return console.log(err);
+                        }
+
+                        fs.writeFile(
+                            fileName,
+                            data.replace('(function() {', 'export var ' + keyName + ' = (function() {'),
+                            'utf8',
+                            function (err) {
+                                if (err) {
+                                    return console.log(err);
+                                }
+                            }
+                        );
+                    });
+                }
+            }
+        ));
 });
 
 
