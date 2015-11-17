@@ -154,7 +154,7 @@ gulp.task('build parser', function() {
 
                         fs.writeFile(
                             fileName,
-                            data.replace('(function() {', 'export var ' + keyName + ' = (function() {'),
+                            'export var ' + keyName + ' = ' + data,
                             'utf8',
                             function (err) {
                                 if (err) {
