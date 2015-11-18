@@ -1,4 +1,5 @@
 import * as TypeUtilities from "../utility/type_utility.js";
+import "babel-polyfill";
 
 export class Stack {
 
@@ -180,5 +181,19 @@ export class Stack {
         }
 
         return false;
+    }
+
+    get values() {
+        let instance = this;
+
+        return {
+            [Symbol.iterator]: function*() {
+                instance.resetIndex();
+
+                do {
+                    yield instance.current;
+                } while (instance.next());
+            }
+        }
     }
 }
