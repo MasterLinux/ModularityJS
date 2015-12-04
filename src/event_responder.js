@@ -11,19 +11,7 @@ export class EventResponder {
      * @param {EventResponder} [responder] - The next responder in chain
      */
     constructor(responder) {
-        this._responder = responder;
-    }
-
-    /**
-     * Gets the next responder in chain
-     * @name nextResponder
-     * @memberOf EventResponder
-     * @type {EventResponder}
-     * @readonly
-     * @instance
-     */
-    get nextResponder() {
-        return this._responder;
+        this.nextResponder = responder;
     }
 
     /**
@@ -58,5 +46,3 @@ export class EventResponder {
         // does nothing
     }
 }
-
-
