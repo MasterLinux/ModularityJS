@@ -18,10 +18,9 @@ describe("Router", () => {
         item3.navigationStack.register(item4);
 
         router.register(item);
+        */
 
-
-
-        done();*/
+        done();
     });
 
 });
