@@ -34,7 +34,7 @@ module.exports = function (config) {
 
         browserify: {
             debug: true,
-            transform: [['babelify', { "presets": ['es2015' ,'react'] }]]
+            transform: [['babelify', { 'presets': ['es2015' ,'react'] }]]
         },
 
 
@@ -71,7 +71,7 @@ module.exports = function (config) {
         singleRun: false,
 
         // Concurrency level
-        // how many browser should be started simultanous
+        // how many browser should be started simultaneously
         concurrency: Infinity
     })
 };

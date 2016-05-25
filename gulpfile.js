@@ -9,9 +9,9 @@ var $Gulp = require('gulp'),
     $Mkdirp = require('mkdirp'),
     $Path = require('path'),
     $FileSystem = require('fs'),
-    $KarmaServer = require("karma").Server,
-    $ESdoc = require("gulp-esdoc"),
-    $JSdoc = require("gulp-jsdoc");
+    $KarmaServer = require("karma").Server;
+    //$ESdoc = require("gulp-esdoc"),
+    //$JSdoc = require("gulp-jsdoc");
 
 var KARMA_CONFIG = $Path.resolve("./karma.conf.js");
 
@@ -60,7 +60,7 @@ $Gulp.task('transform ES6 to ES5', function (done) {
  * Generate two documentations in different folders.
  */
 $Gulp.task('generate documentation', function () {
-
+    /*
     // JSDoc
     $Gulp.src("./build/modularity.js")
         .pipe($JSdoc('./build/docs_jsdoc'));
@@ -71,6 +71,7 @@ $Gulp.task('generate documentation', function () {
             destination: "./build/docs_esdoc",
             "includeSource": true
         }));
+    */
 });
 
 $Gulp.task('start watching JavaScript files and run tests', function (done) {
@@ -198,7 +199,14 @@ SourceTransformer.prototype.transformES6ToES5 = function (inputDir, outputDir) {
 
         // transform to ES5
         source = $Babel.transform(source, {
-            modules: "common",
+            presets: [
+                "es2015",
+                "react"
+            ],
+            plugins: [
+                "transform-es2015-modules-commonjs",
+                "transform-react-jsx"
+            ],
             sourceMaps: false,
             comments: true,
             ast: false

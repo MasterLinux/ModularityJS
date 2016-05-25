@@ -13,6 +13,8 @@
   "license": "proprietary",
   "devDependencies": {
     "babel-core": "~6.9.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.8.0",
+    "babel-plugin-transform-react-jsx": "^6.8.0",
     "babel-polyfill": "~6.9.0",
     "babel-preset-es2015": "~6.9.0",
     "babel-preset-react": "~6.5.0",
@@ -34,8 +36,8 @@
     "node-sass": "~3.7.0",
     "pegjs": "~0.9.0",
     "uglify-js": "~2.6.2",
-    "watchify": "~3.7.0",
-    "walk": "~2.3.9"
+    "walk": "~2.3.9",
+    "watchify": "~3.7.0"
   },
   "dependencies": {
     "react-dom": "~15.1.0",
