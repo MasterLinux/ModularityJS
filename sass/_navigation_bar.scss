@@ -38,9 +38,18 @@ div {
         cursor: pointer;
 
         .icon {
+          background-size: $navigation-bar-button-width $navigation-bar-button-height;
           width: $navigation-bar-button-width;
           height: $navigation-bar-button-height;
           float: left;
+
+          &.back {
+            background-image: url("../images/ic_back.png");
+          }
+
+          &.menu {
+            background-image: url("../images/ic_menu.png");
+          }
         }
 
         .title {
