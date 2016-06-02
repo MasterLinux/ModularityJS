@@ -1,0 +1,12 @@
+@import "style";
+
+.workspace {
+  background: $color-primary-dark;
+
+  .line {
+    stroke: $color-primary-light;
+    stroke-width: 2;
+    cursor: pointer;
+    fill: none;
+  }
+}
