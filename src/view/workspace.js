@@ -3,23 +3,7 @@
  */
 
 import React from "react";
-
-export class Coordinate {
-
-    constructor(x, y) {
-        this._x = x;
-        this._y = y;
-    }
-
-    get x() {
-        return this._x;
-    }
-
-    get y() {
-        return this._y;
-    }
-
-}
+import {Point} from "../data/point";
 
 export var Workspace = React.createClass({
 
@@ -51,12 +35,12 @@ export var Workspace = React.createClass({
 export var Line = React.createClass({
 
     propTypes: {
-        coordinates: React.PropTypes.arrayOf(Coordinate)
+        coordinates: React.PropTypes.arrayOf(Point)
     },
 
     onClick: function (event) {
         let coordinates = this.props.coordinates;
-        coordinates.push(new Coordinate(event.clientX, event.clientY));
+        coordinates.push(new Point(event.clientX, event.clientY));
 
         this.setState({
             coordinates: coordinates

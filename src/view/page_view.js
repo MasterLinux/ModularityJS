@@ -1,7 +1,7 @@
 import React from "react";
 import {NavigationBar} from "./navigation_bar.js";
 import {Button} from "./button.js";
-import {Workspace, Line, Coordinate} from "./workspace";
+import {Workspace, Line, Point} from "./workspace";
 
 export var PageView = React.createClass({
 
@@ -13,7 +13,7 @@ export var PageView = React.createClass({
                 </NavigationBar>
                 {this.props.children}
                 <Workspace>
-                    <Line coordinates={[new Coordinate(0, 0), new Coordinate(25, 25), new Coordinate(100, 75)]} />
+                    <Line coordinates={[new Point(0, 0), new Point(25, 25), new Point(100, 75)]} />
                 </Workspace>
             </div>
         );

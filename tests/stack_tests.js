@@ -173,5 +173,21 @@ describe("Stack", () => {
 
         done()
     });
+
+    it("should map values", (done) => {
+        let value1 = 0;
+        let value2 = 5;
+        let value3 = 10;
+
+        let stack = new Stack(value1, value2, value3);
+        let map = stack.map((value) => value + 5);
+
+        expect(map.length).to.be.equal(3);
+        expect(map[0]).to.be.equal(5);
+        expect(map[1]).to.be.equal(10);
+        expect(map[2]).to.be.equal(15);
+
+        done()
+    });
 });
 

@@ -183,6 +183,15 @@ export class Stack {
         return false;
     }
 
+    /**
+     * @param {function(T=, number=, Array.<T>=)} callback
+     * @param {*} [thisArg]
+     * @return {Array}
+     */
+    map(callback, thisArg) {
+        return this._values.map(callback, thisArg);
+    }
+
     get values() {
         let instance = this;
 
