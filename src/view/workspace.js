@@ -39,7 +39,11 @@ export var Workspace = React.createClass({
     },
 
     render: function () {
-        return <svg className="workspace" height={`${this.props.height}px`} width={`${this.props.width}px`}>{this.props.children}</svg>;
+        return (
+            <svg className="workspace" height={`${this.props.height}px`} width={`${this.props.width}px`}>
+                {this.props.children}
+            </svg>
+        );
     }
 
 });
@@ -50,16 +54,21 @@ export var Line = React.createClass({
         coordinates: React.PropTypes.arrayOf(Coordinate)
     },
 
-    // onClick: function (event) {
-    //     alert(event.clientX);
-    // },
+    onClick: function (event) {
+        let coordinates = this.props.coordinates;
+        coordinates.push(new Coordinate(event.clientX, event.clientY));
+
+        this.setState({
+            coordinates: coordinates
+        });
+    },
 
     render: function () {
         let points = this.props.coordinates.map((coordinate) => {
               return `${coordinate.x},${coordinate.y}`;
         }).join(" ");
 
-        return <polyline className="line" points={points} />;
+        return <polyline className="line" points={points} onClick={this.onClick} />;
     }
 
 });
