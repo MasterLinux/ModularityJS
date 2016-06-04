@@ -3,6 +3,15 @@
  */
 import {Stack} from "./stack";
 
+export function number(number) {
+    return {
+        between: function (x1, x2, tolerance = 0) {
+            return number + tolerance > Math.min(x1, x2) &&
+                number - tolerance < Math.max(x1, x2);
+        }    
+    };
+}
+
 export class Point {
 
     /**
@@ -51,12 +60,12 @@ export class Line {
         this._points = new Stack(points);
     }
 
-    contains(point) {
+    contains(point, tolerance = 0) {
         let pStart = this._points.first;
         let pEnd = this._points.last;
 
-        let res = (pEnd.x - pStart.x) * (point.y - pStart.y) - (point.x - pStart.x) * (pEnd.y - pStart.y);
-        return res == 0;
+        let areCollinear = (pEnd.x - pStart.x) * (point.y - pStart.y) - (point.x - pStart.x) * (pEnd.y - pStart.y);
+        return areCollinear == 0 || number(areCollinear).between(0, 0, tolerance);
     }
 
     toPolyline() {

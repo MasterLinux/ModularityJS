@@ -1,5 +1,26 @@
-import {Point, Line} from "../src/data/point.js";
+import {Point, Line, number} from "../src/data/point.js";
 import {expect, assert} from "chai";
+
+describe("Number Extension", () => {
+
+    it("should check whether number is between two others", (done) => {
+
+        expect(number(5).between(0, 10)).to.be.true;
+        expect(number(1).between(0, 10)).to.be.true;
+        expect(number(9).between(0, 10)).to.be.true;
+        expect(number(-5).between(-10, 0)).to.be.true;
+        expect(number(0).between(-10, 10)).to.be.true;
+
+        expect(number(0).between(0, 10)).to.be.false;
+        expect(number(10).between(0, 10)).to.be.false;
+
+        expect(number(10).between(0, 10, 1)).to.be.true;
+        expect(number(-10).between(-10, 0, 1)).to.be.true;
+
+        done();
+    });
+
+});
 
 describe("Point", () => {
 
