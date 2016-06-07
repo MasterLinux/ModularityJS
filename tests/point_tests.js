@@ -1,26 +1,5 @@
-import {Point, Line, number} from "../src/data/point.js";
+import {Point, Line} from "../src/data/point.js";
 import {expect, assert} from "chai";
-
-describe("Number Extension", () => {
-
-    it("should check whether number is between two others", (done) => {
-
-        expect(number(5).between(0, 10)).to.be.true;
-        expect(number(1).between(0, 10)).to.be.true;
-        expect(number(9).between(0, 10)).to.be.true;
-        expect(number(-5).between(-10, 0)).to.be.true;
-        expect(number(0).between(-10, 10)).to.be.true;
-
-        expect(number(0).between(0, 10)).to.be.false;
-        expect(number(10).between(0, 10)).to.be.false;
-
-        expect(number(10).between(0, 10, 1)).to.be.true;
-        expect(number(-10).between(-10, 0, 1)).to.be.true;
-
-        done();
-    });
-
-});
 
 describe("Point", () => {
 
@@ -42,7 +21,7 @@ describe("Point", () => {
 
         done();
     });
-
+    
 });
 
 describe("Line", () => {
@@ -62,9 +41,17 @@ describe("Line", () => {
         let p2 = new Point(10, 40);
         let line = new Line(p1, p2);
 
-        let p3 = new Point(10, 30);
+        expect(line.containsPoint(new Point(10, 30))).to.be.true;
+        expect(line.containsPoint(new Point(15, 30))).to.be.false;
 
-        expect(line.contains(p3)).to.be.true;
+
+        p1 = new Point(10, 10);
+        p2 = new Point(30, 30);
+        line = new Line(p1, p2);
+
+        expect(line.containsPoint(new Point(11, 11))).to.be.true;
+        expect(line.containsPoint(new Point(20, 20))).to.be.true;
+        expect(line.containsPoint(new Point(25, 20))).to.be.false;
 
         done();
     });

@@ -2,15 +2,7 @@
  * Created by Christoph on 03/06/2016.
  */
 import {Stack} from "./stack";
-
-export function number(number) {
-    return {
-        between: function (x1, x2, tolerance = 0) {
-            return number + tolerance > Math.min(x1, x2) &&
-                number - tolerance < Math.max(x1, x2);
-        }    
-    };
-}
+import {number} from "../utility/number_utility";
 
 export class Point {
 
@@ -60,12 +52,26 @@ export class Line {
         this._points = new Stack(points);
     }
 
-    contains(point, tolerance = 0) {
+    /**
+     * Checks whether the given point lays on this line
+     * @param {Point} point
+     * @param {number} tolerance
+     * @return {boolean} Returns true if the given point lays on line
+     */
+    containsPoint(point, tolerance = 0) {
         let pStart = this._points.first;
         let pEnd = this._points.last;
 
         let areCollinear = (pEnd.x - pStart.x) * (point.y - pStart.y) - (point.x - pStart.x) * (pEnd.y - pStart.y);
-        return areCollinear == 0 || number(areCollinear).between(0, 0, tolerance);
+        if (areCollinear > tolerance || areCollinear < -tolerance) {
+            return false;
+        }
+
+        if (pStart.x - pEnd.x > tolerance || pEnd.x - pStart.x > tolerance) {
+            return number(point.x).isInRange(pStart.x, pEnd.x, tolerance);
+        }
+
+        return number(point.y).isInRange(pStart.y, pEnd.y, tolerance);
     }
 
     toPolyline() {
